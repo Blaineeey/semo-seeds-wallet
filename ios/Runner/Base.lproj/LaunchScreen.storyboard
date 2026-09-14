@@ -16,26 +16,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="1121" height="957"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" image="seeds_flower" translatesAutoresizingMaskIntoConstraints="NO" id="gir-gQ-EON">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" image="semo_backdrop" translatesAutoresizingMaskIntoConstraints="NO" id="gir-gQ-EON">
                                 <rect key="frame" x="164" y="571" width="793" height="386"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="386" id="ELf-G2-YKD"/>
                                     <constraint firstAttribute="width" relation="lessThanOrEqual" constant="793" id="Yun-fX-a9d"/>
                                 </constraints>
                             </imageView>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="seeds_logo_font" translatesAutoresizingMaskIntoConstraints="NO" id="1iV-24-3Kc">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="semo_wordmark" translatesAutoresizingMaskIntoConstraints="NO" id="1iV-24-3Kc">
                                 <rect key="frame" x="475.5" y="252" width="170" height="53.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="170" id="FLj-6E-8u4"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Light Wallet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8KV-I4-MJd">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="W A L L E T" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8KV-I4-MJd">
                                 <rect key="frame" x="513" y="328.5" width="95" height="22"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.49803921568627452" green="0.80392156862745101" blue="0.92156862745098039" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="seeds_mark" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="semo_mark" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="520.5" y="155" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="lBT-oY-t7D"/>
@@ -44,7 +44,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="n1N-js-ueT"/>
-                        <color key="backgroundColor" red="0.058823529411764705" green="0.14901960784313725" blue="0.090196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.039215686274509803" green="0.10980392156862745" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="n1N-js-ueT" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="gir-gQ-EON" firstAttribute="centerX" secondItem="n1N-js-ueT" secondAttribute="centerX" id="1h3-7V-etI"/>
@@ -65,8 +65,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="seeds_flower" width="1048.5" height="524.5"/>
-        <image name="seeds_logo_font" width="175.5" height="53.5"/>
-        <image name="seeds_mark" width="67" height="80"/>
+        <image name="semo_backdrop" width="1048.5" height="524.5"/>
+        <image name="semo_wordmark" width="175.5" height="53.5"/>
+        <image name="semo_mark" width="80" height="80"/>
     </resources>
 </document>

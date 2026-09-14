@@ -15,7 +15,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher_round"
-        android:label="SEEDS Wallet">
+        android:label="SEMO Wallet">
         <!-- android:usesCleartextTraffic="true" -->
 
         <meta-data

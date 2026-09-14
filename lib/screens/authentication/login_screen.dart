@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/flat_button_long_outlined.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
@@ -52,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                   image: DecorationImage(fit: BoxFit.fitWidth, image: AssetImage("assets/images/login/background.png")),
                 ),
               ),
-              SvgPicture.asset("assets/images/login/seeds_light_wallet_logo.svg"),
+              Image.asset("assets/images/login/semo_wallet_logo.png", width: 255),
               const SizedBox(height: 80),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),

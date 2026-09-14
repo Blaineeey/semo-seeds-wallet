@@ -1,5 +1,5 @@
 name: seeds
-description: SEEDS Wallet
+description: SEMO Wallet - the SEMO Network edition of the SEEDS Light Wallet
 
 version: 2.9.6+90
 
@@ -91,7 +91,7 @@ flutter:
     - assets/images/seeds_currency_icon.svg
     - assets/images/app_icon_transparent.png
     - assets/images/loading.png
-    - assets/images/seeds_symbol_forest.png
+    - assets/images/semo_mark.png
     - assets/images/onboarding/onboarding1.png
     - assets/images/onboarding/onboarding2.png
     - assets/images/onboarding/onboarding3.png
@@ -114,7 +114,6 @@ flutter:
     - assets/images/lotus_support_small.svg
     - assets/images/lotus_support_big.svg
     - assets/images/seeds.png
-    - assets/images/appbar/seeds_symbol_forest.png
     - assets/images/seeds_light_wallet_logo.png
     - assets/images/guardians/guardian_tutorial_1.png
     - assets/images/guardians/guardian_tutorial_2.png
@@ -184,7 +183,7 @@ flutter:
     - assets/images/contribution/contribution_detail/petals_right.png
     - assets/images/seeds_logo.svg
     - assets/images/login/background.png
-    - assets/images/login/seeds_light_wallet_logo.svg
+    - assets/images/login/semo_wallet_logo.png
     - assets/images/receive/receive_input_seeds.svg
     - assets/images/receive/merchant.svg
     - assets/images/currency_switch_button.svg
@@ -209,23 +208,23 @@ flutter:
     # w800 Extra-bold
     # w900 Black, the most thick
 
-    - family: SFProDisplay
+    - family: Roboto
       fonts:
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Thin.ttf
+        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
           weight: 100
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-UltraLight.ttf
-          weight: 200
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Light.ttf
+        - asset: assets/fonts/Roboto/Roboto-Light.ttf
           weight: 300
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Regular.ttf
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
           weight: 400
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Medium.ttf
+        - asset: assets/fonts/Roboto/Roboto-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
           weight: 500
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Bold.ttf
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
           weight: 700
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Heavy.ttf
-          weight: 800
-        - asset: assets/fonts/SFProDisplay/SFProDisplay-Black.ttf
+        - asset: assets/fonts/Roboto/Roboto-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Roboto/Roboto-Black.ttf
           weight: 900
