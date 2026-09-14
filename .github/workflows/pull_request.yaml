@@ -4,13 +4,14 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
-          java-version: '12.x'
-      - uses: subosito/flutter-action@v1
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.0.1'
+          flutter-version: '3.24.5'
       - run: flutter pub get
       - name: Lint
         run: |
@@ -19,11 +20,11 @@ jobs:
 #    name: Build Android package
 #    runs-on: ubuntu-latest
 #    steps:
-#      - uses: actions/checkout@v1
+#      - uses: actions/checkout@v4
 #      - uses: actions/setup-java@v1
 #        with:
 #          java-version: '12.x'
-#      - uses: subosito/flutter-action@v1
+#      - uses: subosito/flutter-action@v2
 #        with:
 #          flutter-version: '2.5.1'
 #      - run: flutter pub get

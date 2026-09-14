@@ -13,7 +13,7 @@ class SeedsAppTheme {
           ),
       scaffoldBackgroundColor: AppColorSchemes.darkColorScheme.surface,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: AppColorSchemes.darkColorScheme.surface),
-      fontFamily: 'SFProDisplay',
+      fontFamily: 'Roboto',
       textTheme: SeedsTextTheme.darkTheme,
       inputDecorationTheme: SeedsInputDecorationTheme.darkTheme,
       snackBarTheme: SnackBarThemeData(
@@ -27,7 +27,7 @@ class SeedsAppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       primaryColor: AppColors.primary,
-      fontFamily: 'SFProDisplay',
+      fontFamily: 'Roboto',
       textTheme: SeedsTextTheme.lightTheme,
       brightness: Brightness.light,
       canvasColor: AppColors.primary,
@@ -58,7 +58,7 @@ class SeedsAppTheme {
     return ThemeData(
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColorSchemes.darkColorScheme.surface,
-      fontFamily: 'SFProDisplay',
+      fontFamily: 'Roboto',
       textTheme: SeedsTextTheme.darkTheme,
       brightness: Brightness.dark,
       canvasColor: AppColors.primary,
