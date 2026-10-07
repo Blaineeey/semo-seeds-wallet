@@ -67,7 +67,6 @@ class EditRegionBloc extends Bloc<EditRegionEvent, EditRegionState> {
       description: state.newRegionDescription,
       latitude: state.region.latitude,
       longitude: state.region.longitude,
-      regionAddress: state.region.locationJson,
     ));
     emit(EditRegionDescriptionStateMapper().mapResultToState(state, result));
   }

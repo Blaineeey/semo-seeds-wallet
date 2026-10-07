@@ -4,7 +4,7 @@ import 'package:seeds/components/divider_jungle.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/region_event_details/interactor/viewmodels/region_event_details_bloc.dart';
 
 class RegionEventDetailBottomSheet extends StatelessWidget {
-  const RegionEventDetailBottomSheet({super.key});
+  const RegionEventDetailBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

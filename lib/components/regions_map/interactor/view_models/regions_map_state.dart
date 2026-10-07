@@ -9,8 +9,6 @@ class RegionsMapState extends Equatable {
   final bool isCameraMoving;
   final bool isSearchingPlace;
   final bool isUserLocationEnabled;
-  final bool showRegionsResults;
-  final bool isSerachResultSelected;
 
   const RegionsMapState({
     this.pageCommand,
@@ -21,8 +19,6 @@ class RegionsMapState extends Equatable {
     required this.isCameraMoving,
     required this.isSearchingPlace,
     required this.isUserLocationEnabled,
-    required this.showRegionsResults,
-    required this.isSerachResultSelected,
   });
 
   @override
@@ -30,40 +26,34 @@ class RegionsMapState extends Equatable {
         pageCommand,
         pageState,
         initialPlace,
-        regions,
         newPlace,
         isCameraMoving,
         isSearchingPlace,
         isUserLocationEnabled,
-        isSerachResultSelected,
       ];
 
   RegionsMapState copyWith({
     PageCommand? pageCommand,
     PageState? pageState,
     Place? initialPlace,
-    List<RegionModel>? regions,
     Place? newPlace,
     bool? isCameraMoving,
     bool? isSearchingPlace,
     bool? isUserLocationEnabled,
-    bool? isSerachResultSelected,
   }) {
     return RegionsMapState(
       pageCommand: pageCommand,
       pageState: pageState ?? this.pageState,
       isCameraMoving: isCameraMoving ?? this.isCameraMoving,
       initialPlace: initialPlace ?? this.initialPlace,
-      regions: regions ?? this.regions,
+      regions: regions,
       newPlace: newPlace ?? this.newPlace,
       isSearchingPlace: isSearchingPlace ?? this.isSearchingPlace,
       isUserLocationEnabled: isUserLocationEnabled ?? this.isUserLocationEnabled,
-      showRegionsResults: showRegionsResults,
-      isSerachResultSelected: isSerachResultSelected ?? this.isSerachResultSelected,
     );
   }
 
-  factory RegionsMapState.initial(bool showRegionsResults, Place? initial) {
+  factory RegionsMapState.initial(List<RegionModel>? regions, Place? initial) {
     // Copy and modify by a small value to fire the listner
     // (To avoid the cam move so much from the initial position)
     final Place? initialPlace = initial != null
@@ -71,14 +61,12 @@ class RegionsMapState extends Equatable {
         : null;
     return RegionsMapState(
       pageState: PageState.initial,
-      regions: [],
+      regions: regions ?? [],
       initialPlace: initialPlace,
       newPlace: initial ?? const Place(lat: 0, lng: 0, placeText: ''),
       isCameraMoving: false,
       isSearchingPlace: false,
       isUserLocationEnabled: true,
-      showRegionsResults: showRegionsResults,
-      isSerachResultSelected: false,
     );
   }
 }

@@ -7,11 +7,20 @@ abstract class JoinRegionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OnJoinRegionMounted extends JoinRegionEvent {
-  const OnJoinRegionMounted();
+class OnLoadRegions extends JoinRegionEvent {
+  const OnLoadRegions();
 
   @override
-  String toString() => 'OnJoinRegionMounted';
+  String toString() => 'OnLoadRegions';
+}
+
+class OnUpdateMapLocation extends JoinRegionEvent {
+  final Place place;
+
+  const OnUpdateMapLocation(this.place);
+
+  @override
+  String toString() => 'OnUpdateMapLocation';
 }
 
 class OnCreateRegionTapped extends JoinRegionEvent {
@@ -33,12 +42,4 @@ class ClearJoinRegionPageCommand extends JoinRegionEvent {
 
   @override
   String toString() => 'ClearJoinRegionPageCommand';
-}
-
-class OnRegionsResultsChanged extends JoinRegionEvent {
-  final bool isEmpty;
-  const OnRegionsResultsChanged(this.isEmpty);
-
-  @override
-  String toString() => 'OnRegionsResultsChanged';
 }

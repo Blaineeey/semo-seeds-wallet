@@ -33,8 +33,6 @@ class EditRegionState extends Equatable {
         imageUrl,
       ];
 
-  bool get shouldShowReplaceButton => file != null && !isSaveChangesButtonLoading;
-
   EditRegionState copyWith({
     String? newRegionDescription,
     RegionModel? region,

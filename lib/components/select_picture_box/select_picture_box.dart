@@ -15,12 +15,12 @@ class SelectPictureBox extends StatelessWidget {
   final PictureBoxState pictureBoxState;
 
   const SelectPictureBox({
-    super.key,
+    Key? key,
     required this.title,
     this.backgroundImage,
     required this.onTap,
     required this.pictureBoxState,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +46,13 @@ class SelectPictureBox extends StatelessWidget {
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             const Icon(Icons.add),
             const SizedBox(width: 6),
-            Text(title, style: Theme.of(context).textTheme.titleSmall)
+            Text(title, style: Theme.of(context).textTheme.subtitle2)
           ])
         ]);
       case PictureBoxState.imagePicked:
         return ClipRRect(
             borderRadius: BorderRadius.circular(defaultCardBorderRadius),
-            child: Image.file(backgroundImage!, fit: BoxFit.cover));
+            child: Image.file(backgroundImage!, fit: BoxFit.fill));
     }
   }
 }

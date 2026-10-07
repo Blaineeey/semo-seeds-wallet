@@ -7,11 +7,11 @@ class UnClaimedInviteRow extends StatelessWidget {
   final GestureTapCallback cancelCallback;
 
   const UnClaimedInviteRow({
-    super.key,
+    Key? key,
     required this.amount,
     required this.inviteHex,
     required this.cancelCallback,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

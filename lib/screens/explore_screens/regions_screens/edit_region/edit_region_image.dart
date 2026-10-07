@@ -15,7 +15,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/edit_region/intera
 import 'package:seeds/utils/build_context_extension.dart';
 
 class EditRegionImage extends StatelessWidget {
-  const EditRegionImage({super.key});
+  const EditRegionImage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +24,25 @@ class EditRegionImage extends StatelessWidget {
     return BlocProvider(
       create: (_) => EditRegionBloc(region!),
       child: BlocConsumer<EditRegionBloc, EditRegionState>(
-        listenWhen: (_, current) => current.pageCommand != null,
+        listenWhen: (previous, current) => current.pageCommand != null,
         listener: (context, state) {
-          final pageCommand = state.pageCommand;
+          if (state.pageCommand != null) {
+            final pageCommand = state.pageCommand;
 
-          //need  a page command for this screen
-          if (pageCommand is ShowErrorMessage) {
-            eventBus.fire(ShowSnackBar(pageCommand.message));
-          } else if (pageCommand is NavigateToRoute) {
-            NavigationService.of(context).pushAndRemoveUntil(route: pageCommand.route, from: Routes.app);
-          } else if (pageCommand is UpdateFirebaseRegionImage) {
-            BlocProvider.of<EditRegionBloc>(context).add(const OnEditRegionImage());
+            //need  a page command for this screen
+            if (pageCommand is RemoveAuthenticationScreen) {
+              // This pop remove the authentication screen
+              Navigator.of(context).pop();
+            } else if (pageCommand is ShowErrorMessage) {
+              eventBus.fire(ShowSnackBar(pageCommand.message));
+            } else if (pageCommand is NavigateToRoute) {
+              NavigationService.of(context).pushAndRemoveUntil(route: pageCommand.route, from: Routes.app);
+            } else if (pageCommand is EditRegionImage) {
+              BlocProvider.of<EditRegionBloc>(context).add(const OnEditRegionImage());
+            }
+
+            BlocProvider.of<EditRegionBloc>(context).add(const ClearEditRegionPageCommand());
           }
-
-          BlocProvider.of<EditRegionBloc>(context).add(const ClearEditRegionPageCommand());
         },
         builder: (context, state) {
           return Scaffold(
@@ -48,7 +53,8 @@ class EditRegionImage extends StatelessWidget {
                     isLoading: state.isSaveChangesButtonLoading,
                     enabled: state.isSaveChangesButtonEnable,
                     title: "Save Image",
-                    onPressed: () => BlocProvider.of<EditRegionBloc>(context).add(const OnSaveImageTapped()))),
+                    onPressed: () =>
+                        BlocProvider.of<EditRegionBloc>(context).add(const OnEditRegionSaveChangesTapped()))),
             body: SafeArea(
               minimum: const EdgeInsets.all(horizontalEdgePadding),
               child: Column(
@@ -61,7 +67,7 @@ class EditRegionImage extends StatelessWidget {
                       title: context.loc.createRegionAddBackGroundImageBoxTitle,
                       onTap: () => BlocProvider.of<EditRegionBloc>(context).add(const OnPickImage())),
                   const SizedBox(height: 10),
-                  if (state.shouldShowReplaceButton)
+                  if (state.file != null)
                     Center(
                       child: MaterialButton(
                           color: AppColors.green1,
@@ -72,7 +78,9 @@ class EditRegionImage extends StatelessWidget {
                   else
                     const SizedBox.shrink(),
                   const SizedBox(height: 20),
-                  Text(context.loc.createRegionAddBackGroundImageAcceptedFilesTitle,
+                  Text(context.loc.createRegionAddBackGroundImageDescription,
+                      style: Theme.of(context).textTheme.subtitle2OpacityEmphasis),
+                  Text("${context.loc.createRegionAddBackGroundImageAcceptedFilesTitle}: .png//.jpg",
                       style: Theme.of(context).textTheme.subtitle2OpacityEmphasis)
                 ],
               ),

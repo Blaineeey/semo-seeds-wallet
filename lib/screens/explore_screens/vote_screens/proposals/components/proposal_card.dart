@@ -8,6 +8,7 @@ import 'package:seeds/images/vote/triangle_pass_value.dart';
 import 'package:seeds/images/vote/votes_down_arrow.dart';
 import 'package:seeds/images/vote/votes_up_arrow.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/components/vote_amount_label/vote_amount_label.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposals/proposals_localized.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposal_view_model.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 import 'package:seeds/utils/cap_utils.dart';
@@ -17,7 +18,7 @@ class ProposalCard extends StatefulWidget {
   final ProposalViewModel proposal;
   final VoidCallback onTap;
 
-  const ProposalCard({super.key, required this.proposal, required this.onTap});
+  const ProposalCard({Key? key, required this.proposal, required this.onTap}) : super(key: key);
 
   @override
   _ProposalCardState createState() => _ProposalCardState();
@@ -217,7 +218,7 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
                     child: Text(widget.proposal.proposalCategory.localizedDescription(context).inCaps,
-                        style: Theme.of(context).textTheme.titleSmall),
+                        style: Theme.of(context).textTheme.subtitle2),
                   ),
                 ),
               ],
@@ -229,7 +230,7 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
             Positioned(
               top: 10.0,
               left: 26.0,
-              child: DecoratedBox(
+              child: Container(
                 decoration: BoxDecoration(color: AppColors.darkGreen2, borderRadius: BorderRadius.circular(6.0)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

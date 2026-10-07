@@ -22,7 +22,7 @@ class PickImageBloc extends Bloc<PickImageEvent, PickImageState> {
           aspectRatioPresets: [CropAspectRatioPreset.square],
           compressQuality: 50,
         );
-        emit(state.copyWith(file: File(croppedFile!.path)));
+        emit(state.copyWith(file: croppedFile));
       }
     } catch (e) {
       // TODO(raul): Use a snackbar to show generic error here, https://github.com/JoinSEEDS/seeds_light_wallet/pull/614

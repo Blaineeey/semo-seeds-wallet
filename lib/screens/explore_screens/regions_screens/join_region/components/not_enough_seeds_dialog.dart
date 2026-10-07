@@ -7,11 +7,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NotEnoughSeedsDialog extends StatelessWidget {
-  const NotEnoughSeedsDialog({super.key});
-
-  Future<void> show(BuildContext context) async {
-    return showDialog<void>(context: context, barrierDismissible: false, builder: (_) => this);
-  }
+  const NotEnoughSeedsDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +23,11 @@ class NotEnoughSeedsDialog extends StatelessWidget {
         onRightButtonPressed: () => launchUrl(Uri.parse('$urlBuySeeds${settingsStorage.accountName}')),
         children: [
           const SizedBox(height: 10.0),
-          Text(context.loc.createRegionNotEnoughSeedsDialogTitle, style: Theme.of(context).textTheme.titleLarge),
+          Text(context.loc.createRegionNotEnoughSeedsDialogTitle, style: Theme.of(context).textTheme.headline6),
           const SizedBox(height: 30.0),
           Text(
             context.loc.createRegionNotEnoughSeedsDialogSubtitle,
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.subtitle2,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20.0),

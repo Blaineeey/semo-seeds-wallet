@@ -10,12 +10,13 @@ class GuardianDialogSingleAction extends StatelessWidget {
   final String buttonTitle;
   final String title;
   const GuardianDialogSingleAction(
-      {super.key,
+      {Key? key,
       required this.image,
       required this.description,
       this.onButtonTab,
       required this.buttonTitle,
-      required this.title});
+      required this.title})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class GuardianDialogSingleAction extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 30),
             Padding(

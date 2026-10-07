@@ -10,7 +10,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 class VoteAmountLabel extends StatelessWidget {
   final ProposalViewModel proposal;
 
-  const VoteAmountLabel(this.proposal, {super.key});
+  const VoteAmountLabel(this.proposal, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class VoteAmountLabel extends StatelessWidget {
                     child: SizedBox(width: 14.0, height: 14.0, child: CircularProgressIndicator(strokeWidth: 2))),
               );
             case PageState.success:
-              return DecoratedBox(
+              return Container(
                 decoration: BoxDecoration(color: AppColors.darkGreen3, borderRadius: BorderRadius.circular(6.0)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

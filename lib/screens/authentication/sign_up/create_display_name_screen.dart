@@ -9,7 +9,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 import 'package:seeds/utils/string_extension.dart';
 
 class CreateDisplayNameScreen extends StatefulWidget {
-  const CreateDisplayNameScreen({super.key});
+  const CreateDisplayNameScreen({Key? key}) : super(key: key);
 
   @override
   _CreateDisplayNameStateScreen createState() => _CreateDisplayNameStateScreen();
@@ -50,8 +50,6 @@ class _CreateDisplayNameStateScreen extends State<CreateDisplayNameScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   TextFormFieldCustom(
-                    // ignore: avoid_redundant_argument_values
-                    textCapitalization: TextCapitalization.none,
                     labelText: context.loc.signUpFullNameTitle,
                     onFieldSubmitted: (_) => _onNextPressed(),
                     maxLength: 36,

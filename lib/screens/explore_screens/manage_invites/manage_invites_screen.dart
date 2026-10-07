@@ -11,7 +11,7 @@ import 'package:seeds/screens/explore_screens/manage_invites/components/unclaime
 import 'package:seeds/screens/explore_screens/manage_invites/interactor/viewmodels/manage_invites_bloc.dart';
 
 class ManageInvitesScreen extends StatelessWidget {
-  const ManageInvitesScreen({super.key});
+  const ManageInvitesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

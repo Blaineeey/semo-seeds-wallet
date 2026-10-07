@@ -9,7 +9,7 @@ import 'package:seeds/screens/transfer/send/send_scanner/interactor/viewmodels/s
 import 'package:seeds/utils/build_context_extension.dart';
 
 class SendScannerScreen extends StatefulWidget {
-  const SendScannerScreen({super.key});
+  const SendScannerScreen({Key? key}) : super(key: key);
 
   @override
   _SendScannerScreenState createState() => _SendScannerScreenState();
@@ -46,7 +46,7 @@ class _SendScannerScreenState extends State<SendScannerScreen> {
           child: Column(
             children: [
               const SizedBox(height: 32),
-              Text(context.loc.transferSendScanQRCodePrompt, style: Theme.of(context).textTheme.labelLarge),
+              Text(context.loc.transferSendScanQRCodePrompt, style: Theme.of(context).textTheme.button),
               const SizedBox(height: 82),
               _scannerWidget,
               BlocBuilder<SendScannerBloc, SendScannerState>(
@@ -69,7 +69,7 @@ class _SendScannerScreenState extends State<SendScannerScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               state.errorMessage!,
-                              style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.orangeYellow),
+                              style: Theme.of(context).textTheme.subtitle2!.copyWith(color: AppColors.orangeYellow),
                               textAlign: TextAlign.center,
                             ),
                           ),

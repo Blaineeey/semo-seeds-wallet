@@ -8,14 +8,14 @@ import 'package:seeds/screens/authentication/onboarding/components/pages/onboard
 import 'package:seeds/utils/build_context_extension.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => OnboardingState();
 }
 
 class OnboardingState extends State<OnboardingScreen> {
-  final CarouselSliderController _controller = CarouselSliderController();
+  final CarouselController _controller = CarouselController();
   int _selectedIndex = 0;
 
   void _onPageChangeForward() {
@@ -77,7 +77,7 @@ class OnboardingState extends State<OnboardingScreen> {
                                 context.loc.onboardingJoinButtonTitle,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
                           ),

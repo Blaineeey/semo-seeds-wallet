@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:seeds/components/regions_map/components/regions_search_results/regions_search_results.dart';
 import 'package:seeds/components/regions_map/components/serach_places/search_places.dart';
 import 'package:seeds/components/regions_map/interactor/view_models/page_commands.dart';
 import 'package:seeds/components/regions_map/interactor/view_models/place.dart';
@@ -16,17 +15,17 @@ import 'package:seeds/domain-shared/page_state.dart';
 
 class RegionsMap extends StatefulWidget {
   final ValueSetter<Place>? onPlaceChanged;
-  final ValueSetter<List<RegionModel>>? onRegionsChanged;
-  final bool showRegionsResults;
+  final Widget? bottomWidget;
+  final List<RegionModel>? regions;
   final Place? initialPlace;
 
   const RegionsMap({
-    super.key,
+    Key? key,
     this.onPlaceChanged,
-    this.onRegionsChanged,
-    this.showRegionsResults = false,
+    this.bottomWidget,
+    this.regions,
     this.initialPlace,
-  });
+  }) : super(key: key);
 
   @override
   _RegionsMapState createState() => _RegionsMapState();
@@ -40,7 +39,7 @@ class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    _regionsMapBloc = RegionsMapBloc(widget.showRegionsResults, widget.initialPlace)..add(const SetInitialValues());
+    _regionsMapBloc = RegionsMapBloc(widget.regions, widget.initialPlace)..add(const SetInitialValues());
     super.initState();
   }
 
@@ -89,8 +88,7 @@ class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
                     height: MediaQuery.of(context).size.height,
                     child: Column(children: [
                       Expanded(flex: 5, child: Container()),
-                      if (widget.showRegionsResults)
-                        Expanded(flex: 3, child: RegionsSearchResults(onRegionsChanged: widget.onRegionsChanged))
+                      if (widget.bottomWidget != null) Expanded(flex: 3, child: widget.bottomWidget!)
                     ]),
                   ),
                   // Map

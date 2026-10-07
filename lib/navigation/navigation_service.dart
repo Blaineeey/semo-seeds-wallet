@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,13 +13,13 @@ import 'package:seeds/screens/authentication/recover/recover_account_search/reco
 import 'package:seeds/screens/authentication/sign_up/signup_screen.dart';
 import 'package:seeds/screens/authentication/splash_screen.dart';
 import 'package:seeds/screens/authentication/verification/verification_screen.dart';
+import 'package:seeds/screens/create_region_event_screens/create_region_event_screen_controller.dart';
+import 'package:seeds/screens/create_region_screens/create_region_screen_controller.dart';
 import 'package:seeds/screens/explore_screens/flag/flag_user/flag_user_screen.dart';
 import 'package:seeds/screens/explore_screens/flag/flags/flag_screen.dart';
 import 'package:seeds/screens/explore_screens/invite/invite_screen.dart';
 import 'package:seeds/screens/explore_screens/manage_invites/manage_invites_screen.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/plant_seeds_screen.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/create_region_event_screens/create_region_event_screen_controller.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/create_region_screens/create_region_screen_controller.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/edit_region/edit_region_description.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/edit_region/edit_region_image.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/edit_region_event_image.dart';
@@ -67,7 +68,6 @@ class Routes {
   static const importKey = 'importKey';
   static const importWords = 'importWords';
   static const verification = 'verification';
-  static const verificationUnpoppable = 'verificationUnpoppable';
   static const signup = 'signup';
   static const recoverAccountSearch = 'recoverAccountSearch';
   static const recoveryPhrase = 'recoveryPhrase';
@@ -126,8 +126,6 @@ class NavigationService {
     Routes.login: (_) => const LoginScreen(),
     Routes.importKey: (_) => const ImportKeyScreen(),
     Routes.importWords: (_) => const ImportWordsScreen(),
-    Routes.verification: (_) => const VerificationScreen(),
-    Routes.verificationUnpoppable: (_) => const VerificationScreen.unpoppable(),
     Routes.recoverAccountSearch: (_) => const RecoverAccountSearchScreen(),
     Routes.recoverAccountFound: (_) => const RecoverAccountFoundScreen(),
     Routes.signup: (_) => const SignupScreen(),
@@ -168,6 +166,7 @@ class NavigationService {
     Routes.citizenship: (_) => const CitizenshipScreen(),
     Routes.contribution: (_) => const ContributionScreen(),
     Routes.contributionDetail: (_) => const ContributionDetailScreen(),
+    Routes.verification: (_) => const VerificationScreen(),
     Routes.recoveryPhrase: (_) => const RecoveryPhraseScreen(),
     Routes.region: (_) => const RegionScreen(),
     Routes.editRegionDescription: (_) => const EditRegionDescription(),
@@ -183,17 +182,27 @@ class NavigationService {
   // On iOS that's a standard full screen dialog
   // Has no effect on Android.
   final _fullScreenRoutes = {
-    Routes.verificationUnpoppable,
+    Routes.verification,
   };
 
   // iOS transition: Pages that slides in from the right and exits in reverse.
   final _cupertinoRoutes = {
     Routes.citizenship,
   };
+  StreamController<String>? _streamRouteListener;
 
   static NavigationService of(BuildContext context) => RepositoryProvider.of<NavigationService>(context);
 
+  // ignore: use_setters_to_change_properties
+  void addListener(StreamController<String> listener) {
+    _streamRouteListener = listener;
+  }
+
   Future<dynamic> navigateTo(String routeName, [Object? arguments, bool replace = false]) async {
+    if (_streamRouteListener != null) {
+      _streamRouteListener?.add(routeName);
+    }
+
     if (_appRoutes[routeName] != null) {
       if (replace) {
         return appNavigatorKey.currentState?.pushReplacementNamed(routeName, arguments: arguments);
@@ -227,25 +236,6 @@ class NavigationService {
 
   Future<dynamic> pushAndRemoveAll(String routeName, [Object? arguments]) async {
     return appNavigatorKey.currentState?.pushNamedAndRemoveUntil(routeName, (route) => false);
-  }
-
-  /// Push LW App.
-  ///
-  /// If there is a route in stack and is verification, pop any other on top.
-  Future<dynamic> pushApp() async {
-    if (currentRouteName() != null && currentRouteName() == Routes.verificationUnpoppable) {
-      return appNavigatorKey.currentState?.popUntil((route) => route.settings.name != Routes.verificationUnpoppable);
-    }
-    return pushAndRemoveAll(Routes.app);
-  }
-
-  String? currentRouteName() {
-    String? currentPath;
-    appNavigatorKey.currentState?.popUntil((route) {
-      currentPath = route.settings.name;
-      return true;
-    });
-    return currentPath;
   }
 
   Future<dynamic> pushAndRemoveUntil({required String route, required String from, Object? arguments}) async {

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
 import 'package:seeds/datasource/local/models/fiat_data_model.dart';
 import 'package:seeds/datasource/local/models/token_data_model.dart';
@@ -22,14 +20,11 @@ class SendTransactionStateMapper extends StateMapper {
   ) {
     if (result.isError) {
       return currentState.copyWith(
-        pageState: PageState.success,
-        pageCommand: ShowFailedTransactionReason(
-          title: 'Error Sending Transaction',
-          details: '${result.asError!.error}'.userErrorMessage,
-        ),
+        pageState: PageState.failure,
+        errorMessage: result.asError!.error.toString(),
         transactionResult: TransactionResult(
           status: TransactionResultStatus.failure,
-          message: '${result.asError!.error}',
+          message: result.asError!.error.toString(),
         ),
       );
     } else {
@@ -84,17 +79,6 @@ class SendTransactionStateMapper extends StateMapper {
           shouldShowInAppReview: shouldShowInAppReview);
     } else {
       return ShowTransactionSuccess(resultResponse.transactionModel);
-    }
-  }
-}
-
-extension EosErrorParser on String {
-  String get userErrorMessage {
-    try {
-      return jsonDecode(this)["error"]["details"][0]["message"];
-    } catch (error) {
-      print("Error decoding error message $this $error");
-      return this;
     }
   }
 }

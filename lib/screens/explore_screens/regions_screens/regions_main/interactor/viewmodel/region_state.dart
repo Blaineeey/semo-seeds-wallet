@@ -8,8 +8,6 @@ class RegionState extends Equatable {
   final RegionModel? region;
   final bool isBrowseView;
   final TypeOfUsers? userType;
-  final String? deepLinkRegionId;
-  final bool loadingEvents;
 
   const RegionState({
     this.pageCommand,
@@ -17,22 +15,10 @@ class RegionState extends Equatable {
     this.region,
     required this.isBrowseView,
     this.userType,
-    this.deepLinkRegionId,
-    required this.loadingEvents,
   });
 
   @override
-  List<Object?> get props => [
-        pageCommand,
-        pageState,
-        region,
-        isBrowseView,
-        userType,
-        deepLinkRegionId,
-        loadingEvents,
-      ];
-
-  bool get canCreateAnEvent => !isBrowseView || userType == TypeOfUsers.admin;
+  List<Object?> get props => [pageCommand, pageState, region, isBrowseView, userType];
 
   RegionState copyWith({
     PageCommand? pageCommand,
@@ -40,8 +26,6 @@ class RegionState extends Equatable {
     RegionModel? region,
     bool? isBrowseView,
     TypeOfUsers? userType,
-    String? deepLinkRegionId,
-    bool? loadingEvents,
   }) {
     return RegionState(
       pageCommand: pageCommand,
@@ -49,18 +33,14 @@ class RegionState extends Equatable {
       region: region ?? this.region,
       isBrowseView: isBrowseView ?? this.isBrowseView,
       userType: userType ?? this.userType,
-      deepLinkRegionId: deepLinkRegionId ?? this.deepLinkRegionId,
-      loadingEvents: loadingEvents ?? this.loadingEvents,
     );
   }
 
-  factory RegionState.initial(RegionModel? region, String? deepLinkRegionId) {
+  factory RegionState.initial(RegionModel? region) {
     return RegionState(
-      pageState: PageState.success,
+      pageState: PageState.initial,
       isBrowseView: region != null,
       region: region,
-      deepLinkRegionId: deepLinkRegionId,
-      loadingEvents: true,
     );
   }
 }

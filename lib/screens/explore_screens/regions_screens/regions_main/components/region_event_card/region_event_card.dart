@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:seeds/datasource/remote/model/firebase_models/region_event_model.dart';
 import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
@@ -9,12 +10,11 @@ import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/regions_main/components/region_event_card/interactor/viewmodels/region_event_card_bloc.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/regions_main/components/stacked_avatars.dart';
 import 'package:seeds/utils/build_context_extension.dart';
-import 'package:seeds/utils/date_time_extension.dart';
 
 class RegionEventCard extends StatelessWidget {
   final RegionEventModel event;
 
-  const RegionEventCard(this.event, {super.key});
+  const RegionEventCard(this.event, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,8 @@ class RegionEventCard extends StatelessWidget {
             child: InkWell(
               onTap: () => NavigationService.of(context).navigateTo(Routes.regionEventDetails, event),
               borderRadius: BorderRadius.circular(16.0),
-              child: DecoratedBox(
-                decoration: state.isEventExpired
+              child: Container(
+                decoration: state.isEventPassEndDate
                     ? BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(color: AppColors.red),
@@ -54,7 +54,7 @@ class RegionEventCard extends StatelessWidget {
                               errorWidget: (_, __, ___) => const SizedBox.shrink(),
                             ),
                           ),
-                          if (state.isEventExpired)
+                          if (state.isEventPassEndDate)
                             Positioned(
                               bottom: 10,
                               left: 0,
@@ -65,7 +65,7 @@ class RegionEventCard extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                                   child: Text(
                                     "The event has passed",
-                                    style: Theme.of(context).textTheme.titleSmall,
+                                    style: Theme.of(context).textTheme.subtitle2,
                                   ),
                                 ),
                               ),
@@ -80,15 +80,12 @@ class RegionEventCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
-                              child: Text(
-                                event.eventName,
-                                style: Theme.of(context).textTheme.buttonLowEmphasis,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            Text(
+                              event.eventName,
+                              style: Theme.of(context).textTheme.buttonLowEmphasis,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(width: 16.0),
-                            Text(event.eventStartTime.toDate().toYMMMMD(context)),
+                            Text(DateFormat.yMMMMd().format(DateTime.parse(event.createdTime.toDate().toString()))),
                           ],
                         ),
                       ),

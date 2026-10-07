@@ -13,7 +13,7 @@ class DotsIndicator extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const DotsIndicator({
-    super.key,
+    Key? key,
     required this.dotsCount,
     this.position = 0.0,
     this.decorator = const DotsDecorator(),
@@ -24,7 +24,8 @@ class DotsIndicator extends StatelessWidget {
     this.onDotTaped,
   })  : assert(dotsCount > 0),
         assert(position >= 0),
-        assert(position < dotsCount, "Position must be inferior than dotsCount");
+        assert(position < dotsCount, "Position must be inferior than dotsCount"),
+        super(key: key);
 
   Widget _buildDot(int index) {
     final state = min(1.0, (position - index).abs());

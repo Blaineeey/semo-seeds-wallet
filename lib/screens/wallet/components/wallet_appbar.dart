@@ -8,7 +8,7 @@ import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/wallet/interactor/viewmodels/wallet_bloc.dart';
 
 class WalletAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const WalletAppBar({super.key});
+  const WalletAppBar({Key? key}) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

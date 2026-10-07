@@ -7,7 +7,7 @@ class GenericRegionDialog extends StatelessWidget {
   final String title;
   final String description;
 
-  const GenericRegionDialog({super.key, required this.title, required this.description});
+  const GenericRegionDialog({Key? key, required this.title, required this.description}) : super(key: key);
 
   Future<bool?> show(BuildContext context) async {
     return showDialog(barrierDismissible: false, context: context, builder: (_) => this);
@@ -21,9 +21,9 @@ class GenericRegionDialog extends StatelessWidget {
       rightButtonTitle: context.loc.genericRegionConfirmImSureButton,
       onRightButtonPressed: () => Navigator.of(context).pop(true),
       children: [
-        Text(title, style: Theme.of(context).textTheme.titleLarge),
+        Text(title, style: Theme.of(context).textTheme.headline6),
         const SizedBox(height: 40.0),
-        Text(description, style: Theme.of(context).textTheme.titleSmall),
+        Text(description, style: Theme.of(context).textTheme.subtitle2),
         const SizedBox(height: 20.0),
       ],
     );

@@ -10,7 +10,7 @@ import 'package:seeds/utils/string_extension.dart';
 class GuardianRowWidget extends StatelessWidget {
   final GuardianModel guardianModel;
 
-  const GuardianRowWidget({super.key, required this.guardianModel});
+  const GuardianRowWidget({Key? key, required this.guardianModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class GuardianRowWidget extends StatelessWidget {
       ),
       title: Text(
         (!guardianModel.nickname.isNullOrEmpty) ? guardianModel.nickname! : guardianModel.uid,
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.button,
       ),
       subtitle: Text(guardianModel.uid, style: Theme.of(context).textTheme.subtitle2OpacityEmphasis),
       onTap: () {

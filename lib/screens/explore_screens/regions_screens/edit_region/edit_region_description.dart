@@ -12,7 +12,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/edit_region/intera
 import 'package:seeds/utils/build_context_extension.dart';
 
 class EditRegionDescription extends StatelessWidget {
-  const EditRegionDescription({super.key});
+  const EditRegionDescription({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

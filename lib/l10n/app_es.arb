@@ -213,8 +213,6 @@
   "@verificationScreenCreateCode": {},
   "inviteScreenAppBarTitle": "Invitación",
   "@inviteScreenAppBarTitle": {},
-  "inviteScreenManageInvitesTitle": "Gestionar invitaciónes",
-  "@inviteScreenManageInvitesTitle": {},
   "inviteScreenInputAmountTitle": "Monto de invitación",
   "@inviteScreenInputAmountTitle": {},
   "inviteScreenBalanceTitle": "Balance disponible",
@@ -263,6 +261,8 @@
   "@createRegionChooseRegionNameDescription": {},
   "createRegionAddDescriptionInputFormTitle": "Descripción",
   "@createRegionAddDescriptionInputFormTitle": {},
+  "createRegionAddDescriptionPageInfo": "Introduzca una descripción para su región. Sea claro acerca de su región para que ayude a las personas a entender lo que t",
+  "@createRegionAddDescriptionPageInfo": {},
   "createRegionDialogLeftButtonTitle": "Cancelar",
   "@createRegionDialogLeftButtonTitle": {},
   "createRegionDialogTitle": "Creando una nueva Región",
@@ -275,9 +275,11 @@
   "@createRegionNotEnoughSeedsDialogRightButtonTitle": {},
   "createRegionNotEnoughSeedsDialogTitle": "¡No tienes suficientes seeds!",
   "@createRegionNotEnoughSeedsDialogTitle": {},
-  "createRegionNotEnoughSeedsDialogSubtitle": "Necesitas 1000.00 SEEDS para crear una región.",
+  "createRegionNotEnoughSeedsDialogSubtitle": "Parece que no tienes suficientes seeds para crear una región. Haga clic en el enlace a continuación para comprar algunas seeds en nuestro sitio web oficial.",
   "@createRegionNotEnoughSeedsDialogSubtitle": {},
-  "createRegionAddBackGroundImageAcceptedFilesTitle": "Formatos de archivo recomendados: .png//.jpg//.jpeg",
+  "createRegionAddBackGroundImageDescription": "Dimensiones de la imagen.",
+  "@createRegionAddBackGroundImageDescription": {},
+  "createRegionAddBackGroundImageAcceptedFilesTitle": "Formatos de archivo aceptados",
   "@createRegionAddBackGroundImageAcceptedFilesTitle": {},
   "createRegionAddBackGroundImageBoxTitle": "Agregar foto",
   "@createRegionAddBackGroundImageBoxTitle": {},
@@ -382,6 +384,8 @@
   "@transferSendSearchTitle": {},
   "createRegionChooseRegionIdInputFormTitle": "Identificación de la región",
   "@createRegionChooseRegionIdInputFormTitle": {},
+  "createRegionChooseRegionIdDescription": "Su ID de región no se puede cambiar.",
+  "@createRegionChooseRegionIdDescription": {},
   "supportTitle": "Soporte",
   "@supportTitle": {},
   "supportDiscordChannelPart1": "Si tiene alguna pregunta o inquietud, busque nuestro",
@@ -449,14 +453,7 @@
   "introducingRegionsDialogDescription8": "para comenzar a buscar regiones cerca de usted.",
   "@introducingRegionsDialogDescription8": {},
   "regionMainMembersTitle": "{members,plural, =1{{membersFormatted} miembro} other{{membersFormatted} miembros}}",
-  "@regionMainMembersTitle": {
-    "placeholders": {
-      "members": {},
-      "membersFormatted": {
-        "type": "String"
-      }
-    }
-  },
+  "@regionMainMembersTitle": { "placeholders": { "members": {}, "membersFormatted": { "type": "String" } } },
   "regionMainJoinTitle": "Unirse",
   "@regionMainJopinTitle": {},
   "joinRegionConfirmDialogTitle": "¿Unirse a esta región?",
@@ -543,7 +540,7 @@
         "example": "0"
       }
     }
-  },
+  },  
   "proposalsUnableToLoadError": "Error cargando las Propuestas",
   "@proposalsUnableToLoadError": {}
 }

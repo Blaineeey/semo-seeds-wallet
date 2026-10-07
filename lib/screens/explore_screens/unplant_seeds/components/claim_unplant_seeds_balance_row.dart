@@ -11,12 +11,12 @@ class ClaimUnplantSeedsBalanceRow extends StatelessWidget {
   final GestureTapCallback onTapClaim;
 
   const ClaimUnplantSeedsBalanceRow({
-    super.key,
+    Key? key,
     required this.tokenAmount,
     required this.fiatAmount,
     required this.isClaimButtonEnable,
     required this.onTapClaim,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +37,13 @@ class ClaimUnplantSeedsBalanceRow extends StatelessWidget {
                   onPressed: isClaimButtonEnable ? onTapClaim : null,
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
-                      backgroundColor: AppColors.green1),
+                      primary: AppColors.green1),
                   child: const Text("Claim", style: TextStyle(fontSize: 10))),
             ),
             const SizedBox(width: 10),
             Container(
                 alignment: Alignment.centerRight,
-                child: Text(tokenAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.titleMedium))
+                child: Text(tokenAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.subtitle1))
           ],
         ),
         Padding(

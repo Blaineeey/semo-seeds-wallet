@@ -6,7 +6,7 @@ import 'package:seeds/images/explore/red_exclamation_circle.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 
 class FlagUserInfoDialog extends StatelessWidget {
-  const FlagUserInfoDialog({super.key});
+  const FlagUserInfoDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +22,13 @@ class FlagUserInfoDialog extends StatelessWidget {
               Text(
                 context.loc.explorerFlagInfoDialogSubTitle,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               const SizedBox(height: 36.0),
               Text(
                 context.loc.explorerFlagInfoDialogSubTitlePartTwo,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               const SizedBox(height: 36.0),
               FlatButtonLong(

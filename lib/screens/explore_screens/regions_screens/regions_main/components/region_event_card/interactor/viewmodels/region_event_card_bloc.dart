@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:equatable/equatable.dart';
@@ -14,7 +15,7 @@ part 'region_event_card_state.dart';
 class RegionEventCardBloc extends Bloc<RegionEventCardEvent, RegionEventCardState> {
   late StreamSubscription<List<RegionEventModel>> _eventListener;
 
-  RegionEventCardBloc(RegionEventModel event) : super(RegionEventCardState.initial(event)) {
+  RegionEventCardBloc(RegionEventModel event) : super(RegionEventCardState.initial()) {
     _eventListener = FirebaseDatabaseRegionsRepository().getEventsForRegion(event.regionAccount).listen((events) {
       final found = events.singleWhereOrNull((i) => i.id == event.id);
       if (found != null) {

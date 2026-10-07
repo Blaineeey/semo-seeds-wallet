@@ -8,10 +8,11 @@ const int residentRequiredSeedsTransactions = 1;
 
 /// Citizen requirements
 const int citizenRequiredReputation = 50;
+const int citizenRequiredVisitorsInvited = 3;
 const int citizenRequiredAccountAge = 60;
 const int citizenRequiredPlantedSeeds = 200;
 const int citizenRequiredSeedsTransactions = 5;
-const int citizenRequiredCitizenVouched = 3;
+const int citizenRequiredResidentsInvited = 1;
 
 class CitizenshipState extends Equatable {
   final PageState pageState;
@@ -20,7 +21,7 @@ class CitizenshipState extends Equatable {
   final ScoreModel? reputationScore;
   final double? progressTimeline;
   final int? invitedVisitors;
-  final int? citizenCeremony;
+  final int? invitedResidents;
   final double? plantedSeeds;
   final int? seedsTransactionsCount;
 
@@ -30,7 +31,7 @@ class CitizenshipState extends Equatable {
     this.profile,
     this.reputationScore,
     this.progressTimeline,
-    this.citizenCeremony,
+    this.invitedResidents,
     this.invitedVisitors,
     this.plantedSeeds,
     this.seedsTransactionsCount,
@@ -43,7 +44,7 @@ class CitizenshipState extends Equatable {
         profile,
         reputationScore,
         progressTimeline,
-        citizenCeremony,
+        invitedResidents,
         invitedVisitors,
         plantedSeeds,
         seedsTransactionsCount,
@@ -55,7 +56,7 @@ class CitizenshipState extends Equatable {
     ProfileModel? profile,
     ScoreModel? reputationScore,
     double? progressTimeline,
-    int? citizenCeremony,
+    int? invitedResidents,
     int? invitedVisitors,
     double? plantedSeeds,
     int? seedsTransactionsCount,
@@ -66,7 +67,7 @@ class CitizenshipState extends Equatable {
       profile: profile ?? this.profile,
       reputationScore: reputationScore ?? this.reputationScore,
       progressTimeline: progressTimeline ?? this.progressTimeline,
-      citizenCeremony: citizenCeremony ?? this.citizenCeremony,
+      invitedResidents: invitedResidents ?? this.invitedResidents,
       invitedVisitors: invitedVisitors ?? this.invitedVisitors,
       plantedSeeds: plantedSeeds ?? this.plantedSeeds,
       seedsTransactionsCount: seedsTransactionsCount ?? this.seedsTransactionsCount,
