@@ -1,70 +1,105 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
-import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
-import 'package:seeds/components/full_page_loading_indicator.dart';
-import 'package:seeds/components/notification_badge.dart';
-import 'package:seeds/design/app_colors.dart';
-import 'package:seeds/design/app_theme.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
-import 'package:seeds/domain-shared/page_command.dart';
-import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/i18n/app/app.i18.dart';
-import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/screens/app/components/account_under_recovery_screen.dart';
-import 'package:seeds/screens/app/components/guardian_approve_or_deny_recovery_screen.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_bloc.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_page_commands.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_screen_item.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/connection_notifier.dart';
-import 'package:seeds/screens/explore_screens/explore/explore_screen.dart';
-import 'package:seeds/screens/profile_screens/profile/profile_screen.dart';
-import 'package:seeds/screens/wallet/wallet_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:seeds/constants/app_colors.dart';
+import 'package:seeds/features/scanner/telos_signing_manager.dart';
+import 'package:seeds/providers/notifiers/connection_notifier.dart';
+import 'package:seeds/providers/notifiers/settings_notifier.dart';
+import 'package:seeds/providers/services/links_service.dart';
+import 'package:seeds/providers/services/navigation_service.dart';
+import 'package:seeds/screens/app/ecosystem/ecosystem.dart';
+import 'package:seeds/screens/app/profile/profile.dart';
+import 'package:seeds/screens/app/wallet/custom_transaction.dart';
+import 'package:seeds/screens/app/wallet/wallet.dart';
+import 'package:seeds/i18n/widgets.i18n.dart';
+
+class NavigationTab {
+  final String title;
+  final String icon;
+  final Function screenBuilder;
+  final int index;
+
+  NavigationTab({this.title, this.icon, this.screenBuilder, this.index});
+}
 
 class App extends StatefulWidget {
-  const App({super.key});
+  App();
 
   @override
   _AppState createState() => _AppState();
 }
 
+bool connected = true;
+
 class _AppState extends State<App> with WidgetsBindingObserver {
-  final List<AppScreenItem> _appScreenItems = [
-    AppScreenItem(
-      title: "Wallet".i18n,
-      icon: 'assets/images/navigation_bar/wallet.svg',
-      iconSelected: 'assets/images/navigation_bar/wallet_selected.svg',
-      screen: const WalletScreen(),
+  final navigationTabs = [
+    NavigationTab(
+      title: "Explore".i18n,
+      icon: 'assets/images/ecosystem.svg',
+      screenBuilder: () => Ecosystem(),
       index: 0,
     ),
-    AppScreenItem(
-      title: "Explore".i18n,
-      icon: 'assets/images/navigation_bar/explore.svg',
-      iconSelected: 'assets/images/navigation_bar/explore_selected.svg',
-      screen: const ExploreScreen(),
+    NavigationTab(
+      title: "Wallet".i18n,
+      icon: 'assets/images/wallet.svg',
+      screenBuilder: () => Wallet(),
       index: 1,
     ),
-    AppScreenItem(
+    NavigationTab(
       title: "Profile".i18n,
-      icon: 'assets/images/navigation_bar/user_profile.svg',
-      iconSelected: 'assets/images/navigation_bar/user_profile_selected.svg',
-      screen: const ProfileScreen(),
+      icon: 'assets/images/profile.svg',
+      screenBuilder: () => Profile(),
       index: 2,
     ),
   ];
-  final PageController _pageController = PageController();
-  late AppBloc _appBloc;
-  late ConnectionNotifier _connectionNotifier;
+
+  final StreamController<String> changePageNotifier =
+      StreamController<String>.broadcast();
+
+  int index = 1;
+  PageController pageController =
+      PageController(initialPage: 1, keepPage: true);
 
   @override
   void initState() {
     super.initState();
-    _appBloc = AppBloc(BlocProvider.of<DeeplinkBloc>(context))..add(const OnAppMounted());
-    _connectionNotifier = ConnectionNotifier()..discoverEndpoints();
-    BlocProvider.of<RatesBloc>(context).add(const OnFetchRates());
+
+    changePageNotifier.stream.listen((page) {
+      int pageIndex;
+
+      switch (page) {
+        case "Explore":
+          pageIndex = 0;
+          break;
+        case "Wallet":
+          pageIndex = 1;
+          break;
+        case "Profile":
+          pageIndex = 2;
+          break;
+      }
+
+      if (pageIndex != null) {
+        setState(() {
+          pageController.jumpToPage(
+            pageIndex,
+          );
+          this.index = pageIndex;
+        });
+      }
+    });
+
     WidgetsBinding.instance.addObserver(this);
+
+    // processSigningRequests();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    NavigationService.of(context).addListener(changePageNotifier);
   }
 
   @override
@@ -75,100 +110,151 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       case AppLifecycleState.paused:
         break;
       case AppLifecycleState.resumed:
-        _connectionNotifier.discoverEndpoints();
-        BlocProvider.of<RatesBloc>(context).add(const OnFetchRates());
+        Provider.of<ConnectionNotifier>(context, listen: false)
+            .discoverEndpoints();
         break;
       case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.hidden:
         break;
     }
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _pageController.dispose();
-    super.dispose();
+  void processSigningRequests() {
+    Provider.of<LinksService>(context, listen: false)
+        .listenSigningRequests((final link) async {
+      var request = SeedsESR(uri: link);
+
+      await request.resolve(
+        account: SettingsNotifier.of(context, listen: false).accountName,
+      );
+
+      var action = request.actions.first;
+      var data = Map<String, dynamic>.from(action.data);
+
+      NavigationService.of(context).navigateTo(
+        Routes.customTransaction,
+        CustomTransactionArguments(
+          account: action.account,
+          name: action.name,
+          data: data,
+        ),
+        true,
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => _appBloc,
+    return Container(
       child: Scaffold(
-        body: BlocConsumer<AppBloc, AppState>(
-          listenWhen: (_, current) => current.pageCommand != null,
-          listener: (context, state) async {
-            final pageCommand = state.pageCommand;
-            _appBloc.add(ClearAppPageCommand());
-            if (pageCommand is BottomBarNavigateToIndex) {
-              _pageController.jumpToPage(pageCommand.index);
-            } else if (pageCommand is ShowErrorMessage) {
-              eventBus.fire(ShowSnackBar(pageCommand.message));
-            } else if (pageCommand is ShowMessage) {
-              eventBus.fire(ShowSnackBar(pageCommand.message));
-            } else if (pageCommand is NavigateToRoute) {
-              await NavigationService.of(context).navigateTo(pageCommand.route);
-            } else if (pageCommand is NavigateToRouteWithArguments) {
-              if (pageCommand is NavigateToSendConfirmation) {
-                await NavigationService.of(context)
-                    .navigateTo(Routes.verificationUnpoppable)
-                    .then((_) => NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments));
-              } else {
-                await NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments);
-              }
-            }
-          },
-          builder: (context, state) {
-            if (state.pageState == PageState.loading) {
-              return const FullPageLoadingIndicator();
-            } else {
-              if (state.showGuardianRecoveryAlert) {
-                return const AccountUnderRecoveryScreen();
-              } else if (state.showGuardianApproveOrDenyScreen != null) {
-                return GuardianApproveOrDenyScreen(data: state.showGuardianApproveOrDenyScreen!);
-              } else {
-                return PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: _appScreenItems.map((i) => i.screen).toList(),
-                );
-              }
-            }
-          },
-        ),
-        bottomNavigationBar: BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) {
-            return DecoratedBox(
-              decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.white, width: 0.2))),
-              child: BottomNavigationBar(
-                currentIndex: state.index,
-                onTap: (index) => _appBloc.add(BottomBarTapped(index: index)),
-                selectedLabelStyle: Theme.of(context).textTheme.subtitle3,
-                unselectedLabelStyle: Theme.of(context).textTheme.subtitle3,
-                selectedItemColor: AppColors.white,
-                items: [
-                  for (final i in _appScreenItems)
-                    BottomNavigationBarItem(
-                      activeIcon:
-                          Padding(padding: const EdgeInsets.only(bottom: 4.0), child: SvgPicture.asset(i.iconSelected)),
-                      icon: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Padding(padding: const EdgeInsets.all(4.0), child: SvgPicture.asset(i.icon)),
-                          if (state.hasNotification && i.index == 2)
-                            const Positioned(top: -2, right: -16, child: NotificationBadge())
-                        ],
-                      ),
-                      label: state.index == i.index ? i.title : '',
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
+        backgroundColor: Color(0xFAFAFAFA),
+        appBar: buildAppBar(context),
+        body: buildPageView(),
+        bottomNavigationBar: buildNavigation(),
       ),
+    );
+  }
+
+  Widget buildAppBar(BuildContext _context) {
+    var svgPicture = SvgPicture.asset(
+      'assets/images/qr-code.svg',
+      color: Colors.black,
+    );
+    return AppBar(
+      title: Text(
+        navigationTabs[index].title,
+        style: TextStyle(color: Colors.black),
+      ),
+      centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+            icon: svgPicture,
+            onPressed: () =>
+                NavigationService.of(context).navigateTo(Routes.scanQRCode)),
+      ],
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+    );
+  }
+
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      physics: NeverScrollableScrollPhysics(),
+      children: <Widget>[
+        ...navigationTabs.map((tab) => tab.screenBuilder()).toList(),
+      ],
+    );
+  }
+
+  BottomNavigationBarItem buildIcon(String title, String icon, int tabIndex) {
+    final width = MediaQuery.of(context).size.width * 0.21;
+    return BottomNavigationBarItem(
+        icon: Container(
+          width: width,
+          decoration: tabIndex == index
+              ? BoxDecoration(
+                  gradient: LinearGradient(colors: AppColors.gradient),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8)))
+              : BoxDecoration(),
+          padding: EdgeInsets.only(top: 7, left: 3, right: 3),
+          child: SvgPicture.asset(
+            icon,
+            color: tabIndex == index ? Colors.white : AppColors.grey,
+          ),
+        ),
+        // Note - wait for redesign of app to change this.
+        // ignore: deprecated_member_use
+        title: Container(
+            width: width,
+            alignment: Alignment.center,
+            decoration: tabIndex == index
+                ? BoxDecoration(
+                    gradient: LinearGradient(colors: AppColors.gradient),
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(8),
+                        bottomLeft: Radius.circular(8)))
+                : BoxDecoration(),
+            padding: EdgeInsets.only(bottom: 5, top: 2, left: 3, right: 3),
+            child: Text(
+              title,
+              style: TextStyle(
+                  color: tabIndex == index ? Colors.white : AppColors.grey,
+                  fontSize: 12),
+            )));
+  }
+
+  Widget buildNavigation() {
+    return BottomNavigationBar(
+      currentIndex: index,
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            changePageNotifier.add("Explore");
+            break;
+          case 1:
+            changePageNotifier.add("Wallet");
+            break;
+          case 2:
+            changePageNotifier.add("Profile");
+            break;
+        }
+      },
+      showUnselectedLabels: true,
+      fixedColor: Colors.white,
+      unselectedItemColor: AppColors.grey,
+      type: BottomNavigationBarType.fixed,
+      selectedLabelStyle: TextStyle(fontSize: 12),
+      unselectedLabelStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
+      elevation: 9,
+      selectedFontSize: 12,
+      unselectedFontSize: 12,
+      items: navigationTabs
+          .map(
+            (tab) => buildIcon(tab.title, tab.icon, tab.index),
+          )
+          .toList(),
     );
   }
 }
