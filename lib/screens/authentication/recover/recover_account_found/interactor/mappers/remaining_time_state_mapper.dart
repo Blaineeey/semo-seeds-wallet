@@ -1,6 +1,6 @@
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/current_remaining_time.dart';
-import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_bloc.dart';
+import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_state.dart';
 
 ///Seconds in a day
 const int _daySecond = 60 * 60 * 24;
@@ -13,9 +13,7 @@ const int _minuteSecond = 60;
 
 class RemainingTimeStateMapper {
   RecoverAccountFoundState mapResultToState(RecoverAccountFoundState currentState) {
-    int days = 0;
-    int hours = 0;
-    int min = 0;
+    int days = 0, hours = 0, min = 0;
     int remainingTimeStamp = currentState.timeRemaining;
 
     ///Calculate the number of days remaining.

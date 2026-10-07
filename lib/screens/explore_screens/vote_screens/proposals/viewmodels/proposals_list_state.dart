@@ -1,9 +1,15 @@
-part of '../viewmodels/proposals_list_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposal_view_model.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/vote/interactor/viewmodels/proposal_type_model.dart';
 
+/// --- STATE
 class ProposalsListState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
-  final ProposalsError? error;
+  final String? errorMessage;
   final ProfileModel? profile;
   final ProposalType currentType;
   final List<ProposalViewModel> proposals;
@@ -12,7 +18,7 @@ class ProposalsListState extends Equatable {
   const ProposalsListState({
     required this.pageState,
     this.pageCommand,
-    this.error,
+    this.errorMessage,
     this.profile,
     required this.currentType,
     required this.proposals,
@@ -23,7 +29,7 @@ class ProposalsListState extends Equatable {
   List<Object?> get props => [
         pageState,
         pageCommand,
-        error,
+        errorMessage,
         profile,
         currentType,
         proposals,
@@ -33,7 +39,7 @@ class ProposalsListState extends Equatable {
   ProposalsListState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
-    ProposalsError? error,
+    String? errorMessage,
     ProfileModel? profile,
     ProposalType? currentType,
     List<ProposalViewModel>? proposals,
@@ -42,7 +48,7 @@ class ProposalsListState extends Equatable {
     return ProposalsListState(
       pageState: pageState ?? this.pageState,
       pageCommand: pageCommand,
-      error: error,
+      errorMessage: errorMessage,
       profile: profile ?? this.profile,
       currentType: currentType ?? this.currentType,
       proposals: proposals ?? this.proposals,

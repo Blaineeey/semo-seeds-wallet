@@ -1,5 +1,13 @@
-part of 'receive_enter_data_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/utils/rate_states_extensions.dart';
 
+/// --- STATE
 class ReceiveEnterDataState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
@@ -9,7 +17,7 @@ class ReceiveEnterDataState extends Equatable {
   final TokenDataModel? availableBalanceToken;
   final FiatDataModel? availableBalanceFiat;
   final RatesState ratesState;
-  final String? memo;
+  final String? description;
   final bool isNextButtonEnabled;
   final String? invoiceLink;
   final bool isAutoFocus;
@@ -23,7 +31,7 @@ class ReceiveEnterDataState extends Equatable {
     this.availableBalanceFiat,
     this.availableBalanceToken,
     required this.isNextButtonEnabled,
-    this.memo,
+    this.description,
     required this.tokenAmount,
     this.invoiceLink,
     required this.isAutoFocus,
@@ -39,16 +47,11 @@ class ReceiveEnterDataState extends Equatable {
         availableBalanceFiat,
         availableBalanceToken,
         isNextButtonEnabled,
-        memo,
+        description,
         tokenAmount,
         invoiceLink,
         isAutoFocus
       ];
-
-  String generateRandomString(int length) {
-    const availableChars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-    return List.generate(length, (_) => availableChars[Random().nextInt(availableChars.length)]).join();
-  }
 
   ReceiveEnterDataState copyWith({
     PageState? pageState,
@@ -60,7 +63,7 @@ class ReceiveEnterDataState extends Equatable {
     TokenDataModel? availableBalanceToken,
     FiatDataModel? availableBalanceFiat,
     bool? isNextButtonEnabled,
-    String? memo,
+    String? description,
     String? invoiceLink,
     bool? isAutoFocus,
   }) {
@@ -74,7 +77,7 @@ class ReceiveEnterDataState extends Equatable {
       availableBalanceFiat: availableBalanceFiat ?? this.availableBalanceFiat,
       availableBalanceToken: availableBalanceToken ?? this.availableBalanceToken,
       isNextButtonEnabled: isNextButtonEnabled ?? this.isNextButtonEnabled,
-      memo: memo ?? this.memo,
+      description: description ?? this.description,
       invoiceLink: invoiceLink ?? this.invoiceLink,
       isAutoFocus: isAutoFocus ?? this.isAutoFocus,
     );

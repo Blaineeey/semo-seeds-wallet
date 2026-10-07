@@ -1,5 +1,7 @@
-part of 'vote_amount_label_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
+/// --- STATE
 class VoteAmountLabelState extends Equatable {
   final PageState pageState;
   final String? errorMessage;

@@ -15,8 +15,10 @@
 *.iws
 .idea/
 
+# The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
+#.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -27,10 +29,6 @@
 .pub-cache/
 .pub/
 /build/
-
-# Code Generation Freezed
-*.freezed.dart
-*.g.dart
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -76,6 +74,7 @@
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
+.vscode
 
 .env*
 secret_config.json
@@ -86,8 +85,3 @@ ios/Podfile.lock
 dartesr/
 ios/Flutter/Flutter.podspec
 ios/build
-
-branch_structure.json
-temp_auto_push.bat
-temp_interactive_push.bat
-.gitignore
