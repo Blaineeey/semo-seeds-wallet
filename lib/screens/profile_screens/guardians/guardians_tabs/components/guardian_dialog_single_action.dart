@@ -38,7 +38,7 @@ class GuardianDialogSingleAction extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 30),
             Padding(

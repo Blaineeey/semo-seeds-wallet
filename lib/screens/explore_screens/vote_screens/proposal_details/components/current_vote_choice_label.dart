@@ -20,9 +20,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' in favor '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'of this proposal'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'of this proposal'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),
@@ -37,9 +37,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: 'I'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'I'.i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' refrain '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'from voting'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'from voting'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),
@@ -54,9 +54,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' against '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'this proposal'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'this proposal'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),

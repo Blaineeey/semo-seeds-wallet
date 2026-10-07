@@ -72,7 +72,7 @@ class SecurityCard extends StatelessWidget {
                                   Flexible(
                                     child: Text(
                                       title,
-                                      style: Theme.of(context).textTheme.labelLarge,
+                                      style: Theme.of(context).textTheme.button,
                                     ),
                                   ),
                                   const SizedBox(width: 10),

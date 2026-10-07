@@ -40,11 +40,10 @@ class SendConfirmationBloc extends Bloc<SendConfirmationEvent, SendConfirmationS
         chainName: "Telos",
         contract: eosAction.account!,
         symbol: symbol,
-        name: eosAction.name!,
+        name: symbol,
         backgroundImageUrl: '',
         logoUrl: '',
         balanceSubTitle: 'Wallet Balance',
-        overdraw: '',
         precision: 4,
         usecases: [],
       );
