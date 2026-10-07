@@ -80,23 +80,22 @@ class GetTokenModelsUseCase extends InputUseCase<List<TokenModel>, TokenModelSel
         token['usecases'] = useCaseMap[token['id']];
       }
       final StatRepository _statRepository = StatRepository();
-      List<TokenModel?> theseTokens = [];
+      final List<TokenModel?> theseTokens = [];
 
       /// verify token contract on chain and get contract precision
-      Future<void> loadData(dynamic token) async {
+      loadData(token) async {
         final TokenModel? tm = TokenModel.fromJson(token as Map<String, dynamic>);
         if (tm != null) {
-          try {
-            final stats = await _statRepository.getTokenStat(tokenContract: tm.contract, symbol: tm.symbol);
-            if (stats.isValue) {
-              final supply = stats.asValue!.value.supplyString;
-              tm.setPrecisionFromString(supply);
-              theseTokens.add(tm);
-              print("supply: $supply");
-            }
-          } catch (error) {
-            _statRepository.mapHttpError(error);
-          }
+          await _statRepository.getTokenStat(tokenContract: tm.contract, symbol: tm.symbol).then(
+            (stats) async {
+              if (stats.asValue != null) {
+                final supply = stats.asValue!.value.supplyString;
+                tm.setPrecisionFromString(supply);
+                theseTokens.add(tm);
+                print("supply: $supply");
+              }
+            },
+          ).catchError((dynamic error) => _statRepository.mapHttpError(error));
         }
       }
 
