@@ -8,6 +8,7 @@ const int residentRequiredSeedsTransactions = 1;
 
 /// Citizen requirements
 const int citizenRequiredReputation = 50;
+const int citizenRequiredVisitorsInvited = 3;
 const int citizenRequiredAccountAge = 60;
 const int citizenRequiredPlantedSeeds = 200;
 const int citizenRequiredSeedsTransactions = 5;

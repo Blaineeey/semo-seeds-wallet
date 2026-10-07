@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'package:async/async.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:seeds/crypto/eosdart/eosdart.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/datasource/remote/api/http_repo/seeds_scopes.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 
 abstract class EosRepository {
-  late final String cpuPrivateKey = dotenv.env['PAYCPU_SEEDS_KEY'] ?? '';
-
-  late final String onboardingPrivateKey = dotenv.env['ONBOARDING_SEEDS_KEY'] ?? '';
-
+  String cpuPrivateKey = '5Hy2cvMbrusscGnusLWqYuXyM8fZ65G7DTzs4nDXyiV5wo77n9a';
+  String onboardingPrivateKey = '5JhM4vypLzLdDtHo67TR5RtmsYm2mr8F2ugqcrCzfrMPLvo8cQW';
   String onboardingAccountName = 'join.seeds';
   int guardianRecoveryTimeDelaySec = const Duration(hours: 24).inSeconds;
 
@@ -74,12 +71,7 @@ abstract class EosRepository {
   }
 
   ErrorResult mapEosError(dynamic error) {
-    final regex = RegExp(r'^.*Internal Service Error.*assertion failure with message: ([^\"]*)');
     print('mapEosError: $error');
-    final match = regex.firstMatch(error);
-    if (match != null && match.groupCount == 1) {
-      return ErrorResult("Transaction error:\n${match.group(1)!}");
-    }
     return ErrorResult(error);
   }
 }

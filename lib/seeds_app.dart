@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:i18n_extension/i18n_extension.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 import 'package:seeds/blocs/authentication/viewmodels/authentication_bloc.dart';
 import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
 import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
@@ -80,7 +80,7 @@ class SeedsApp extends StatelessWidget {
                                   navigator.currentRouteName() == Routes.importWords) {
                                 navigator.pushAndRemoveAll(Routes.app);
                               }
-                              navigator.navigateTo(Routes.verificationUnpoppable);
+                              navigator.navigateTo(Routes.verification);
                               break;
                             case AuthStatus.unlocked:
                               navigator.pushApp();

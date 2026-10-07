@@ -31,13 +31,13 @@ class RemoveGuardianConfirmationDialog extends StatelessWidget {
           color: AppColors.blue,
         ),
       ),
-      rightButtonTitle: "Ok".i18n,
+      rightButtonTitle: "Accept".i18n,
       onRightButtonPressed: onConfirm,
-      leftButtonTitle: "Cancel".i18n,
+      leftButtonTitle: "Decline".i18n,
       onLeftButtonPressed: onDismiss,
       children: [
         const SizedBox(height: 20),
-        Text("Remove Guardian?".i18n, style: Theme.of(context).textTheme.titleLarge),
+        Text("Remove Guardian?".i18n, style: Theme.of(context).textTheme.headline6),
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -45,10 +45,10 @@ class RemoveGuardianConfirmationDialog extends StatelessWidget {
             textAlign: TextAlign.center,
             text: TextSpan(
                 text: 'Are you sure you want to remove '.i18n,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
                 children: <TextSpan>[
-                  TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.titleSmall),
-                  TextSpan(text: ' as your Guardian?'.i18n, style: Theme.of(context).textTheme.titleSmall)
+                  TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.subtitle2),
+                  TextSpan(text: ' as your Guardian?'.i18n, style: Theme.of(context).textTheme.subtitle2)
                 ]),
           ),
         ),

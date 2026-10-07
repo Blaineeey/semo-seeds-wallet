@@ -13,10 +13,9 @@ const String _featureFlagDelegate = 'feature_flag_delegate';
 const String _featureFlagClaimUnplantedSeeds = 'feature_flag_unplant_claim_seeds';
 const String _featureFlagP2P = 'feature_flag_p2p';
 const String _featureFlagRegions = 'feature_flag_regions_enabled';
-const String _featureFlagTokenMasterList = 'feature_flag_token_master_list_enabled';
 
 // MAINNET CONFIG
-const String _eosEndpoints = '[ { "url": "https://mainnet.telos.net", "isDefault": true } ]';
+const String _eosEndpoints = '[ { "url": "https://api.telosfoundation.io", "isDefault": true } ]';
 const String _hyphaEndPointUrl = 'https://node.hypha.earth';
 const String _defaultEndPointUrl = "https://api.telosfoundation.io";
 // we need a separate endpoint for v2/history as most nodes don't support v2
@@ -41,7 +40,7 @@ const String _unitTestDefaultV2EndpointUrl = "https://api.telosfoundation.io";
 // END - UNIT TEST CONFIG
 
 class _FirebaseRemoteConfigService {
-  late FirebaseRemoteConfig _remoteConfig;
+  late RemoteConfig _remoteConfig;
 
   factory _FirebaseRemoteConfigService() => _instance;
 
@@ -56,7 +55,6 @@ class _FirebaseRemoteConfigService {
     _featureFlagClaimUnplantedSeeds: false,
     _featureFlagP2P: false,
     _featureFlagRegions: false,
-    _featureFlagTokenMasterList: false,
     _activeEOSEndpointKey: _eosEndpoints,
     _hyphaEndPointKey: _hyphaEndPointUrl,
     _defaultEndPointUrlKey: _defaultEndPointUrl,
@@ -77,7 +75,7 @@ class _FirebaseRemoteConfigService {
   }
 
   Future initialise() async {
-    _remoteConfig = FirebaseRemoteConfig.instance;
+    _remoteConfig = RemoteConfig.instance;
     await _remoteConfig.setDefaults(defaults);
 
     /// Maximum age of a cached config before it is considered stale. we set to 60 secs since we store important data.
@@ -95,7 +93,6 @@ class _FirebaseRemoteConfigService {
   bool get featureFlagClaimUnplantedSeedsEnabled => _remoteConfig.getBool(_featureFlagClaimUnplantedSeeds);
   bool get featureFlagP2PEnabled => _remoteConfig.getBool(_featureFlagP2P);
   bool get featureFlagRegionsEnabled => _remoteConfig.getBool(_featureFlagRegions);
-  bool get featureFlagTokenMasterListEnabled => _remoteConfig.getBool(_featureFlagTokenMasterList);
 
   String get hyphaEndPoint => testnetMode
       ? unitTestMode

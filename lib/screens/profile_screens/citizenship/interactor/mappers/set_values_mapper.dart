@@ -60,14 +60,14 @@ class SetValuesStateMapper extends StateMapper {
                 (min(planted, citizenRequiredPlantedSeeds) / citizenRequiredPlantedSeeds) +
                 (min(transactions, citizenRequiredSeedsTransactions) / citizenRequiredSeedsTransactions) +
                 (min(citizenVouched, citizenRequiredCitizenVouched) / citizenRequiredCitizenVouched) +
-                (min(profile.accountAge, citizenRequiredAccountAge) / citizenRequiredAccountAge)) /
-            5 *
+                (min(profile.accountAge, citizenRequiredAccountAge) / citizenRequiredAccountAge) +
+                (min(profiles.length, citizenRequiredVisitorsInvited) / citizenRequiredVisitorsInvited)) /
+            6 *
             100;
       }
 
       return currentState.copyWith(
         pageState: PageState.success,
-        reputationScore: reputationScore,
         plantedSeeds: plantedSeeds?.quantity,
         seedsTransactionsCount: seedsHistory?.totalNumberOfTransactions,
         progressTimeline: timeline,

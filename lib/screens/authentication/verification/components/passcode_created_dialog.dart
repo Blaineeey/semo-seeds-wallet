@@ -7,10 +7,6 @@ import 'package:seeds/utils/build_context_extension.dart';
 class PasscodeCreatedDialog extends StatelessWidget {
   const PasscodeCreatedDialog({super.key});
 
-  Future<void> show(BuildContext context) async {
-    return showDialog<void>(context: context, barrierDismissible: false, builder: (_) => this);
-  }
-
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
@@ -22,7 +18,7 @@ class PasscodeCreatedDialog extends StatelessWidget {
         Text(
           context.loc.verificationPasscodeDialogSubTitle,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: Theme.of(context).textTheme.subtitle2,
         ),
         const SizedBox(height: 30.0),
       ],

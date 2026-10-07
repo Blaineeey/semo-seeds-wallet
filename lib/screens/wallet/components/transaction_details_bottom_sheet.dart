@@ -90,7 +90,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
                             else
                               Text('-', style: Theme.of(context).textTheme.subtitle1Red2),
                             const SizedBox(width: 4),
-                            Text(transaction.quantity.seedsFormatted, style: Theme.of(context).textTheme.headlineSmall)
+                            Text(transaction.quantity.seedsFormatted, style: Theme.of(context).textTheme.headline5)
                           ],
                         ),
                         Padding(
@@ -104,7 +104,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
                         ),
                         InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: () => Share.share('https://explorer.telos.net/transaction/${transaction.transactionId}'),
+                          onTap: () => Share.share('https://telos.bloks.io/transaction/${transaction.transactionId}'),
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: const BoxDecoration(color: AppColors.green1, shape: BoxShape.circle),

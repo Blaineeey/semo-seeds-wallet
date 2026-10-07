@@ -4,11 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:seeds/blocs/deeplink/model/guardian_recovery_request_data.dart';
 import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
 import 'package:seeds/datasource/local/models/scan_qr_code_result_data.dart';
-import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_message_token_repository.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/app/interactor/mappers/approve_guardian_recovery_state_mapper.dart';
 import 'package:seeds/screens/app/interactor/mappers/stop_guardian_recovery_state_mapper.dart';
 import 'package:seeds/screens/app/interactor/usecases/approve_guardian_recovery_use_case.dart';
@@ -35,13 +32,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         .shouldShowCancelGuardianAlertMessage
         .listen((value) => add(ShouldShowGuardianRecoveryAlert(showGuardianRecoveryAlert: value)));
 
-    _deeplinkBloc.stream.listen((state) {
-      if (state.guardianRecoveryRequestData != null) {
-        add(OnApproveGuardianRecoveryDeepLink(state.guardianRecoveryRequestData!));
-      } else if (state.signingRequest != null) {
-        add(OnSigningRequest(state.signingRequest!));
-      } else if (state.regionLinkData != null) {
-        add(const OnDeepRegionReceived());
+    _deeplinkBloc.stream.listen((deepLinkState) {
+      if (deepLinkState.guardianRecoveryRequestData != null) {
+        add(OnApproveGuardianRecoveryDeepLink(deepLinkState.guardianRecoveryRequestData!));
+      } else if (deepLinkState.signingRequest != null) {
+        add(OnSigningRequest(deepLinkState.signingRequest!));
       }
     });
 
@@ -54,7 +49,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<OnDismissGuardianRecoveryTapped>(_onDismissGuardianRecoveryTapped);
     on<OnApproveGuardianRecoveryTapped>(_onApproveGuardianRecoveryTapped);
     on<OnApproveGuardianRecoveryDeepLink>(_onApproveGuardianRecoveryDeepLink);
-    on<OnDeepRegionReceived>((_, emit) => emit(state.copyWith(pageCommand: NavigateToRoute(Routes.region))));
     on<OnSigningRequest>(_onSigningRequest);
   }
 
@@ -66,12 +60,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future<void> _onAppMounted(OnAppMounted event, Emitter<AppState> emit) async {
-    // Firebase was misconfigured at some point
-    final String account = settingsStorage.accountName;
-    if (account != '') {
-      await FirebaseMessageTokenRepository().setFirebaseMessageToken(account);
-    }
-
     // The first time app widged is mounted, check if there is a signing request waiting.
     if (_deeplinkBloc.state.signingRequest != null) {
       // When user clicks a signing deeplink

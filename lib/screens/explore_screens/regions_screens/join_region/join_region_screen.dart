@@ -38,9 +38,24 @@ class JoinRegionScreen extends StatelessWidget {
             if (command is NavigateToRoute) {
               NavigationService.of(context).navigateTo(command.route, null, true);
             } else if (command is ShowCreateRegionInfo) {
-              const CreateNewRegionDialog().show(context, BlocProvider.of<JoinRegionBloc>(context));
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) {
+                  return BlocProvider.value(
+                    value: BlocProvider.of<JoinRegionBloc>(context),
+                    child: const CreateNewRegionDialog(),
+                  );
+                },
+              );
             } else if (command is ShowNotEnoughSeedsDialog) {
-              const NotEnoughSeedsDialog().show(context);
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) {
+                  return const NotEnoughSeedsDialog();
+                },
+              );
             } else if (command is ShowErrorMessage) {
               eventBus.fire(ShowSnackBar(command.message));
             }

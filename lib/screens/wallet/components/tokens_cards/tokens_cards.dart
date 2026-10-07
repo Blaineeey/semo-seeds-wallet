@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +39,7 @@ class _TokenCardsState extends State<TokenCards> with AutomaticKeepAliveClientMi
                 SingleChildScrollView(
                   child: CarouselSlider(
                     items: [
-                      for (final tokenBalanceViewModel in state.availableTokens)
+                      for (var tokenBalanceViewModel in state.availableTokens)
                         Container(
                           margin: EdgeInsets.only(
                               left: tokenBalanceViewModel.token == state.availableTokens.first.token ? 0 : 10.0,

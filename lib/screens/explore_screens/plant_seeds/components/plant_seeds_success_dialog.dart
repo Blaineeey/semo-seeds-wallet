@@ -8,14 +8,6 @@ import 'package:seeds/utils/build_context_extension.dart';
 class PlantSeedsSuccessDialog extends StatelessWidget {
   const PlantSeedsSuccessDialog({super.key});
 
-  Future<void> show(BuildContext context, PlantSeedsBloc plantSeedsBloc) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => BlocProvider.value(value: plantSeedsBloc, child: this),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -37,25 +29,25 @@ class PlantSeedsSuccessDialog extends StatelessWidget {
             children: [
               Text(
                 BlocProvider.of<PlantSeedsBloc>(context).state.tokenAmount.amountString(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headline4,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12, left: 4),
                 child: Text(BlocProvider.of<PlantSeedsBloc>(context).state.tokenAmount.symbol,
-                    style: Theme.of(context).textTheme.titleSmall),
+                    style: Theme.of(context).textTheme.subtitle2),
               ),
             ],
           ),
           const SizedBox(height: 4.0),
           Text(
             BlocProvider.of<PlantSeedsBloc>(context).state.fiatAmount.asFormattedString(),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.subtitle2,
           ),
           const SizedBox(height: 30.0),
           Text(
             context.loc.plantSeedsPlantSuccessMessage,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme.of(context).textTheme.button,
           ),
         ],
       ),

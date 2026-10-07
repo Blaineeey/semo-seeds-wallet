@@ -73,7 +73,7 @@ class GuardianSecurityCard extends StatelessWidget {
                                   Flexible(
                                     child: Text(
                                       context.loc.securityGuardiansHeader,
-                                      style: Theme.of(context).textTheme.labelLarge,
+                                      style: Theme.of(context).textTheme.button,
                                     ),
                                   ),
                                   const SizedBox(width: 10),

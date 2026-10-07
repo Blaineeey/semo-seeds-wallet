@@ -67,7 +67,6 @@ class Routes {
   static const importKey = 'importKey';
   static const importWords = 'importWords';
   static const verification = 'verification';
-  static const verificationUnpoppable = 'verificationUnpoppable';
   static const signup = 'signup';
   static const recoverAccountSearch = 'recoverAccountSearch';
   static const recoveryPhrase = 'recoveryPhrase';
@@ -126,8 +125,6 @@ class NavigationService {
     Routes.login: (_) => const LoginScreen(),
     Routes.importKey: (_) => const ImportKeyScreen(),
     Routes.importWords: (_) => const ImportWordsScreen(),
-    Routes.verification: (_) => const VerificationScreen(),
-    Routes.verificationUnpoppable: (_) => const VerificationScreen.unpoppable(),
     Routes.recoverAccountSearch: (_) => const RecoverAccountSearchScreen(),
     Routes.recoverAccountFound: (_) => const RecoverAccountFoundScreen(),
     Routes.signup: (_) => const SignupScreen(),
@@ -168,6 +165,7 @@ class NavigationService {
     Routes.citizenship: (_) => const CitizenshipScreen(),
     Routes.contribution: (_) => const ContributionScreen(),
     Routes.contributionDetail: (_) => const ContributionDetailScreen(),
+    Routes.verification: (_) => const VerificationScreen(),
     Routes.recoveryPhrase: (_) => const RecoveryPhraseScreen(),
     Routes.region: (_) => const RegionScreen(),
     Routes.editRegionDescription: (_) => const EditRegionDescription(),
@@ -183,7 +181,7 @@ class NavigationService {
   // On iOS that's a standard full screen dialog
   // Has no effect on Android.
   final _fullScreenRoutes = {
-    Routes.verificationUnpoppable,
+    Routes.verification,
   };
 
   // iOS transition: Pages that slides in from the right and exits in reverse.
@@ -233,8 +231,8 @@ class NavigationService {
   ///
   /// If there is a route in stack and is verification, pop any other on top.
   Future<dynamic> pushApp() async {
-    if (currentRouteName() != null && currentRouteName() == Routes.verificationUnpoppable) {
-      return appNavigatorKey.currentState?.popUntil((route) => route.settings.name != Routes.verificationUnpoppable);
+    if (currentRouteName() != null && currentRouteName() == Routes.verification) {
+      return appNavigatorKey.currentState?.popUntil((route) => route.settings.name != Routes.verification);
     }
     return pushAndRemoveAll(Routes.app);
   }

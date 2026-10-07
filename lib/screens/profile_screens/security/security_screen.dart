@@ -34,11 +34,7 @@ class SecurityScreen extends StatelessWidget {
               listenWhen: (_, current) => current.navigateToVerification != null,
               listener: (context, _) {
                 BlocProvider.of<SecurityBloc>(context).add(const ResetNavigateToVerification());
-                NavigationService.of(context).navigateTo(Routes.verification).then((isValid) {
-                  if (isValid ?? false) {
-                    BlocProvider.of<SecurityBloc>(context).add(const OnValidVerification());
-                  }
-                });
+                NavigationService.of(context).navigateTo(Routes.verification, BlocProvider.of<SecurityBloc>(context));
               },
             ),
             BlocListener<SecurityBloc, SecurityState>(

@@ -28,13 +28,11 @@ class TextFormFieldCustom extends StatelessWidget {
   final bool? disabledLabelColor;
   final String? errorText;
   final String? counterText;
-  final bool autoCorrect;
 
   const TextFormFieldCustom(
       {super.key,
       this.initialValue,
       this.autofocus = false,
-      this.autoCorrect = true,
       this.focusNode,
       this.nextFocus,
       this.onFieldSubmitted,
@@ -63,7 +61,6 @@ class TextFormFieldCustom extends StatelessWidget {
       child: TextFormField(
         initialValue: initialValue,
         autofocus: autofocus,
-        autocorrect: autoCorrect,
         focusNode: focusNode,
         onFieldSubmitted: onFieldSubmitted,
         textInputAction: textInputAction,
@@ -76,10 +73,10 @@ class TextFormFieldCustom extends StatelessWidget {
         maxLines: maxLines,
         enabled: enabled,
         validator: validator,
-        style: Theme.of(context).textTheme.titleSmall,
+        style: Theme.of(context).textTheme.subtitle2,
         decoration: InputDecoration(
           suffixText: suffixText,
-          suffixStyle: Theme.of(context).textTheme.titleSmall,
+          suffixStyle: Theme.of(context).textTheme.subtitle2,
           suffixIcon: suffixIcon,
           focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.canopy)),
           counterText: counterText,
@@ -89,7 +86,7 @@ class TextFormFieldCustom extends StatelessWidget {
           errorMaxLines: 2,
           errorStyle: const TextStyle(color: Colors.red, wordSpacing: 4.0),
           labelStyle: Theme.of(context).textTheme.subtitle3.copyWith(color: AppColors.white),
-          hintStyle: Theme.of(context).textTheme.labelLarge,
+          hintStyle: Theme.of(context).textTheme.button,
           contentPadding: const EdgeInsets.all(16.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),

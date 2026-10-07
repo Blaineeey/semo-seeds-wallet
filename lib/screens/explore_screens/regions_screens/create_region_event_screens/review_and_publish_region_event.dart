@@ -26,14 +26,14 @@ class ReviewAndPublishRegionEvent extends StatelessWidget {
               minimum: const EdgeInsets.only(bottom: 16),
               child: Stack(
                 children: [
-                  const SingleChildScrollView(
+                  SingleChildScrollView(
                     child: Column(
                       children: [
-                        ReviewAndPublishRegionEventHeader(),
-                        ReviewAndPublishRegionEventMiddle(),
-                        DividerJungle(),
-                        ReviewAndPublishRegionEventBottom(),
-                        SizedBox(height: 60)
+                        const ReviewAndPublishRegionEventHeader(),
+                        const ReviewAndPublishRegionEventMiddle(),
+                        const DividerJungle(),
+                        const ReviewAndPublishRegionEventBottom(),
+                        const SizedBox(height: 60)
                       ],
                     ),
                   ),

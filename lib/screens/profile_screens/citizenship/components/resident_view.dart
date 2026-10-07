@@ -28,12 +28,14 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
   late Animation<double> _ageAnimation;
   late Animation<double> _seedsAnimation;
   late Animation<double> _transactionsAnimation;
+  late Animation<double> _visitorsAnimation;
   int _timeLine = 0;
   int _reputation = 0;
   int _citizenCeremony = 0;
   int _age = 0;
   int _seeds = 0;
   int _transactions = 0;
+  int _visitors = 0;
 
   @override
   void initState() {
@@ -78,6 +80,10 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
               ..addListener(() {
                 setState(() => _transactions = _transactionsAnimation.value.toInt());
               });
+        _visitorsAnimation = Tween<double>(begin: 0, end: state.invitedVisitors!.toDouble()).animate(_controller)
+          ..addListener(() {
+            setState(() => _visitors = _visitorsAnimation.value.toInt() * 100);
+          });
         _controller.forward();
       },
       builder: (context, state) {
@@ -106,7 +112,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                         const SizedBox(height: 8.0),
                         Text(
                           state.profile!.nickname,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
@@ -118,7 +124,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                DecoratedBox(
+                Container(
                   decoration: const BoxDecoration(
                     color: AppColors.lightGreen2,
                     borderRadius: BorderRadius.all(Radius.circular(defaultCardBorderRadius)),
@@ -130,7 +136,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Progress Timeline'.i18n, style: Theme.of(context).textTheme.labelLarge),
+                            Text('Progress Timeline'.i18n, style: Theme.of(context).textTheme.button),
                             Text('$_timeLine%', style: Theme.of(context).textTheme.subtitle2LowEmphasis),
                           ],
                         ),
@@ -164,7 +170,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                       title: 'Citizen Ceremony'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: _citizenCeremony == citizenRequiredCitizenVouched ? 'Passed' : 'Waiting',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/reputation.svg'),
@@ -174,7 +180,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                       title: 'Reputation Score'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_reputation/$citizenRequiredReputation',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/age.svg'),
@@ -184,7 +190,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                       title: 'Account Age'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_age/$citizenRequiredAccountAge',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/planted.svg'),
@@ -194,7 +200,7 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                       title: 'Planted Seeds'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_seeds/$citizenRequiredPlantedSeeds',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/transaction.svg'),
@@ -204,7 +210,17 @@ class _ResidentViewState extends State<ResidentView> with TickerProviderStateMix
                       title: 'Transactions with Seeds'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_transactions/$citizenRequiredSeedsTransactions',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
+                    ),
+                    CircularProgressItem(
+                      icon: SvgPicture.asset('assets/images/citizenship/community.svg'),
+                      totalStep: citizenRequiredVisitorsInvited,
+                      currentStep: _visitors ~/ 100,
+                      circleRadius: 30,
+                      title: 'Invited Users'.i18n,
+                      titleStyle: Theme.of(context).textTheme.subtitle3,
+                      rate: '${_visitors ~/ 100}/$citizenRequiredVisitorsInvited',
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                   ],
                 ),
