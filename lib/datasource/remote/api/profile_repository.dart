@@ -37,8 +37,8 @@ class ProfileRepository extends HttpRepository with EosRepository {
 
   // TODO(Raul): Unify this code with _getAccountPermissions in guardians repo
   // Returns the first active key permission - String
-  Future<Result> getAccountPublicKeys(String accountName) async {
-    print('[http] getAccountPublicKeys');
+  Future<Result> getAccountPublicKey(String accountName) async {
+    print('[http] getAccountPublicKey');
 
     final url = Uri.parse('$host/v1/chain/get_account');
     final body = '{ "account_name": "$accountName" }';
@@ -50,7 +50,7 @@ class ProfileRepository extends HttpRepository with EosRepository {
               final permissions = allAccounts.map((item) => Permission.fromJson(item)).toList();
               final Permission activePermission = permissions.firstWhere((element) => element.permName == "active");
               final RequiredAuth? activeAuth = activePermission.requiredAuth;
-              return activeAuth?.keys?.map((e)=>e?.key).toList();
+              return activeAuth?.keys?.first?.key;
             }))
         .catchError((error) => mapHttpError(error));
   }

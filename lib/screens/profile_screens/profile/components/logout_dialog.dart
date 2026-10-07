@@ -10,7 +10,7 @@ import 'package:seeds/i18n/profile_screens/profile/profile.i18n.dart';
 import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profile_bloc.dart';
 
 class LogoutDialog extends StatelessWidget {
-  const LogoutDialog({super.key});
+  const LogoutDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class LogoutDialog extends StatelessWidget {
                   Text(
                     'Save private key in secure place - to be able to restore access to your wallet later'.i18n,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                   const SizedBox(height: 36.0),
                   FlatButtonLong(

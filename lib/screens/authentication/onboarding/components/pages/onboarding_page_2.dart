@@ -5,7 +5,7 @@ import 'package:seeds/screens/authentication/onboarding/components/onboarding_pa
 import 'package:seeds/utils/build_context_extension.dart';
 
 class SecondPage extends StatelessWidget {
-  const SecondPage({super.key});
+  const SecondPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

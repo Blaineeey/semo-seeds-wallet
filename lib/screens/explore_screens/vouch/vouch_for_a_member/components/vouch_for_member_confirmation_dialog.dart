@@ -6,7 +6,7 @@ import 'package:seeds/images/explore/vouch_white_background.dart';
 import 'package:seeds/screens/explore_screens/vouch/vouch_for_a_member/interactor/viewmodel/vouch_for_a_member_bloc.dart';
 
 class VouchForMemberConfirmationDialog extends StatelessWidget {
-  const VouchForMemberConfirmationDialog({super.key});
+  const VouchForMemberConfirmationDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,11 @@ class VouchForMemberConfirmationDialog extends StatelessWidget {
               Navigator.of(context).pop();
             },
             children: [
-              Text('Please read carefully', style: Theme.of(context).textTheme.titleLarge),
+              Text('Please read carefully', style: Theme.of(context).textTheme.headline6),
               const SizedBox(height: 10.0),
               Text(
                 'Vouching for someone means you are taking responsibility for their actions. If they are flagged, you will also lose reputation points. On the other hand, if they continue progressing to become citizens, you will gain reputation points! Choose carefully!',
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20.0),
@@ -39,12 +39,12 @@ class VouchForMemberConfirmationDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                     text: 'Are you sure you would like to vouch for ',
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.subtitle2,
                     children: <TextSpan>[
                       TextSpan(
                           text: '${state.selectedMember?.nickname} (${state.selectedMember?.account})',
                           style: Theme.of(context).textTheme.subtitle2Green3LowEmphasis),
-                      TextSpan(text: '?', style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: '?', style: Theme.of(context).textTheme.subtitle2),
                     ]),
               ),
             ],

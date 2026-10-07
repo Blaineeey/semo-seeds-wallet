@@ -16,11 +16,7 @@ class GetCitizenshipDataUseCase {
     final futures = [
       _plantedRepository.getPlanted(account),
       _seedsHistoryRepository.getNumberOfTransactions(account),
-      _profileRepository.getScore(
-        account: account,
-        contractName: SeedsCode.accountAccounts,
-        tableName: SeedsTable.tableRep,
-      ),
+      _profileRepository.getScore(account: account, contractName: SeedsCode.accountAccounts, tableName: SeedsTable.tableCbs),
     ];
     return Future.wait(futures);
   }

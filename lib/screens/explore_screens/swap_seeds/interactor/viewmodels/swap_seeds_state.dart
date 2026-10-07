@@ -1,7 +1,7 @@
 part of 'swap_seeds_bloc.dart';
 
 class SwapSeedsState extends Equatable {
-  final NavigateToSendConfirmation? pageCommand;
+  final PageCommand? pageCommand;
   final PageState pageState;
 
   const SwapSeedsState({this.pageCommand, required this.pageState});
@@ -9,7 +9,7 @@ class SwapSeedsState extends Equatable {
   @override
   List<Object?> get props => [pageCommand, pageState];
 
-  SwapSeedsState copyWith({NavigateToSendConfirmation? pageCommand, PageState? pageState}) {
+  SwapSeedsState copyWith({PageCommand? pageCommand, PageState? pageState}) {
     return SwapSeedsState(
       pageCommand: pageCommand,
       pageState: pageState ?? this.pageState,

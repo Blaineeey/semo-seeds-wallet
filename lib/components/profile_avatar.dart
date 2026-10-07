@@ -16,13 +16,13 @@ class ProfileAvatar extends StatelessWidget {
   final BoxDecoration? decoration;
 
   const ProfileAvatar({
-    super.key,
+    Key? key,
     this.decoration,
     required this.size,
     this.image,
     this.nickname,
     required this.account,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +56,7 @@ class ProfileAvatar extends StatelessWidget {
               shape: BoxShape.circle,
             ),
         alignment: Alignment.center,
-        child: Text(
-          shortName,
-          style: size > 30 ? Theme.of(context).textTheme.subtitle1HighEmphasis : Theme.of(context).textTheme.subtitle3,
-        ),
+        child: Text(shortName, style: Theme.of(context).textTheme.subtitle1HighEmphasis),
       );
     }
   }

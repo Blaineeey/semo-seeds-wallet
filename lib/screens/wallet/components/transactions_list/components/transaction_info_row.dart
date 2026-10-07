@@ -15,13 +15,13 @@ class TransactionInfoRow extends StatelessWidget {
   final GestureTapCallback onTap;
 
   const TransactionInfoRow({
-    super.key,
+    Key? key,
     required this.amount,
     required this.onTap,
     required this.profileAccount,
     required this.timestamp,
     required this.incoming,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class TransactionInfoRow extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     state.localizedDisplayName(context),
-                                    style: Theme.of(context).textTheme.labelLarge,
+                                    style: Theme.of(context).textTheme.button,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
@@ -66,7 +66,7 @@ class TransactionInfoRow extends StatelessWidget {
                                 else
                                   Text('-', style: Theme.of(context).textTheme.subtitle1Red2),
                                 const SizedBox(width: 4),
-                                Text(amount.seedsFormatted, style: Theme.of(context).textTheme.labelLarge),
+                                Text(amount.seedsFormatted, style: Theme.of(context).textTheme.button),
                               ],
                             ),
                             const SizedBox(height: 10),

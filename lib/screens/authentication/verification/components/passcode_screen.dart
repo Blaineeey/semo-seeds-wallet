@@ -18,7 +18,8 @@ class PasscodeScreen extends StatefulWidget {
   final ValueSetter<String> onPasscodeCompleted;
   final Widget? bottomWidget;
 
-  const PasscodeScreen({super.key, required this.title, required this.onPasscodeCompleted, this.bottomWidget});
+  const PasscodeScreen({Key? key, required this.title, required this.onPasscodeCompleted, this.bottomWidget})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PasscodeScreenState();
@@ -119,7 +120,7 @@ class _PasscodeScreenState extends State<PasscodeScreen> with SingleTickerProvid
                   child: enteredPasscode.isEmpty
                       ? const SizedBox.shrink()
                       : Text(context.loc.verificationPasscodeScreenButtonTitle,
-                          style: Theme.of(context).textTheme.titleSmall),
+                          style: Theme.of(context).textTheme.subtitle2),
                 ),
               ),
             ),

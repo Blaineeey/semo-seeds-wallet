@@ -24,7 +24,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ExploreScreen extends StatelessWidget {
-  const ExploreScreen({super.key});
+  const ExploreScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +83,15 @@ class ExploreScreen extends StatelessWidget {
         onTapEvent: const OnBuySeedsCardTapped(),
       ),
     ];
+/*     if (!remoteConfigurations.featureFlagRegionsEnabled) {
+      exploreItems.removeWhere((i) => i.title == context.loc.explorerRegionsItemTitle);
+    } */
     if (!remoteConfigurations.featureFlagP2PEnabled) {
       exploreItems.removeWhere((i) => i.title == context.loc.explorerSwapItemTitle);
     }
-    if (!remoteConfigurations.featureFlagRegionsEnabled) {
-      exploreItems.removeWhere((i) => i.title == context.loc.explorerRegionsItemTitle);
-    }
     return BlocProvider(
       create: (_) => ExploreBloc(),
-      child: BlocListener<ExploreBloc, ExploreState>(
+      child: BlocConsumer<ExploreBloc, ExploreState>(
         listenWhen: (_, current) => current.pageCommand != null,
         listener: (context, state) {
           final pageCommand = state.pageCommand;
@@ -99,7 +99,7 @@ class ExploreScreen extends StatelessWidget {
           if (pageCommand is NavigateToRoute) {
             NavigationService.of(context).navigateTo(pageCommand.route);
           } else if (pageCommand is NavigateToBuySeeds) {
-            launchUrl(Uri.parse('$urlBuySeeds${settingsStorage.accountName}'));
+            launch('$urlBuySeeds${settingsStorage.accountName}', forceSafariVC: false);
           } else if (pageCommand is ShowUserFlagInformation) {
             showDialog<void>(
               context: context,
@@ -115,31 +115,29 @@ class ExploreScreen extends StatelessWidget {
             });
           }
         },
-        child: Builder(
-          builder: (context) {
-            return Scaffold(
-              appBar: AppBar(title: Text(context.loc.explorerAppBarTitle)),
-              body: GridView.count(
-                padding: const EdgeInsets.all(18),
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                crossAxisCount: 2,
-                children: [
-                  for (final i in exploreItems)
-                    ExploreCard(
-                      title: i.title,
-                      icon: i.icon,
-                      backgroundIconColor: i.backgroundIconColor,
-                      iconUseCircleBackground: i.iconUseCircleBackground,
-                      backgroundImage: i.backgroundImage,
-                      gradient: i.gradient,
-                      onTap: () => BlocProvider.of<ExploreBloc>(context).add(i.onTapEvent),
-                    )
-                ],
-              ),
-            );
-          },
-        ),
+        builder: (context, _) {
+          return Scaffold(
+            appBar: AppBar(title: Text(context.loc.explorerAppBarTitle)),
+            body: GridView.count(
+              padding: const EdgeInsets.all(18),
+              crossAxisSpacing: 18,
+              mainAxisSpacing: 18,
+              crossAxisCount: 2,
+              children: [
+                for (final i in exploreItems)
+                  ExploreCard(
+                    title: i.title,
+                    icon: i.icon,
+                    backgroundIconColor: i.backgroundIconColor,
+                    iconUseCircleBackground: i.iconUseCircleBackground,
+                    backgroundImage: i.backgroundImage,
+                    gradient: i.gradient,
+                    onTap: () => BlocProvider.of<ExploreBloc>(context).add(i.onTapEvent),
+                  )
+              ],
+            ),
+          );
+        },
       ),
     );
   }

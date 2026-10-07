@@ -13,7 +13,7 @@ import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/component
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/guardians_bloc.dart';
 
 class MyGuardiansTab extends StatelessWidget {
-  const MyGuardiansTab({super.key});
+  const MyGuardiansTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,9 @@ class MyGuardiansTab extends StatelessWidget {
                           onPressed: () {
                             BlocProvider.of<GuardiansBloc>(context).add(OnGuardianReadyForActivation(myGuardians));
                           },
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [Text("Activate "), Icon(Icons.shield), Text(" Guardians")],
+                            children: [const Text("Activate "), const Icon(Icons.shield), const Text(" Guardians")],
                           ),
                         ),
                       ));

@@ -8,19 +8,16 @@ class FullPageErrorIndicator extends StatelessWidget {
   final String? buttonTitle;
   final VoidCallback? buttonOnPressed;
 
-  const FullPageErrorIndicator({this.errorMessage, this.buttonTitle, this.buttonOnPressed, super.key});
+  const FullPageErrorIndicator({this.errorMessage, this.buttonTitle, this.buttonOnPressed, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Text(
-              errorMessage ?? GlobalError.unknown.localizedDescription(context),
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.red1),
-            ),
+        child: Center(
+          child: Text(
+            errorMessage ?? GlobalError.unknown.localizedDescription(context),
+            style: Theme.of(context).textTheme.subtitle2!.copyWith(color: AppColors.red1),
           ),
         ),
       ),

@@ -1,4 +1,4 @@
-import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class RegionModel {
   final String id;
@@ -28,11 +28,7 @@ class RegionModel {
       required this.createdAt,
       this.imageUrl});
 
-  double distanceTo(double lat, double lng) => GeoFirePoint(latitude, longitude).distance(lat: lat, lng: lng);
-
-  String get readableMembersCount {
-    return membersCount > 1000 ? '${membersCount.toStringAsFixed(1)} K' : membersCount.toString();
-  }
+  double distanceTo(double lat, double lng) => GeoFirePoint(latitude, longitude).kmDistance(lat: lat, lng: lng);
 
   factory RegionModel.fromJson(Map<String, dynamic> json) {
     // name id;
