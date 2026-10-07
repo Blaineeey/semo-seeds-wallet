@@ -14,5 +14,6 @@ export 'src/models/block_header_state.dart';
 export 'src/models/node_info.dart';
 export 'src/models/primary_wrapper.dart';
 export 'src/models/transaction.dart';
+export 'src/models/transaction.dart';
 export 'src/numeric.dart';
 export 'src/serialize.dart';

@@ -4,7 +4,7 @@ import 'package:seeds/screens/authentication/onboarding/components/onboarding_pa
 import 'package:seeds/utils/build_context_extension.dart';
 
 class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
+  const FirstPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

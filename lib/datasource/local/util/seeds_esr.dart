@@ -9,8 +9,6 @@ class SeedsESR {
 
   late List<Action> actions;
 
-  String? get callback => manager.signingRequest.callback;
-
   SeedsESR({String? uri}) {
     manager = TelosSigningManager.from(uri);
   }
@@ -25,11 +23,11 @@ class SeedsESR {
   // Better ways to do that
   // Pass around the whole ESR object, or an Action object.
   // instead of canProcess, have an isValid accessor on the ESR and handle this case in the mappers.
-  Result<ScanQrCodeResultData> processResolvedRequest() {
-    final EOSTransaction eosTransaction = EOSTransaction.fromESRActionsList(actions);
+  Result processResolvedRequest() {
+    final EOSTransaction eosTransaction = EOSTransaction.fromActionsList(actions);
     if (eosTransaction.isValid) {
       print("processResolvedRequest: Success QR");
-      return ValueResult(ScanQrCodeResultData(transaction: eosTransaction, esr: this));
+      return ValueResult(ScanQrCodeResultData(transaction: eosTransaction));
     } else {
       print("processResolvedRequest: ESR transaction invalid ${actions.length} $actions");
       return ErrorResult("Unable to process this request");

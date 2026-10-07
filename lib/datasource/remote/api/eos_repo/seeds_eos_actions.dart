@@ -21,10 +21,6 @@ const String _proposalActionNameUndelegate = 'undelegate';
 const String _actionNameVouch = 'vouch';
 const String _actionNameFlag = 'flag';
 const String _actionNameRemoveFlag = 'removeflag';
-const String _actionNameCreateRegion = 'create';
-const String _actionNameUpdateRegion = 'update';
-const String _actionNameJoinRegion = 'join';
-const String _actionNameLeaveRegion = 'leave';
 
 enum SeedsEosAction {
   actionNameAgainst,
@@ -50,10 +46,6 @@ enum SeedsEosAction {
   actionNameVouch,
   actionNameFlag,
   actionNameRemoveFlag,
-  actionNameCreateRegion,
-  actionNameUpdateRegion,
-  actionNameJoinRegion,
-  actionNameLeaveRegion,
 }
 
 extension SeedsEosActionExtension on SeedsEosAction {
@@ -105,14 +97,6 @@ extension SeedsEosActionExtension on SeedsEosAction {
         return _actionNameFlag;
       case SeedsEosAction.actionNameRemoveFlag:
         return _actionNameRemoveFlag;
-      case SeedsEosAction.actionNameCreateRegion:
-        return _actionNameCreateRegion;
-      case SeedsEosAction.actionNameUpdateRegion:
-        return _actionNameUpdateRegion;
-      case SeedsEosAction.actionNameJoinRegion:
-        return _actionNameJoinRegion;
-      case SeedsEosAction.actionNameLeaveRegion:
-        return _actionNameLeaveRegion;
     }
   }
 }

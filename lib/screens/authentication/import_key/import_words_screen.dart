@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/flat_button_long.dart';
+import 'package:seeds/components/flat_button_short.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
@@ -15,7 +16,7 @@ const _numberOfWords = 12;
 const _numberOfColumns = 3;
 
 class ImportWordsScreen extends StatelessWidget {
-  const ImportWordsScreen({super.key});
+  const ImportWordsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +63,9 @@ class ImportWordsScreen extends StatelessWidget {
                                 left: (index % _numberOfColumns == 0) ? 0 : 8,
                                 right: ((index + 1) % _numberOfColumns == 0) ? 0 : 8),
                             child: Autocomplete<String>(
-                              fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                              fieldViewBuilder: (BuildContext context, TextEditingController textEditingController,
+                                  FocusNode focusNode, VoidCallback onFieldSubmitted) {
                                 textEditingController.text = state.userEnteredWords[index] ?? "";
-                                textEditingController.selection =
-                                    TextSelection.fromPosition(TextPosition(offset: textEditingController.text.length));
                                 return TextField(
                                   controller: textEditingController,
                                   focusNode: focusNode,
@@ -103,8 +103,8 @@ class ImportWordsScreen extends StatelessWidget {
                         }),
                       ),
                       if (state.pageState != PageState.loading && state.accounts.isEmpty)
-                        TextButton(
-                          child: Text(context.loc.importWordClipBoardTitle),
+                        FlatButtonShort(
+                          title: context.loc.importWordClipBoardTitle,
                           onPressed: () {
                             BlocProvider.of<ImportKeyBloc>(context).add(const OnUserPastedWords());
                           },
@@ -113,7 +113,7 @@ class ImportWordsScreen extends StatelessWidget {
                       if (state.userEnteredWords.isEmpty)
                         RichText(
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.titleSmall,
+                            style: Theme.of(context).textTheme.subtitle2,
                             children: <TextSpan>[
                               TextSpan(
                                 text: context.loc.importKeyImportUsingPrivateKeyActionLink,

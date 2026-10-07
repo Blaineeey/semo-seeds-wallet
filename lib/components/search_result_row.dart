@@ -7,7 +7,7 @@ class SearchResultRow extends StatelessWidget {
   final ProfileModel member;
   final GestureTapCallback? onTap;
 
-  const SearchResultRow({super.key, required this.member, this.onTap});
+  const SearchResultRow({Key? key, required this.member, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +36,13 @@ class SearchResultRow extends StatelessWidget {
                           child: Text(
                             member.nickname.isNotEmpty ? member.nickname : member.account,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.labelLarge,
+                            style: Theme.of(context).textTheme.button,
                           ),
                         ),
                         const SizedBox(width: 10),
                         Text(
                           member.statusString,
-                          style: Theme.of(context).textTheme.labelLarge,
+                          style: Theme.of(context).textTheme.button,
                         ),
                       ],
                     ),

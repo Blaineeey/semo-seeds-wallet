@@ -11,17 +11,11 @@ import 'package:seeds/screens/profile_screens/citizenship/interactor/viewmodels/
 
 class SetValuesStateMapper extends StateMapper {
   CitizenshipState mapResultToState(
-    CitizenshipState currentState,
-    List<Result> referredAccountResults,
-    List<Result> citizenshipDataResults,
-    Result<List<ProfileModel>>? vouchees,
-  ) {
+      CitizenshipState currentState, List<Result> referredAccountResults, List<Result> citizenshipDataResults) {
     // Accounts found, but errors fetching data happened.
     if (referredAccountResults.isNotEmpty && areAllResultsError(referredAccountResults)) {
       return currentState.copyWith(pageState: PageState.failure, errorMessage: "Error Loading Accounts".i18n);
     } else if (areAllResultsError(citizenshipDataResults)) {
-      return currentState.copyWith(pageState: PageState.failure, errorMessage: 'Error Loading Citizenship Data'.i18n);
-    } else if (vouchees != null && vouchees.isError) {
       return currentState.copyWith(pageState: PageState.failure, errorMessage: 'Error Loading Citizenship Data'.i18n);
     } else {
       citizenshipDataResults.retainWhere((Result i) => i.isValue);
@@ -40,8 +34,6 @@ class SetValuesStateMapper extends StateMapper {
 
       final int reputation = reputationScore?.value ?? 0;
 
-      int citizenVouched = 0;
-
       // Define timeline
       if (profile.status == ProfileStatus.visitor) {
         // Timeline to resident
@@ -52,27 +44,27 @@ class SetValuesStateMapper extends StateMapper {
             4 *
             100;
       } else {
-        final voucheesProfiles = vouchees!.asValue!.value;
-        citizenVouched = voucheesProfiles.where((i) => i.status == ProfileStatus.citizen).length;
         // Timeline to citizen
-
+        final int residentsInvited =
+            profiles.where((i) => i.status == ProfileStatus.resident || i.status == ProfileStatus.citizen).length;
         timeline = ((min(reputation, citizenRequiredReputation) / citizenRequiredReputation) +
                 (min(planted, citizenRequiredPlantedSeeds) / citizenRequiredPlantedSeeds) +
                 (min(transactions, citizenRequiredSeedsTransactions) / citizenRequiredSeedsTransactions) +
-                (min(citizenVouched, citizenRequiredCitizenVouched) / citizenRequiredCitizenVouched) +
-                (min(profile.accountAge, citizenRequiredAccountAge) / citizenRequiredAccountAge)) /
-            5 *
+                (min(residentsInvited, citizenRequiredResidentsInvited) / citizenRequiredResidentsInvited) +
+                (min(profile.accountAge, citizenRequiredAccountAge) / citizenRequiredAccountAge) +
+                (min(profiles.length, citizenRequiredVisitorsInvited) / citizenRequiredVisitorsInvited)) /
+            6 *
             100;
       }
 
       return currentState.copyWith(
         pageState: PageState.success,
-        reputationScore: reputationScore,
         plantedSeeds: plantedSeeds?.quantity,
         seedsTransactionsCount: seedsHistory?.totalNumberOfTransactions,
         progressTimeline: timeline,
         invitedVisitors: profiles.length,
-        citizenCeremony: citizenVouched,
+        invitedResidents:
+            profiles.where((i) => i.status == ProfileStatus.citizen || i.status == ProfileStatus.resident).length,
       );
     }
   }

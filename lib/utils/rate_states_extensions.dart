@@ -7,7 +7,7 @@ import 'package:seeds/datasource/remote/model/token_model.dart';
 extension RatesStateExtensions on RatesState {
   FiatDataModel? tokenToFiat(TokenDataModel tokenAmount, String currencySymbol) {
     // Convert token to USD
-    final RateModel? rateModel = rates?[tokenAmount.id];
+    final RateModel? rateModel = rates?[tokenAmount.symbol];
     if (rateModel != null) {
       final double? usdValue = rateModel.tokenToUSD(tokenAmount.amount);
       if (usdValue != null) {
@@ -19,15 +19,15 @@ extension RatesStateExtensions on RatesState {
     return null;
   }
 
-  TokenDataModel? fiatToToken(FiatDataModel fiatAmount, String tokenId) {
+  TokenDataModel? fiatToToken(FiatDataModel fiatAmount, String tokenSymbol) {
     // Convert seeds to USD
     final double? usdValue = fiatRate?.currencyToUSD(fiatAmount.amount, fiatAmount.symbol);
     if (usdValue != null) {
-      final RateModel? rateModel = rates?[tokenId];
+      final RateModel? rateModel = rates?[tokenSymbol];
       if (rateModel != null) {
         final double? tokenValue = rateModel.usdToToken(usdValue);
         if (tokenValue != null) {
-          return TokenDataModel(tokenValue, token: TokenModel.fromId(tokenId)!);
+          return TokenDataModel(tokenValue, token: TokenModel.fromSymbol(tokenSymbol));
         }
       }
     }

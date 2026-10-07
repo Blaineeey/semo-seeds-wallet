@@ -6,7 +6,7 @@ import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/interactor/viewmodel/delegate_a_user_bloc.dart';
 
 class DelegateAUserSuccessDialog extends StatelessWidget {
-  const DelegateAUserSuccessDialog({super.key});
+  const DelegateAUserSuccessDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,10 @@ class DelegateAUserSuccessDialog extends StatelessWidget {
               NavigationService.of(context).navigateTo(Routes.delegate);
             },
             children: [
-              Text('Delegate Chosen!', style: Theme.of(context).textTheme.titleLarge),
+              Text('Delegate Chosen!', style: Theme.of(context).textTheme.headline6),
               const SizedBox(height: 30.0),
               Text('You have successfully chosen your delegate. They will now vote with the power of your vote.',
-                  style: Theme.of(context).textTheme.titleSmall),
+                  style: Theme.of(context).textTheme.subtitle2),
             ],
           ),
         );

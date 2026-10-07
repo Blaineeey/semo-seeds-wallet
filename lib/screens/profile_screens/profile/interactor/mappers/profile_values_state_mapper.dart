@@ -1,5 +1,4 @@
 import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/result_to_state_mapper.dart';
 import 'package:seeds/i18n/profile_screens/profile/profile.i18n.dart';
@@ -12,14 +11,8 @@ class ProfileValuesStateMapper extends StateMapper {
       return currentState.copyWith(pageState: PageState.failure, errorMessage: 'Error Loading Page'.i18n);
     } else {
       final response = result.asValue!.value;
-      final ProfileModel? profileModel = response.profileModel;
-      if (profileModel != null && profileModel.account == settingsStorage.accountName) {
-        // Storing the status in settings is problematic since it's a server side value.
-        // As a remedy, we are now updating it every time we load the user profile.
-        settingsStorage.saveCitizenshipStatus(profileModel.status);
-      }
-
-      final bool isCitizen = profileModel?.status == ProfileStatus.citizen;
+      final bool isCitizen = settingsStorage.isCitizen;
+      final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
 
       if (isCitizen) {
         return currentState.copyWith(
@@ -27,7 +20,6 @@ class ProfileValuesStateMapper extends StateMapper {
       } else {
         final organization = response.organizationModel ?? [];
 
-        final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
         response.canResident != null
             ? citizenshipUpgradeStatus = CitizenshipUpgradeStatus.canResident
             : response.canCitizen != null

@@ -6,7 +6,7 @@ class ShimmerRectangle extends StatelessWidget {
   final Size size;
   final double radius;
 
-  const ShimmerRectangle({super.key, required this.size, this.radius = 4});
+  const ShimmerRectangle({Key? key, required this.size, this.radius = 4}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

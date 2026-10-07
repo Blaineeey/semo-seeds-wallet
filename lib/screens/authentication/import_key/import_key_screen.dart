@@ -13,7 +13,7 @@ import 'package:seeds/screens/authentication/import_key/interactor/viewmodels/im
 import 'package:seeds/utils/build_context_extension.dart';
 
 class ImportKeyScreen extends StatefulWidget {
-  const ImportKeyScreen({super.key});
+  const ImportKeyScreen({Key? key}) : super(key: key);
 
   @override
   _ImportKeyScreenState createState() => _ImportKeyScreenState();
@@ -100,7 +100,7 @@ class _ImportKeyScreenState extends State<ImportKeyScreen> {
                           padding: const EdgeInsets.all(16.0),
                           child: RichText(
                             text: TextSpan(
-                              style: Theme.of(context).textTheme.titleSmall,
+                              style: Theme.of(context).textTheme.subtitle2,
                               children: <TextSpan>[
                                 TextSpan(
                                     text: context.loc.importKeyImportUsingRecoveryPhraseActionLink,

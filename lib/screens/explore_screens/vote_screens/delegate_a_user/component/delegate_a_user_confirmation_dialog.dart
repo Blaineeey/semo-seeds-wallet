@@ -9,7 +9,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/inter
 class DelegateAUserConfirmationDialog extends StatelessWidget {
   final ProfileModel selectedDelegate;
 
-  const DelegateAUserConfirmationDialog(this.selectedDelegate, {super.key});
+  const DelegateAUserConfirmationDialog(this.selectedDelegate, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +30,22 @@ class DelegateAUserConfirmationDialog extends StatelessWidget {
               Navigator.of(context).pop();
             },
             children: [
-              Text('Delegate Confirmation', style: Theme.of(context).textTheme.titleLarge),
+              Text('Delegate Confirmation', style: Theme.of(context).textTheme.headline6),
               const SizedBox(height: 30.0),
               Text(
                   'By selecting this Citizen as your delegate you are entrusting your Trust Tokens to them to vote with.',
-                  style: Theme.of(context).textTheme.titleSmall),
+                  style: Theme.of(context).textTheme.subtitle2),
               const SizedBox(height: 20.0),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                     text: 'Are you sure you would like ',
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.subtitle2,
                     children: <TextSpan>[
                       TextSpan(
                           text: '${selectedDelegate.nickname} (${selectedDelegate.account})',
                           style: Theme.of(context).textTheme.subtitle2Green3LowEmphasis),
-                      TextSpan(text: ' to be your delegate?', style: Theme.of(context).textTheme.titleSmall)
+                      TextSpan(text: ' to be your delegate?', style: Theme.of(context).textTheme.subtitle2)
                     ]),
               ),
             ],
