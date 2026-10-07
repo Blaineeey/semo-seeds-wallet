@@ -1,18 +1,18 @@
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 import 'package:seeds/datasource/remote/model/balance_model.dart';
+import 'package:seeds/datasource/remote/model/token_model.dart';
 
-class BalanceRepository extends HttpRepository {
-  Future<Result<BalanceModel>> getTokenBalance(String userAccount,
-      {required String tokenContract, required String symbol}) {
-    print('[http] get getTokenBalance $userAccount for $symbol');
+class BalanceRepository extends NetworkRepository {
+  Future<Result<dynamic>> getTokenBalance(String userAccount, TokenModel token) {
+    print('[http] get seeds getTokenBalance $userAccount for ${token.symbol}');
 
     final String request = '''
     {
-      "code":"$tokenContract",
+      "code":"${token.contract}",
       "account":"$userAccount",
-      "symbol":"$symbol" 
+      "symbol":"${token.symbol}" 
     }
     ''';
 
@@ -20,7 +20,7 @@ class BalanceRepository extends HttpRepository {
 
     return http
         .post(balanceURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<BalanceModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return BalanceModel.fromJson(body);
             }))
         .catchError((dynamic error) => mapHttpError(error));

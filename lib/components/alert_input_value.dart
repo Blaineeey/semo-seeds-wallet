@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 
 class AlertInputValue extends StatelessWidget {
   final String text;
   final bool isVisible;
 
-  const AlertInputValue(this.text, {super.key, required this.isVisible});
+  const AlertInputValue(this.text, {Key? key, required this.isVisible}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AlertInputValue extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 decoration: BoxDecoration(color: AppColors.darkGreen2, borderRadius: BorderRadius.circular(6)),
-                child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+                child: Text(text, style: Theme.of(context).textTheme.subtitle2),
               ),
             ],
           ),

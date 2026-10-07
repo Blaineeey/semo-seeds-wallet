@@ -1,13 +1,22 @@
-part of 'send_enter_data_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+// import 'package:seeds/datasource/remote/model/balance_model.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
-class SendEnterDataState extends Equatable {
+class SendEnterDataPageState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
   final String? errorMessage;
-  final ProfileModel sendTo;
-  final TokenDataModel tokenAmount;
+  final MemberModel sendTo;
+  final TokenDataModel quantity;
   final FiatDataModel? fiatAmount;
   final RatesState ratesState;
+  // final BalanceModel? balance;
   final TokenDataModel? availableBalance;
   final FiatDataModel? availableBalanceFiat;
   final bool isNextButtonEnabled;
@@ -16,7 +25,7 @@ class SendEnterDataState extends Equatable {
   final bool showAlert;
   final bool showSendingAnimation;
 
-  const SendEnterDataState({
+  const SendEnterDataPageState({
     required this.pageState,
     this.pageCommand,
     this.errorMessage,
@@ -26,7 +35,8 @@ class SendEnterDataState extends Equatable {
     this.availableBalance,
     this.availableBalanceFiat,
     required this.isNextButtonEnabled,
-    required this.tokenAmount,
+    // this.balance,
+    required this.quantity,
     required this.memo,
     required this.shouldAutoFocusEnterField,
     required this.showAlert,
@@ -44,30 +54,32 @@ class SendEnterDataState extends Equatable {
         availableBalance,
         availableBalanceFiat,
         isNextButtonEnabled,
-        tokenAmount,
+        // balance,
+        quantity,
         memo,
         shouldAutoFocusEnterField,
         showAlert,
         showSendingAnimation,
       ];
 
-  SendEnterDataState copyWith({
+  SendEnterDataPageState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
     String? errorMessage,
-    ProfileModel? sendTo,
+    MemberModel? sendTo,
     FiatDataModel? fiatAmount,
     RatesState? ratesState,
     TokenDataModel? availableBalance,
     FiatDataModel? availableBalanceFiat,
+    // BalanceModel? balance,
     bool? isNextButtonEnabled,
-    TokenDataModel? tokenAmount,
+    TokenDataModel? quantity,
     String? memo,
     bool? shouldAutoFocusEnterField,
     bool? showAlert,
     bool? showSendingAnimation,
   }) {
-    return SendEnterDataState(
+    return SendEnterDataPageState(
       pageState: pageState ?? this.pageState,
       pageCommand: pageCommand,
       errorMessage: errorMessage,
@@ -76,8 +88,9 @@ class SendEnterDataState extends Equatable {
       ratesState: ratesState ?? this.ratesState,
       availableBalance: availableBalance ?? this.availableBalance,
       availableBalanceFiat: availableBalanceFiat ?? this.availableBalanceFiat,
+      // balance: balance ?? this.balance,
       isNextButtonEnabled: isNextButtonEnabled ?? this.isNextButtonEnabled,
-      tokenAmount: tokenAmount ?? this.tokenAmount,
+      quantity: quantity ?? this.quantity,
       memo: memo ?? this.memo,
       shouldAutoFocusEnterField: shouldAutoFocusEnterField ?? this.shouldAutoFocusEnterField,
       showAlert: showAlert ?? this.showAlert,
@@ -85,13 +98,13 @@ class SendEnterDataState extends Equatable {
     );
   }
 
-  factory SendEnterDataState.initial(ProfileModel memberModel, RatesState ratesState) {
-    return SendEnterDataState(
+  factory SendEnterDataPageState.initial(MemberModel memberModel, RatesState ratesState) {
+    return SendEnterDataPageState(
       pageState: PageState.initial,
       sendTo: memberModel,
       ratesState: ratesState,
       isNextButtonEnabled: false,
-      tokenAmount: TokenDataModel(0, token: settingsStorage.selectedToken),
+      quantity: TokenDataModel(0, token: settingsStorage.selectedToken),
       memo: '',
       shouldAutoFocusEnterField: true,
       showAlert: false,

@@ -20,6 +20,10 @@ class ConnectionNotifier extends ChangeNotifier {
 
   final availableEndpoints = [
     remoteConfigurations.defaultEndPointUrl,
+    'https://mainnet.telosusa.io',
+    'https://telos.eosphere.io',
+    'https://telos.caleos.io',
+    'https://api.eos.miami',
   ];
 
   Future<void> discoverEndpoints() async {
@@ -51,7 +55,7 @@ class ConnectionNotifier extends ChangeNotifier {
         return Endpoint(endpoint, infinitePing);
       }
     } catch (err) {
-      print('error pinging: $err');
+      print('error pinging: ${err.toString()}');
       return Endpoint(endpoint, doubleInfinitePing);
     }
   }

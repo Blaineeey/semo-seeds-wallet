@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// commonly showed at the bottom of a ListView.Builder meanwhile
 /// this fetch data.
 class LoadingIndicatorList extends StatelessWidget {
-  const LoadingIndicatorList({super.key});
+  const LoadingIndicatorList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

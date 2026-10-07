@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
 import 'package:seeds/datasource/remote/model/generic_transaction_model.dart';
+import 'package:seeds/datasource/remote/model/token_model.dart';
+import 'package:seeds/domain-shared/app_constants.dart';
 import 'package:seeds/utils/read_times_tamp.dart';
 import 'package:seeds/utils/string_extension.dart';
 
@@ -12,7 +15,8 @@ class TransactionModel extends Equatable {
   final String? transactionId;
 
   String get symbol => quantity.split(" ")[1];
-  double get doubleQuantity => quantity.quantityAsDouble;
+  //double get doubleQuantity => quantity.quantityAsDouble;
+  TokenDataModel get dataModel => TokenDataModel(quantity.quantityAsDouble, token: TokenModel.fromSymbol(symbol));
 
   const TransactionModel(
       {required this.from,
@@ -25,20 +29,15 @@ class TransactionModel extends Equatable {
   @override
   List<Object?> get props => [transactionId];
 
-  static TransactionModel? fromJson(Map<String, dynamic> json) {
-    try {
-      return TransactionModel(
-        from: json['act']['data']['from'],
-        to: json['act']['data']['to'],
-        quantity: json['act']['data']['quantity'],
-        memo: json['act']['data']['memo'],
-        timestamp: parseTimestamp(json['@timestamp']),
-        transactionId: json['trx_id'],
-      );
-    }
-    catch (e){
-      return null;
-    }
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    return TransactionModel(
+      from: json['act']['data']['from'],
+      to: json['act']['data']['to'],
+      quantity: json['act']['data']['quantity'],
+      memo: json['act']['data']['memo'],
+      timestamp: parseTimestamp(json['@timestamp']),
+      transactionId: json['trx_id'],
+    );
   }
 
   factory TransactionModel.fromJsonMongo(Map<String, dynamic> json) {
@@ -54,13 +53,12 @@ class TransactionModel extends Equatable {
   }
 
   static TransactionModel? fromTransaction(GenericTransactionModel genericModel) {
-    if (genericModel.transaction.isTransfer) {
-      final action = genericModel.transaction.actions.first;
-      final data = action.data;
-      final String? from = data?['from'];
-      final String? to = data?['to'];
-      final String? quantity = data?['quantity'];
-      final String memo = data?['memo'] ?? "";
+    if (genericModel.action == transfer_action) {
+      final data = genericModel.data;
+      final String? from = data['from'];
+      final String? to = data['to'];
+      final String? quantity = data['quantity'];
+      final String memo = data['memo'] ?? "";
       if (from != null && to != null && quantity != null) {
         return TransactionModel(
           from: from,
@@ -74,5 +72,16 @@ class TransactionModel extends Equatable {
     }
 
     return null;
+  }
+
+  factory TransactionModel.fromTxData(Map<String, dynamic> data, String transactionId) {
+    return TransactionModel(
+      from: data['from'],
+      to: data['to'],
+      quantity: data['quantity'],
+      memo: data['memo'],
+      timestamp: DateTime.now().toUtc(),
+      transactionId: transactionId,
+    );
   }
 }

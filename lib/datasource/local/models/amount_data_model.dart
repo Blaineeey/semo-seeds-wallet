@@ -1,3 +1,5 @@
+import 'package:seeds/utils/double_extension.dart';
+
 abstract class AmountDataModel {
   final double amount;
   final String symbol;
@@ -9,13 +11,18 @@ abstract class AmountDataModel {
     this.precision = 4,
   });
 
-  // full precision formatted string, can be used for chain calls, example "10.0000 SEEDS"
+  // full precision formatted string, can be used for chain calls
   String asFormattedString() {
     return "${amount.toStringAsFixed(precision)} $symbol";
   }
 
-  // full precision string without symbol, e.g. "10.0000"
-  String asFixedString() {
-    return amount.toStringAsFixed(precision);
+  // only the number
+  String amountString() {
+    return amount.seedsFormatted;
+  }
+
+  // number and symbol, for display purposes
+  String amountStringWithSymbol() {
+    return "${amount.seedsFormatted}${" $symbol"}";
   }
 }

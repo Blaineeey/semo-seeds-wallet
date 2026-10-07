@@ -1,9 +1,12 @@
-part of '../viewmodels/proposals_list_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+/// --- EVENTS
+@immutable
 abstract class ProposalsListEvent extends Equatable {
   const ProposalsListEvent();
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class InitialLoadProposals extends ProposalsListEvent {

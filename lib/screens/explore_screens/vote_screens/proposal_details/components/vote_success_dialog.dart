@@ -5,7 +5,7 @@ import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
 
 class VoteSuccessDialog extends StatelessWidget {
-  const VoteSuccessDialog({super.key});
+  const VoteSuccessDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class VoteSuccessDialog extends StatelessWidget {
           'Thank you for coming and contributing your voice to the collective decision making process. Please make sure to come back at the start of the next Voting Cycle to empower more people!'
               .i18n,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: Theme.of(context).textTheme.subtitle2,
         ),
         const SizedBox(height: 16.0),
       ],

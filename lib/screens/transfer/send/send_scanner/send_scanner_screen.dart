@@ -1,61 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/components/scanner/scanner_view.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/components/scanner/scanner_widget.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/screens/transfer/send/send_scanner/interactor/viewmodels/send_scanner_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:seeds/screens/transfer/send/send_scanner/interactor/send_scanner_bloc.dart';
+import 'package:seeds/screens/transfer/send/send_scanner/interactor/viewmodels/scanner_events.dart';
+import 'package:seeds/screens/transfer/send/send_scanner/interactor/viewmodels/send_scanner_state.dart';
+import 'package:seeds/i18n/transfer/transfer.i18n.dart';
 
+/// SendScannerScreen SCREEN
 class SendScannerScreen extends StatefulWidget {
-  const SendScannerScreen({super.key});
+  const SendScannerScreen({Key? key}) : super(key: key);
 
   @override
   _SendScannerScreenState createState() => _SendScannerScreenState();
 }
 
 class _SendScannerScreenState extends State<SendScannerScreen> {
-  late ScannerView _scannerWidget;
-  late SendScannerBloc _sendScannerBloc;
+  late ScannerWidget _scannerWidget;
+  late SendPageBloc _sendPageBloc;
 
   @override
   void initState() {
     super.initState();
-    _sendScannerBloc = SendScannerBloc();
-    _scannerWidget = ScannerView(onCodeScanned: (scanResult) async {
-      _sendScannerBloc.add(ExecuteScanResult(scanResult));
+    _sendPageBloc = SendPageBloc();
+    _scannerWidget = ScannerWidget(resultCallBack: (scanResult) async {
+      _sendPageBloc.add(ExecuteScanResult(scanResult: scanResult));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.loc.transferSendScanQRCode)),
+      appBar: AppBar(title: Text("Scan QR Code".i18n)),
       body: BlocProvider(
-        create: (_) => _sendScannerBloc,
-        child: BlocListener<SendScannerBloc, SendScannerState>(
-          listenWhen: (_, current) => current.pageCommand != null,
-          listener: (context, state) {
+        create: (_) => _sendPageBloc,
+        child: BlocListener<SendPageBloc, SendPageState>(
+          listenWhen: (_, current) => current.pageState == PageState.success && current.pageCommand != null,
+          listener: (context, SendPageState state) {
+            _scannerWidget.stop();
+            BlocProvider.of<SendPageBloc>(context).add(ClearPageCommand());
+
             final pageCommand = state.pageCommand;
-            BlocProvider.of<SendScannerBloc>(context).add(const ClearSendScannerPageCommand());
             if (pageCommand is NavigateToRouteWithArguments) {
-              NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments, true);
+              NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments);
             }
           },
           child: Column(
             children: [
               const SizedBox(height: 32),
-              Text(context.loc.transferSendScanQRCodePrompt, style: Theme.of(context).textTheme.labelLarge),
+              Text("Scan QR Code to Send".i18n, style: Theme.of(context).textTheme.button),
               const SizedBox(height: 82),
               _scannerWidget,
-              BlocBuilder<SendScannerBloc, SendScannerState>(
-                builder: (context, state) {
+              BlocBuilder<SendPageBloc, SendPageState>(
+                buildWhen: (context, SendPageState state) => state.pageState != PageState.success,
+                builder: (context, SendPageState state) {
                   switch (state.pageState) {
                     case PageState.initial:
                       _scannerWidget.scan();
                       return const SizedBox.shrink();
                     case PageState.loading:
+                      _scannerWidget.showLoading();
                       return const SizedBox.shrink();
                     case PageState.failure:
                       return Padding(
@@ -69,7 +76,7 @@ class _SendScannerScreenState extends State<SendScannerScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               state.errorMessage!,
-                              style: Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.orangeYellow),
+                              style: Theme.of(context).textTheme.subtitle2!.copyWith(color: AppColors.orangeYellow),
                               textAlign: TextAlign.center,
                             ),
                           ),

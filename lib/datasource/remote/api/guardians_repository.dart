@@ -1,19 +1,20 @@
 import 'package:async/async.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:dart_esr/dart_esr.dart' as esr;
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart/eosdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/crypto/dart_esr/dart_esr.dart' as esr;
-import 'package:seeds/crypto/eosdart/eosdart.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_scopes.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_tables.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 import 'package:seeds/datasource/remote/model/account_guardians_model.dart';
 import 'package:seeds/datasource/remote/model/user_recover_model.dart';
 import 'package:seeds/domain-shared/app_constants.dart';
 
-class GuardiansRepository extends EosRepository with HttpRepository {
+class GuardiansRepository extends EosRepository with NetworkRepository {
   /// Step 1 in the guardian set up - call this to allow the guard.seeds contract to
   /// change the key.
   ///
@@ -35,16 +36,16 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     // Check if permissions are already set?
     // ignore: unnecessary_cast
-    for (final Map<String, dynamic>? acct in (ownerPermission.requiredAuth?.accounts ?? []) as List<dynamic>) {
-      if (acct?['permission']['actor'] == SeedsCode.accountGuards.value) {
+    for (final Map<String, dynamic> acct in ownerPermission.requiredAuth.accounts as List<dynamic>) {
+      if (acct['permission']['actor'] == account_guards) {
         print('permission already set, doing nothing');
         return currentPermissions;
       }
     }
 
-    ownerPermission.requiredAuth?.accounts?.add({
-      'weight': ownerPermission.requiredAuth!.threshold,
-      'permission': {'actor': SeedsCode.accountGuards.value, 'permission': 'eosio.code'}
+    ownerPermission.requiredAuth.accounts.add({
+      'weight': ownerPermission.requiredAuth.threshold,
+      'permission': {'actor': account_guards, 'permission': 'eosio.code'}
     });
 
     return await _updatePermission(ownerPermission);
@@ -63,12 +64,12 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     final actions = [
       Action()
-        ..account = SeedsCode.accountGuards.value
-        ..name = SeedsEosAction.actionNameInit.value
+        ..account = account_guards
+        ..name = actionNameInit
         ..data = {
           'user_account': accountName,
           'guardian_accounts': guardians,
-          'time_delay_sec': guardianRecoveryTimeDelaySec,
+          'time_delay_sec': const Duration(minutes: 3).inSeconds,
         }
     ];
 
@@ -102,15 +103,15 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     final actions = [
       Action()
-        ..account = SeedsCode.accountGuards.value
-        ..name = SeedsEosAction.actionNameClaim.value
+        ..account = account_guards
+        ..name = actionNameClaim
         ..data = {'user_account': userAccount}
     ];
 
     for (final action in actions) {
       action.authorization = [
         Authorization()
-          ..actor = SeedsCode.accountGuards.value
+          ..actor = account_guards
           ..permission = permissionApplication
       ];
     }
@@ -138,8 +139,8 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     final actions = [
       Action()
-        ..account = SeedsCode.accountGuards.value
-        ..name = SeedsEosAction.actionNameCancel.value
+        ..account = account_guards
+        ..name = actionNameCancel
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -172,8 +173,8 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     final actions = [
       Action()
-        ..account = SeedsCode.accountGuards.value
-        ..name = SeedsEosAction.actionNameRecover.value
+        ..account = account_guards
+        ..name = actionNameRecover
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -217,13 +218,13 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 
     final permissionsMap = _requiredAuthToJson(permission.requiredAuth!);
 
-    print('converted JSPN: $permissionsMap');
+    print('converted JSPN: ${permissionsMap.toString()}');
     final accountName = settingsStorage.accountName;
 
     final actions = [
       Action()
-        ..account = SeedsCode.accountEosio.value
-        ..name = SeedsEosAction.actionNameUpdateauth.value
+        ..account = account_eosio
+        ..name = actionNameUpdateauth
         ..data = {
           'account': accountName,
           'permission': permission.permName,
@@ -256,9 +257,9 @@ class GuardiansRepository extends EosRepository with HttpRepository {
     final String requestURL = "$baseURL/v1/chain/get_table_rows";
 
     final String request = createRequest(
-        code: SeedsCode.accountGuards,
-        scope: SeedsCode.accountGuards.value,
-        table: SeedsTable.tableRecover,
+        code: account_guards,
+        scope: account_guards,
+        table: tableRecover,
         lowerBound: accountName,
         upperBound: accountName);
 
@@ -277,9 +278,9 @@ class GuardiansRepository extends EosRepository with HttpRepository {
     final String requestURL = "$baseURL/v1/chain/get_table_rows";
 
     final String request = createRequest(
-      code: SeedsCode.accountGuards,
-      scope: SeedsCode.accountGuards.value,
-      table: SeedsTable.tableGuards,
+      code: account_guards,
+      scope: account_guards,
+      table: tableGuards,
       lowerBound: accountName,
       upperBound: accountName,
     );
@@ -305,12 +306,12 @@ class GuardiansRepository extends EosRepository with HttpRepository {
     };
 
     final esr.Action action = esr.Action()
-      ..account = SeedsCode.accountGuards.value
+      ..account = account_guards
       ..name = 'recover'
       ..authorization = auth
       ..data = data;
 
-    final esr.SigningRequestCreateArguments args = esr.SigningRequestCreateArguments(action: action, chainId: chainId);
+    final esr.SigningRequestCreateArguments args = esr.SigningRequestCreateArguments(action: action, chainId: chain_id);
 
     return esr.SigningRequestManager.create(args,
             options: esr.defaultSigningRequestEncodingOptions(
@@ -325,7 +326,7 @@ class GuardiansRepository extends EosRepository with HttpRepository {
 // method to properly convert RequiredAuth to JSON - the library doesn't work
 Map<String, dynamic> _requiredAuthToJson(RequiredAuth instance) => <String, dynamic>{
       'threshold': instance.threshold,
-      'keys': List<dynamic>.from(instance.keys!.map((e) => e?.toJson())),
+      'keys': List<dynamic>.from(instance.keys!.map((e) => e.toJson())),
       'accounts': instance.accounts,
       'waits': instance.waits
     };

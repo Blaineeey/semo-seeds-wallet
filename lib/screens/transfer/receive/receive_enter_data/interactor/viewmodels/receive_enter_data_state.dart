@@ -1,16 +1,25 @@
-part of 'receive_enter_data_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/datasource/remote/model/balance_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
+/// --- STATE
 class ReceiveEnterDataState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
   final String? errorMessage;
-  final FiatDataModel? fiatAmount;
-  final TokenDataModel tokenAmount;
-  final TokenDataModel? availableBalanceToken;
-  final FiatDataModel? availableBalanceFiat;
   final RatesState ratesState;
-  final String? memo;
+  final double fiatAmount;
+  final String? description;
+  final BalanceModel? availableBalance; // TODO(n13): this seems redundant with available Balance Seeds?!
+  final TokenDataModel? availableBalanceSeeds;
+  final FiatDataModel? availableBalanceFiat;
   final bool isNextButtonEnabled;
+  final double quantity;
   final String? invoiceLink;
   final bool isAutoFocus;
 
@@ -20,11 +29,12 @@ class ReceiveEnterDataState extends Equatable {
     this.errorMessage,
     required this.ratesState,
     required this.fiatAmount,
+    this.availableBalance,
     this.availableBalanceFiat,
-    this.availableBalanceToken,
+    this.availableBalanceSeeds,
     required this.isNextButtonEnabled,
-    this.memo,
-    required this.tokenAmount,
+    this.description,
+    required this.quantity,
     this.invoiceLink,
     required this.isAutoFocus,
   });
@@ -36,32 +46,30 @@ class ReceiveEnterDataState extends Equatable {
         errorMessage,
         ratesState,
         fiatAmount,
+        availableBalance,
         availableBalanceFiat,
-        availableBalanceToken,
+        availableBalanceSeeds,
         isNextButtonEnabled,
-        memo,
-        tokenAmount,
+        description,
+        quantity,
         invoiceLink,
         isAutoFocus
       ];
-
-  String generateRandomString(int length) {
-    const availableChars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-    return List.generate(length, (_) => availableChars[Random().nextInt(availableChars.length)]).join();
-  }
 
   ReceiveEnterDataState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
     String? errorMessage,
     RatesState? ratesState,
-    FiatDataModel? fiatAmount,
-    TokenDataModel? tokenAmount,
-    TokenDataModel? availableBalanceToken,
+    double? fiatAmount,
+    BalanceModel? availableBalance,
     FiatDataModel? availableBalanceFiat,
     bool? isNextButtonEnabled,
-    String? memo,
+    TokenDataModel? availableBalanceSeeds,
+    String? description,
+    double? quantity,
     String? invoiceLink,
+    String? seedsAmount,
     bool? isAutoFocus,
   }) {
     return ReceiveEnterDataState(
@@ -70,26 +78,26 @@ class ReceiveEnterDataState extends Equatable {
       errorMessage: errorMessage,
       ratesState: ratesState ?? this.ratesState,
       fiatAmount: fiatAmount ?? this.fiatAmount,
-      tokenAmount: tokenAmount ?? this.tokenAmount,
+      availableBalance: availableBalance ?? this.availableBalance,
       availableBalanceFiat: availableBalanceFiat ?? this.availableBalanceFiat,
-      availableBalanceToken: availableBalanceToken ?? this.availableBalanceToken,
       isNextButtonEnabled: isNextButtonEnabled ?? this.isNextButtonEnabled,
-      memo: memo ?? this.memo,
+      availableBalanceSeeds: availableBalanceSeeds ?? this.availableBalanceSeeds,
+      description: description ?? this.description,
+      quantity: quantity ?? this.quantity,
       invoiceLink: invoiceLink ?? this.invoiceLink,
       isAutoFocus: isAutoFocus ?? this.isAutoFocus,
     );
   }
 
   factory ReceiveEnterDataState.initial(RatesState ratesState) {
-    final tokenAmount = TokenDataModel.fromSelected(0);
     return ReceiveEnterDataState(
-      availableBalanceToken: tokenAmount,
-      availableBalanceFiat: ratesState.tokenToFiat(tokenAmount, settingsStorage.selectedFiatCurrency),
+      availableBalanceSeeds: TokenDataModel(0, token: settingsStorage.selectedToken),
+      availableBalanceFiat: FiatDataModel(0),
       pageState: PageState.initial,
       ratesState: ratesState,
-      fiatAmount: ratesState.tokenToFiat(tokenAmount, settingsStorage.selectedFiatCurrency),
+      fiatAmount: 0,
       isNextButtonEnabled: false,
-      tokenAmount: tokenAmount,
+      quantity: 0,
       isAutoFocus: true,
     );
   }
