@@ -1,51 +1,84 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:seeds/datasource/local/member_model_cache_item.dart';
-import 'package:seeds/datasource/local/models/vote_model_adapter.dart';
-import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_push_notification_service.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
-import 'package:seeds/datasource/remote/model/token_model.dart';
-import 'package:seeds/domain-shared/bloc_observer.dart';
-import 'package:seeds/seeds_app.dart';
+import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:seeds/app_development.dart';
+import 'package:seeds/app_production.dart';
+import 'package:seeds/models/VoteResultAdapter.dart';
+import 'package:seeds/models/member_adapter.dart';
+import 'package:seeds/models/models.dart';
+import 'package:seeds/models/transaction_adapter.dart';
+import 'package:seeds/providers/notifiers/voted_notifier.dart';
+import 'package:seeds/providers/services/firebase/firebase_remote_config.dart';
 
-Future<void> main() async {
-  // Zone to handle asynchronous errors (Dart).
-  // for details: https://docs.flutter.dev/testing/errors
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load();
-    await Firebase.initializeApp();
-    await settingsStorage.initialise();
-    await PushNotificationService().initialise();
-    await remoteConfigurations.initialise();
-    await TokenModel.installModels(['localscale','lightwallet','experimental'], [TokenModel.seedsEcosysUsecase]);
-    await Hive.initFlutter();
-    Hive.registerAdapter(MemberModelCacheItemAdapter());
-    Hive.registerAdapter(VoteModelAdapter());
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+import 'package:sentry/sentry.dart' as Sentry;
 
-    // Called whenever the Flutter framework catches an error.
-    FlutterError.onError = (details) async {
-      FlutterError.presentError(details);
-      // TODO(Raul): use FirebaseCrashlytics or whatever
-      //await FirebaseCrashlytics.instance.recordFlutterError(details);
-    };
+final Sentry.SentryClient _sentry = Sentry.SentryClient(
+    dsn: "https://ee2dd9f706974248b5b4a10850586d94@sentry.io/2239437");
 
-    if (kDebugMode) {
-      /// Bloc logs only in debug (for better performance in release)
-      BlocOverrides.runZoned(() => runApp(const SeedsApp()), blocObserver: DebugBlocObserver());
+bool get inDevelopmentMode {
+  bool inDebugMode = false;
+  assert(inDebugMode = true);
+  return inDebugMode;
+}
+
+/// Reports [error] along with its [stackTrace] to Sentry.io.
+Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
+  print('Caught error: $error');
+  print('Reporting to Sentry.io...');
+
+  final Sentry.SentryResponse response = await _sentry.captureException(
+    exception: error,
+    stackTrace: stackTrace,
+  );
+
+  if (response.isSuccessful) {
+    print('Success! Event ID: ${response.eventId}');
+  } else {
+    print('Failed to report to Sentry.io: ${response.error}');
+  }
+}
+
+main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var appDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDir.path);
+  Hive.registerAdapter<MemberModel>(MemberAdapter());
+  Hive.registerAdapter<VoteResult>(VoteResultAdapter());
+  Hive.registerAdapter<TransactionModel>(TransactionAdapter());
+  await Firebase.initializeApp();
+  FirebaseRemoteConfigService().initialise();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    if (inDevelopmentMode) {
+      runApp(SeedsDevApp());
     } else {
-      runApp(const SeedsApp());
+      FlutterError.onError = (FlutterErrorDetails details) async {
+        print('FlutterError.onError caught an error');
+        await _reportError(details.exception, details.stack);
+      };
+
+      Isolate.current.addErrorListener(
+        RawReceivePort((dynamic pair) async {
+          print('Isolate.current.addErrorListener caught an error');
+          await _reportError(
+            (pair as List<String>).first,
+            (pair as List<String>).last,
+          );
+        }).sendPort,
+      );
+
+      runZonedGuarded<Future<Null>>(() async {
+        runApp(SeedsApp());
+      }, (error, stackTrace) async {
+        print('Zone caught an error');
+        await _reportError(error, stackTrace);
+      });
     }
-  }, (error, stackTrace) async {
-    //await FirebaseCrashlytics.instance.recordError(error, stack);
   });
 }
