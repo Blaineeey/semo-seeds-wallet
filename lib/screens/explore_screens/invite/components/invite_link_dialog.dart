@@ -8,7 +8,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 import 'package:share/share.dart';
 
 class InviteLinkDialog extends StatefulWidget {
-  const InviteLinkDialog({super.key});
+  const InviteLinkDialog({Key? key}) : super(key: key);
 
   @override
   State<InviteLinkDialog> createState() => _InviteLinkDialogState();
@@ -34,7 +34,7 @@ class _InviteLinkDialogState extends State<InviteLinkDialog> {
               child: CustomDialog(
                 icon: SvgPicture.asset('assets/images/security/success_outlined_icon.svg'),
                 rightButtonTitle: context.loc.inviteLinkDialogRightButtonTitle,
-                leftButtonTitle: _showCloseDialogButton ? context.loc.genericCloseButtonTitle : '',
+                leftButtonTitle: _showCloseDialogButton ? context.loc.inviteLinkDialogLeftButtonTitle : '',
                 onRightButtonPressed: () async {
                   setState(() => _showCloseDialogButton = true);
                   await Share.share(state.dynamicSecretLink!);
@@ -43,22 +43,22 @@ class _InviteLinkDialogState extends State<InviteLinkDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.tokenAmount.amountString(), style: Theme.of(context).textTheme.headlineMedium),
+                      Text(state.tokenAmount.amountString(), style: Theme.of(context).textTheme.headline4),
                       Padding(
                         padding: const EdgeInsets.only(top: 12, left: 4),
-                        child: Text(state.tokenAmount.symbol, style: Theme.of(context).textTheme.titleSmall),
+                        child: Text(state.tokenAmount.symbol, style: Theme.of(context).textTheme.subtitle2),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4.0),
-                  Text(state.fiatAmount.asFormattedString(), style: Theme.of(context).textTheme.titleSmall),
+                  Text(state.fiatAmount.asFormattedString(), style: Theme.of(context).textTheme.subtitle2),
                   const SizedBox(height: 20.0),
                   QrCodeGeneratorWidget(data: state.dynamicSecretLink!, size: 254),
                   const SizedBox(height: 20.0),
                   Text(
                     context.loc.inviteLinkDialogMessage,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: Theme.of(context).textTheme.button,
                   ),
                 ],
               ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class SendLoadingIndicator extends StatelessWidget {
-  const SendLoadingIndicator({super.key});
+  const SendLoadingIndicator({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

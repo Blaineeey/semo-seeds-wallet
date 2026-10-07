@@ -7,12 +7,11 @@ import 'package:seeds/crypto/eosdart/eosdart.dart' as eos;
 
 class EOSSerializeUtils {
   /// serialize actions in a transaction
-
-  static Future<void> serializeActions(int version, eos.Contract contract, esr.Action? action) async {
+  // ignore: always_declare_return_types, type_annotate_public_apis
+  static serializeActions(eos.Contract contract, esr.Action? action) async {
     if (action!.account!.isEmpty && action.name == 'identity' && action.data is esr.Identity) {
-      action.data =
-          // ignore: cast_nullable_to_non_nullable
-          (action.data as esr.Identity).toBinary(esr.ESRConstants.signingRequestAbiType(version)['identity']!);
+      // ignore: cast_nullable_to_non_nullable
+      action.data = (action.data as esr.Identity).toBinary(esr.ESRConstants.signingRequestAbiType['identity']!);
     } else {
       action.data = EOSSerializeUtils.serializeActionData(
         contract,
@@ -24,7 +23,7 @@ class EOSSerializeUtils {
   }
 
   /// Deserialize action data. If `data` is a `string`, then it's assumed to be in hex. */
-  static Object? deserializeActionData(int version, eos.Contract contract, String account, String? name, dynamic data,
+  static Object? deserializeActionData(eos.Contract contract, String account, String? name, dynamic data,
       esr.TextEncoder? textEncoder, esr.TextDecoder? textDecoder) {
     final action = contract.actions[name];
     if (data is String) {
@@ -36,7 +35,7 @@ class EOSSerializeUtils {
     }
 
     if (account.isEmpty && name == 'identity') {
-      return esr.Identity.fromBinary(esr.ESRConstants.signingRequestAbiType(version)['identity']!, data);
+      return esr.Identity.fromBinary(esr.ESRConstants.signingRequestAbiType['identity']!, data);
     }
 
     final buffer = eos.SerialBuffer(data);
@@ -45,7 +44,6 @@ class EOSSerializeUtils {
 
   /// Deserialize action. If `data` is a `string`, then it's assumed to be in hex. */
   static esr.Action deserializeAction(
-      int version,
       eos.Contract contract,
       String account,
       String? name,
@@ -57,8 +55,7 @@ class EOSSerializeUtils {
       ..account = account
       ..name = name
       ..authorization = authorization
-      ..data =
-          EOSSerializeUtils.deserializeActionData(version, contract, account, name, data, textEncoder, textDecoder);
+      ..data = EOSSerializeUtils.deserializeActionData(contract, account, name, data, textEncoder, textDecoder);
   }
 
   /// Convert action data to serialized form (hex) */

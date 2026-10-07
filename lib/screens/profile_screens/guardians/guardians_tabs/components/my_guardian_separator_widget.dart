@@ -8,7 +8,7 @@ class GuardianListSeparatorWidget extends StatelessWidget {
   final int index;
   final List<GuardianModel> guardians;
 
-  const GuardianListSeparatorWidget({super.key, required this.index, required this.guardians});
+  const GuardianListSeparatorWidget({Key? key, required this.index, required this.guardians}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

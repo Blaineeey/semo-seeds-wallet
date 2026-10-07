@@ -8,7 +8,7 @@ import 'package:seeds/screens/explore_screens/flag/flags/interactor/viewmodels/f
 class RemoveFlagInfoDialog extends StatelessWidget {
   final String userAccount;
 
-  const RemoveFlagInfoDialog(this.userAccount, {super.key});
+  const RemoveFlagInfoDialog(this.userAccount, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class RemoveFlagInfoDialog extends StatelessWidget {
               Text(
                 'Removing the Flag means you believe the member is now acting in good faith. Penalties will be removed from the member. ',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               const SizedBox(height: 20.0),
             ],

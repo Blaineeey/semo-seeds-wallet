@@ -15,7 +15,7 @@ const _numberOfWords = 12;
 const _numberOfColumns = 3;
 
 class ImportWordsScreen extends StatelessWidget {
-  const ImportWordsScreen({super.key});
+  const ImportWordsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,7 @@ class ImportWordsScreen extends StatelessWidget {
                       if (state.userEnteredWords.isEmpty)
                         RichText(
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.titleSmall,
+                            style: Theme.of(context).textTheme.subtitle2,
                             children: <TextSpan>[
                               TextSpan(
                                 text: context.loc.importKeyImportUsingPrivateKeyActionLink,

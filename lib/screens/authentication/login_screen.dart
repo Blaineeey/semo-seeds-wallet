@@ -12,7 +12,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 const int _approxWidgetHeight = 450;
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +33,10 @@ class LoginScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(context.loc.loginRecoverAccountActionSegment1, style: Theme.of(context).textTheme.titleSmall),
+              Text(context.loc.loginRecoverAccountActionSegment1, style: Theme.of(context).textTheme.subtitle2),
               Text(context.loc.loginRecoverAccountActionLink,
                   style: Theme.of(context).textTheme.subtitle2HighEmphasisGreen1),
-              Text(context.loc.loginRecoverAccountActionSegment2, style: Theme.of(context).textTheme.titleSmall),
+              Text(context.loc.loginRecoverAccountActionSegment2, style: Theme.of(context).textTheme.subtitle2),
             ],
           ),
         ),
@@ -59,14 +59,14 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.loc.loginFirstTimeHere, style: Theme.of(context).textTheme.titleSmall),
+                    Text(context.loc.loginFirstTimeHere, style: Theme.of(context).textTheme.subtitle2),
                     const SizedBox(height: 10),
                     FlatButtonLong(
                       onPressed: () => NavigationService.of(context).navigateTo(Routes.signup),
                       title: context.loc.loginClaimInviteCodeButtonTitle,
                     ),
                     const SizedBox(height: 40),
-                    Text(context.loc.loginAlreadyHaveAnAccount, style: Theme.of(context).textTheme.titleSmall),
+                    Text(context.loc.loginAlreadyHaveAnAccount, style: Theme.of(context).textTheme.subtitle2),
                     const SizedBox(height: 10),
                     FlatButtonLongOutlined(
                       onPressed: () {

@@ -10,7 +10,7 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupportScreen extends StatelessWidget {
-  const SupportScreen({super.key});
+  const SupportScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class SupportScreen extends StatelessWidget {
                 children: [
                   InkWell(
                     borderRadius: BorderRadius.circular(defaultCardBorderRadius),
-                    onTap: () async => launchUrl(Uri.parse('https://discord.gg/pSWdqxTjvB')),
+                    onTap: () async => launch('https://discord.gg/pSWdqxTjvB'),
                     child: Ink(
                       decoration: const BoxDecoration(
                         color: AppColors.lightGreen2,

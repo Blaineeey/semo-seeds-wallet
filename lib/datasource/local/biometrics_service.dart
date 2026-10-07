@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth_darwin/local_auth_darwin.dart';
 
 class BiometricsService {
   final LocalAuthentication _localAuth;
@@ -27,7 +26,7 @@ class BiometricsService {
   }
 
   Future<bool> authenticateBiometric(BiometricType type) async {
-    late AndroidAuthMessages androidAuthStrings;
+    AndroidAuthMessages androidAuthStrings;
     switch (type) {
       case BiometricType.fingerprint:
         androidAuthStrings = const AndroidAuthMessages(
@@ -50,13 +49,11 @@ class BiometricsService {
     }
     try {
       return _localAuth.authenticate(
+        biometricOnly: true,
+        androidAuthStrings: androidAuthStrings,
         localizedReason: 'Use your device to authenticate',
-        authMessages: [const IOSAuthMessages(), androidAuthStrings],
-        options: const AuthenticationOptions(
-          useErrorDialogs: false,
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
+        useErrorDialogs: false,
+        stickyAuth: true,
       );
     } on PlatformException catch (e) {
       print(e);
