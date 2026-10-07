@@ -1,10 +1,10 @@
 name: seeds
 description: SEEDS Wallet
 
-version: 2.9.6+90
+version: 1.4.2+32
 
 environment:
-  sdk: '>=2.17.0 <3.6.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 analyzer:
   enable-experiment: extension-methods
@@ -14,65 +14,62 @@ publish_to: none
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.0.1
-  equatable: ^2.0.3
-  url_launcher: ^6.3.0
-  step_progress_indicator: ^1.0.1
-  uni_links: ^0.5.1
-  intl: ^0.19.0
+  flutter_bloc: ^7.0.0
+  equatable: ^2.0.0
+  url_launcher: ^6.0.3
+  step_progress_indicator: ^1.0.0-nullsafety.0
+  intro_views_flutter: ^3.0.0
+  intl: ^0.17.0
   flutter_localizations:
     sdk: flutter
-  i18n_extension: ^12.0.1
-  http: ^0.13.4
-  shared_preferences: ^2.0.9
-  flutter_secure_storage: ^5.0.2
-  local_auth: ^2.0.1
-  timeago: ^3.1.0
-  cached_network_image: ^3.2.1
-  flutter_svg: ^1.0.3
+  i18n_extension: ^4.0.0
+  cupertino_icons: ^1.0.2
+  http: ^0.13.1
+  shared_preferences: ^2.0.5
+  flutter_secure_storage: ^4.1.0
+  local_auth: ^1.1.1
+  timeago: ^3.0.2
+  cached_network_image: ^3.0.0
+  passcode_screen: ^2.0.0
+  percent_indicator: ^3.0.1
+  flutter_svg: ^0.21.0-nullsafety.0
+  firebase_dynamic_links: ^2.0.0-dev.1
+  firebase_messaging: ^9.1.0
+  firebase_core: ^1.0.2
+  firebase_storage: ^8.0.1
+  cloud_firestore: ^1.0.3
+  firebase_remote_config: ^0.9.0-dev.0
+  liquid_pull_to_refresh: ^3.0.0
   shimmer: ^2.0.0
-  share: ^2.0.4
-  image_cropper: ^2.0.3 
-  carousel_slider: ^5.0.0
+  share: ^2.0.1
+  provider: ^5.0.0
+  photo_view: ^0.11.1
+  image_cropper: ^1.2.1
+  carousel_slider: ^4.0.0-nullsafety.0
+  dots_indicator: ^2.0.0
+  permission_handler: ^6.1.1
   qr_flutter: ^4.0.0
-  image_picker: ^0.8.5+3
-  qr_code_scanner: ^1.0.0
-  collection: ^1.15.0
-  mask_text_input_formatter: ^2.0.0
-  lottie: ^1.2.1
-  hive: ^2.0.6
-  hive_flutter: ^1.1.0
-  palette_generator: ^0.3.2
-  webview_flutter: ^3.0.0
-  in_app_review: ^2.0.3
-  json_annotation: ^4.4.0
-  bs58check: ^1.0.2
-  pointycastle: ^3.4.0
-  hdkey: ^0.0.1
-  google_maps_flutter: ^2.1.1
-  geolocator: ^8.2.0
-  geocoding: ^2.0.2
-  permission_handler: ^9.2.0
-  json_schema: ^5.1.7
-  local_auth_android: ^1.0.32
-  local_auth_darwin: ^1.3.1
-  firebase_dynamic_links: ^5.3.4
-  firebase_remote_config: ^4.2.4
-  firebase_storage: ^11.2.5
-  cloud_firestore: ^4.8.4
-  firebase_messaging: ^14.6.5
-  geoflutterfire2: ^2.3.15
-  firebase_app_installations: ^0.2.3+4
-  package_info_plus: ^4.1.0
-  flutter_dotenv: ^5.1.0
-  dynamic_parallel_queue: ^1.0.3+2
+  image_picker: ^0.7.4
+  oktoast: ^3.0.0
+  eosdart:
+    git: git://github.com/JoinSEEDS/eosdart.git
+  dart_esr:
+    git:
+      url: https://github.com/JoinSEEDS/dart-esr.git
+  webview_flutter: ^2.0.2
+  rubber: ^1.0.0
+  path_provider: ^2.0.1
+  dotted_border: ^2.0.0-nullsafety.0
+  pedantic: ^1.9.2
+  flutter_pagewise: ^2.0.1
+  qr_code_scanner: ^0.4.0
+  collection: ^1.15.0-nullsafety.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test: any
   mockito: ^5.0.7
-  lint: ^1.7.2
 
 flutter_icons:
   android: "app_icon"
@@ -81,7 +78,6 @@ flutter_icons:
 
 flutter:
   uses-material-design: true
-  generate: true
 
   assets:
     # assets begin
@@ -91,7 +87,6 @@ flutter:
     - assets/images/seeds_currency_icon.svg
     - assets/images/app_icon_transparent.png
     - assets/images/loading.png
-    - assets/images/seeds_symbol_forest.png
     - assets/images/onboarding/onboarding1.png
     - assets/images/onboarding/onboarding2.png
     - assets/images/onboarding/onboarding3.png
@@ -103,72 +98,44 @@ flutter:
     - assets/images/onboarding/leaves/pointing_right/big_dark_leaf.svg
     - assets/images/onboarding/leaves/pointing_right/big_light_leaf.svg
     - assets/images/onboarding/leaves/pointing_right/small_light_leaf.svg
-    - assets/images/community.svg
     - assets/images/governance.svg
+    - assets/images/community.svg
     - assets/images/harvest.svg
     - assets/images/exchange.svg
     - assets/images/ecosystem.svg
     - assets/images/wallet.svg
     - assets/images/profile.svg
     - assets/images/logout.svg
+    - assets/images/lotus.svg
     - assets/images/lotus_support_small.svg
     - assets/images/lotus_support_big.svg
     - assets/images/seeds.png
-    - assets/images/appbar/seeds_symbol_forest.png
     - assets/images/seeds_light_wallet_logo.png
     - assets/images/guardians/guardian_tutorial_1.png
     - assets/images/guardians/guardian_tutorial_2.png
     - assets/images/guardians/guardian_tutorial_3.png
     - assets/images/guardians/guardian_tutorial_4.png
-    - assets/images/guardians/invite_guardian_mail.svg
-    - assets/images/guardians/check_circle.png
-    - assets/images/guardians/invite_guardian_mail.png
     - assets/images/guardians/guardian_shield.png
-    - assets/images/guardians/onboarding/onboarding_1.jpg
-    - assets/images/guardians/onboarding/onboarding_2.jpg
-    - assets/images/guardians/onboarding/onboarding_3.jpg
-    - assets/images/guardians/onboarding/onboarding_4.jpg
     - assets/images/navigation_bar/explore.svg
     - assets/images/navigation_bar/wallet.svg
     - assets/images/navigation_bar/user_profile.svg
     - assets/images/navigation_bar/explore_selected.svg
     - assets/images/navigation_bar/wallet_selected.svg
     - assets/images/navigation_bar/user_profile_selected.svg
-    - assets/images/explore/hypha_dho_card.jpg
-    - assets/images/explore/get_seeds_card.png
-    - assets/images/explore/delegate.svg
-    - assets/images/explore/marker_location.svg
-    - assets/images/explore/introducing_delegate.png
-    - assets/images/explore/swap_leaves_left.png
-    - assets/images/explore/swap_leaves_rigth.png
+    - assets/images/explore/person_send_invite.svg
+    - assets/images/explore/plant_seed.svg
+    - assets/images/explore/thumb_up.svg
     - assets/images/wallet/arrow_up.svg
-    - assets/images/wallet/share_transaction_id.svg
-    - assets/images/wallet/leaves_bttm_left.png
-    - assets/images/wallet/leaves_bttm_right.png
     - assets/images/wallet/arrow_down.svg
     - assets/images/wallet/app_bar/appbar_icon.svg
     - assets/images/wallet/app_bar/scan_qr_code_icon.svg
     - assets/images/wallet/app_bar/appbar_seeds_text.svg
     - assets/images/wallet/currency_info_cards/seeds/logo.jpg
-    - assets/images/wallet/currency_info_cards/husd/logo.jpg
-    - assets/images/wallet/currency_info_cards/husd/background.jpg
     - assets/images/wallet/currency_info_cards/seeds/background.jpg
-    - assets/images/wallet/currency_info_cards/lscl/background.jpg
-    - assets/images/wallet/currency_info_cards/lscl/logo.png
     - assets/images/wallet/currency_info_cards/planted_seeds/background.jpg
     - assets/images/wallet/currency_info_cards/planted_seeds/logo.jpg
     - assets/images/wallet/currency_info_cards/hypha/background.jpg
     - assets/images/wallet/currency_info_cards/hypha/logo.jpg
-    - assets/images/wallet/currency_info_cards/stars/background.jpg
-    - assets/images/wallet/currency_info_cards/stars/logo.jpg
-    - assets/images/wallet/currency_info_cards/tlos/background.png
-    - assets/images/wallet/currency_info_cards/tlos/logo.png
-    - assets/images/wallet/currency_info_cards/seeds/seeds_check_transp.png
-    - assets/images/wallet/currency_info_cards/experimental.png
-    - assets/images/profile/lotus.svg
-    - assets/images/profile/logout_icon.svg
-    - assets/images/profile/contribution_icon.svg
-    - assets/images/profile/celebration_icon.png
     - assets/images/security/key_guardians_icon.svg
     - assets/images/security/success_outlined_icon.svg
     - assets/images/citizenship/reputation.svg
@@ -180,22 +147,9 @@ flutter:
     - assets/images/contribution/community.svg
     - assets/images/contribution/planted.svg
     - assets/images/contribution/transaction.svg
-    - assets/images/contribution/contribution_detail/petals_left.png
-    - assets/images/contribution/contribution_detail/petals_right.png
     - assets/images/seeds_logo.svg
     - assets/images/login/background.png
     - assets/images/login/seeds_light_wallet_logo.svg
-    - assets/images/receive/receive_input_seeds.svg
-    - assets/images/receive/merchant.svg
-    - assets/images/currency_switch_button.svg
-    - assets/images/send/telos_logo.png
-    - assets/images/transfer/seeds_icon.svg
-    - assets/images/transfer/arrow_up.svg
-    - assets/animations/forest.json
-    - assets/animations/send_animation.json
-    - assets/images/google/powered_by_google_on_white.png
-    - assets/images/google/powered_by_google_on_non_white.png
-    - .env
     # assets end
 
   fonts:
@@ -208,6 +162,28 @@ flutter:
     # w700 Bold
     # w800 Extra-bold
     # w900 Black, the most thick
+
+    #DEPRECATED - DO NOT USE (worksans)
+    - family: worksans
+      fonts:
+        - asset: assets/fonts/worksans/WorkSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/worksans/WorkSans-Light.ttf
+          weight: 200
+        - asset: assets/fonts/worksans/WorkSans-Regular.ttf
+          weight: 300
+        - asset: assets/fonts/worksans/WorkSans-SemiBold.ttf
+          weight: 400
+        - asset: assets/fonts/worksans/WorkSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/worksans/WorkSans-Bold.ttf
+          weight: 600
+        - asset: assets/fonts/worksans/WorkSans-SemiBold.ttf
+          weight: 700
+        - asset: assets/fonts/worksans/WorkSans-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/worksans/WorkSans-Black.ttf
+          weight: 900
 
     - family: SFProDisplay
       fonts:
