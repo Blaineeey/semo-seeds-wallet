@@ -26,7 +26,7 @@ class CitizenshipCard extends StatelessWidget {
             case PageState.loading:
               return const ShimmerRectangle(size: Size(328, 145), radius: defaultCardBorderRadius);
             case PageState.success:
-              return DecoratedBox(
+              return Container(
                 decoration: const BoxDecoration(
                   color: AppColors.lightGreen2,
                   borderRadius: BorderRadius.all(Radius.circular(defaultCardBorderRadius)),
@@ -64,7 +64,7 @@ class CitizenshipCard extends StatelessWidget {
                                   children: [
                                     Text(
                                       'You are on the way from'.i18n,
-                                      style: Theme.of(context).textTheme.titleSmall,
+                                      style: Theme.of(context).textTheme.subtitle2,
                                     ),
                                   ],
                                 ),

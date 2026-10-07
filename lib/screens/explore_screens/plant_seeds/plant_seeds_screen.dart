@@ -56,7 +56,7 @@ class PlantSeedsScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const SizedBox(height: 16),
-                              Text(context.loc.plantSeedsPlantAmount, style: Theme.of(context).textTheme.titleLarge),
+                              Text(context.loc.plantSeedsPlantAmount, style: Theme.of(context).textTheme.headline6),
                               const SizedBox(height: 16),
                               AmountEntryWidget(
                                 tokenDataModel: TokenDataModel(0),

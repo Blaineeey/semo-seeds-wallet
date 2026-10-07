@@ -15,7 +15,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class OnboardingState extends State<OnboardingScreen> {
-  final CarouselSliderController _controller = CarouselSliderController();
+  final CarouselController _controller = CarouselController();
   int _selectedIndex = 0;
 
   void _onPageChangeForward() {
@@ -77,7 +77,7 @@ class OnboardingState extends State<OnboardingScreen> {
                                 context.loc.onboardingJoinButtonTitle,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
                           ),
