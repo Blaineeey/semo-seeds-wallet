@@ -19,7 +19,7 @@ class CreateInviteUseCase {
         inviteHash: hash,
         accountName: settingsStorage.accountName,
       ),
-      _firebaseDynamicLinkUseCase.createDynamicLink(targetLink, mnemonic),
+      _firebaseDynamicLinkUseCase.createDynamicLink(target_link, mnemonic),
     ];
     return Future.wait(futures);
   }

@@ -1,17 +1,19 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/components/profile_avatar.dart';
 import 'package:seeds/components/shimmer_circle.dart';
 import 'package:seeds/components/shimmer_rectangle.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/i18n/profile_screens/profile/profile.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/profile_screens/profile/components/edit_profile_pic_bottom_sheet/edit_profile_pic_bottom_sheet.dart';
-import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profile_bloc.dart';
+import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/bloc.dart';
+import 'package:seeds/components/profile_avatar.dart';
 
+/// PROFILE HEADER
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  const ProfileHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,6 @@ class ProfileHeader extends StatelessWidget {
                             builder: (_) => const EditProfilePicBottomSheet(),
                           );
                           if (file != null) {
-                            // ignore: use_build_context_synchronously
                             BlocProvider.of<ProfileBloc>(context).add(OnUpdateProfileImage(file as File));
                           }
                         },
@@ -75,7 +76,6 @@ class ProfileHeader extends StatelessWidget {
                                     final newName =
                                         await NavigationService.of(context).navigateTo(Routes.editName, state.profile);
                                     if (newName != null) {
-                                      // ignore: use_build_context_synchronously
                                       BlocProvider.of<ProfileBloc>(context).add(OnNameChanged(newName as String));
                                     }
                                   },
@@ -86,7 +86,7 @@ class ProfileHeader extends StatelessWidget {
                             const ShimmerRectangle(size: Size(94, 21))
                           else
                             Text(
-                              state.accountStatus.i18n,
+                              state.profile?.statusString.i18n ?? '',
                               style: Theme.of(context).textTheme.headline7LowEmphasis,
                             ),
                         ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seeds/components/notification_badge.dart';
-import 'package:seeds/design/app_colors.dart';
-import 'package:seeds/design/app_theme.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/design/app_theme.dart';
 
 class ProfileListTileCard extends StatelessWidget {
   final IconData leadingIcon;
@@ -12,13 +12,13 @@ class ProfileListTileCard extends StatelessWidget {
   final bool hasNotification;
 
   const ProfileListTileCard({
-    super.key,
+    Key? key,
     required this.leadingIcon,
     required this.title,
     required this.trailing,
     required this.onTap,
     this.hasNotification = false,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

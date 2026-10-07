@@ -1,4 +1,5 @@
-import 'package:seeds/crypto/dart_esr/dart_esr.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:dart_esr/dart_esr.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 
 class BottomBarNavigateToIndex extends PageCommand {

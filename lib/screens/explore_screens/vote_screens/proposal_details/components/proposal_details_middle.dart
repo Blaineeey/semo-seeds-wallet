@@ -1,18 +1,18 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/divider_jungle.dart';
 import 'package:seeds/components/profile_avatar.dart';
-import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
-import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/bloc.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/components/selectable_text_with_links.dart';
-import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/proposal_details_bloc.dart';
-import 'package:seeds/utils/cap_utils.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
+import 'package:flutter/gestures.dart';
+import 'package:seeds/design/app_theme.dart';
+import 'package:seeds/utils/cap_utils.dart';
+import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
 
 class ProposalDetailsMiddle extends StatelessWidget {
-  const ProposalDetailsMiddle({super.key});
+  const ProposalDetailsMiddle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class ProposalDetailsMiddle extends StatelessWidget {
                         const SizedBox(height: 30.0),
                       ],
                     ),
-                  Text('Created by'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                  Text('Created by'.i18n, style: Theme.of(context).textTheme.subtitle2),
                   const SizedBox(height: 10.0),
                   Row(
                     children: [
@@ -67,7 +67,7 @@ class ProposalDetailsMiddle extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       state.proposals[state.currentIndex].creator,
-                                      style: Theme.of(context).textTheme.labelLarge,
+                                      style: Theme.of(context).textTheme.button,
                                     ),
                                   ),
                                   Text(
@@ -78,7 +78,9 @@ class ProposalDetailsMiddle extends StatelessWidget {
                               ),
                               const SizedBox(height: 10.0),
                               Row(
-                                children: [Text(state.creator!.nickname, style: Theme.of(context).textTheme.titleSmall)],
+                                children: [
+                                  Text(state.creator!.nickname ?? '', style: Theme.of(context).textTheme.subtitle2)
+                                ],
                               ),
                             ],
                           ),
@@ -100,12 +102,12 @@ class ProposalDetailsMiddle extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Setting: %s '.i18n.fill([state.proposals[state.currentIndex].settingName]),
+                          'Setting: %s '.i18n.fill([(state.proposals[state.currentIndex].settingName)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'New Value: %s'.i18n.fill([state.proposals[state.currentIndex].settingValue]),
+                          'New Value: %s'.i18n.fill([(state.proposals[state.currentIndex].settingValue)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                       ],
@@ -115,12 +117,12 @@ class ProposalDetailsMiddle extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Recipient: %s '.i18n.fill([state.proposals[state.currentIndex].recipient]),
+                          'Recipient: %s '.i18n.fill([(state.proposals[state.currentIndex].recipient)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Requested: %s '.i18n.fill([state.proposals[state.currentIndex].quantity]),
+                          'Requested: %s '.i18n.fill([(state.proposals[state.currentIndex].quantity)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                         const SizedBox(height: 8),
@@ -130,12 +132,12 @@ class ProposalDetailsMiddle extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Status: %s '.i18n.fill([state.proposals[state.currentIndex].status.inCaps]),
+                          'Status: %s '.i18n.fill([(state.proposals[state.currentIndex].status.inCaps)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Stage: %s '.i18n.fill([state.proposals[state.currentIndex].stage.inCaps]),
+                          'Stage: %s '.i18n.fill([(state.proposals[state.currentIndex].stage.inCaps)]),
                           style: Theme.of(context).textTheme.subtitle3OpacityEmphasis,
                         ),
                       ],
@@ -153,8 +155,8 @@ class ProposalDetailsMiddle extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle3LightGreen6,
                           recognizer: TapGestureRecognizer()
                             ..onTap = () async {
-                              if (await launcher.canLaunchUrl(Uri.parse(state.proposals[state.currentIndex].url))) {
-                                await launcher.launchUrl(Uri.parse(state.proposals[state.currentIndex].url));
+                              if (await launcher.canLaunch(state.proposals[state.currentIndex].url)) {
+                                await launcher.launch(state.proposals[state.currentIndex].url);
                               } else {
                                 // TODO(Raul): listener snack
                                 // print("Couldn't open this url".i18n);

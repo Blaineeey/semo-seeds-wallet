@@ -1,13 +1,33 @@
-part of 'recovery_phrase_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
-class RecoveryPhraseState {
-  final List<String> words;
+enum CurrentChoice { initial, passcodeCard, biometricCard }
+enum GuardiansStatus { active, inactive, readyToActivate }
 
-  String get printableWords => words.join(' ');
+/// STATE
+class RecoveryPhraseState extends Equatable {
+  final PageState pageState;
 
-  const RecoveryPhraseState({required this.words});
+  const RecoveryPhraseState({
+    required this.pageState,
+  });
 
-  factory RecoveryPhraseState.initial(AuthDataModel authData) {
-    return RecoveryPhraseState(words: authData.words.first.split('-'));
+  @override
+  List<Object?> get props => [
+        pageState,
+      ];
+
+  RecoveryPhraseState copyWith({
+    PageState? pageState,
+  }) {
+    return RecoveryPhraseState(
+      pageState: pageState ?? this.pageState,
+    );
+  }
+
+  factory RecoveryPhraseState.initial() {
+    return const RecoveryPhraseState(
+      pageState: PageState.initial,
+    );
   }
 }
