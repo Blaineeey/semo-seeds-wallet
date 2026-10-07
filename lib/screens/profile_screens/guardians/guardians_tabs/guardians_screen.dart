@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
+import 'package:seeds/components/snack_bar_info.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/datasource/remote/model/firebase_models/guardian_model.dart';
-import 'package:seeds/design/app_colors.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/i18n/profile_screens/guardians/guardians.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/components/im_guardian_for_tab.dart';
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/components/my_guardians_tab.dart';
-import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/components/onboarding_dialog_double_action.dart';
-import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/components/onboarding_dialog_single_action.dart';
-import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/components/remove_guardian_confirmation_dialog.dart';
-import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/guardians_bloc.dart';
+import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/guardians_bloc.dart';
+import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/guardians_events.dart';
+import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/guardians_state.dart';
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/page_commands.dart';
 
+import 'components/onboarding_dialog_double_action.dart';
+import 'components/onboarding_dialog_single_action.dart';
+import 'components/remove_guardian_confirmation_dialog.dart';
+
+/// GuardiansScreen SCREEN
 class GuardiansScreen extends StatelessWidget {
-  const GuardiansScreen({super.key});
+  const GuardiansScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class GuardiansScreen extends StatelessWidget {
         listenWhen: (_, current) => current.pageCommand != null,
         listener: (context, state) {
           final pageCommand = state.pageCommand;
-          BlocProvider.of<GuardiansBloc>(context).add(const ClearPageCommand());
+          BlocProvider.of<GuardiansBloc>(context).add(ClearPageCommand());
 
           if (pageCommand is NavigateToRouteWithArguments) {
             NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments);
@@ -38,9 +41,9 @@ class GuardiansScreen extends StatelessWidget {
           } else if (pageCommand is ShowRemoveGuardianView) {
             _showRemoveGuardianDialog(context, pageCommand.guardian);
           } else if (pageCommand is ShowErrorMessage) {
-            eventBus.fire(ShowSnackBar(pageCommand.message));
+            SnackBarInfo(pageCommand.message, ScaffoldMessenger.of(context)).show();
           } else if (pageCommand is ShowMessage) {
-            eventBus.fire(ShowSnackBar(pageCommand.message));
+            SnackBarInfo(pageCommand.message, ScaffoldMessenger.of(context)).show();
           } else if (pageCommand is ShowOnboardingGuardianSingleAction) {
             _showOnboardingGuardianDialogSingleAction(pageCommand, context);
           } else if (pageCommand is ShowOnboardingGuardianDoubleAction) {
@@ -54,14 +57,12 @@ class GuardiansScreen extends StatelessWidget {
             return DefaultTabController(
               length: 2,
               child: Scaffold(
-                bottomNavigationBar: state.pageState == PageState.loading
+                floatingActionButton: state.pageState == PageState.loading
                     ? const SizedBox.shrink()
-                    : SafeArea(
-                        minimum: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 32),
                         child: FlatButtonLong(
                           title: "+ Add Guardians".i18n,
-                          isLoading: state.isAddGuardianButtonLoading,
-                          enabled: !state.isAddGuardianButtonLoading,
                           onPressed: () {
                             BlocProvider.of<GuardiansBloc>(context).add(OnAddGuardiansTapped());
                           },
@@ -115,9 +116,9 @@ void _showRecoveryStartedBottomSheet(BuildContext context, GuardianModel guardia
                 child: RichText(
                   text: TextSpan(
                       text: 'A motion to Recover your Key has been initiated by '.i18n,
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.button,
                       children: <TextSpan>[
-                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.labelLarge)
+                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.button)
                       ]),
                 ),
               ),
@@ -169,14 +170,16 @@ void _showStopRecoveryConfirmationDialog(GuardianModel guardian, BuildContext co
 void _showRemoveGuardianDialog(BuildContext buildContext, GuardianModel guardian) {
   showDialog(
     context: buildContext,
-    builder: (context) {
+    builder: (BuildContext context) {
       return RemoveGuardianConfirmationDialog(
         guardian: guardian,
         onConfirm: () {
           BlocProvider.of<GuardiansBloc>(buildContext).add(OnRemoveGuardianTapped(guardian));
           Navigator.pop(context);
         },
-        onDismiss: () => Navigator.pop(context),
+        onDismiss: () {
+          Navigator.pop(context);
+        },
       );
     },
   );
@@ -193,7 +196,7 @@ void _showOnboardingGuardianDialogSingleAction(
             image: pageCommand.image,
             description: pageCommand.description,
             onNext: () {
-              BlocProvider.of<GuardiansBloc>(buildContext).add(const OnNextGuardianOnboardingTapped());
+              BlocProvider.of<GuardiansBloc>(buildContext).add(OnNextGuardianOnboardingTapped());
               Navigator.pop(context);
             });
       });
@@ -202,45 +205,43 @@ void _showOnboardingGuardianDialogSingleAction(
 void _showOnboardingGuardianDialogDoubleAction(
     ShowOnboardingGuardianDoubleAction pageCommand, BuildContext buildContext) {
   showDialog(
-    context: buildContext,
-    builder: (context) {
-      return OnboardingDialogDoubleAction(
-        rightButtonTitle: pageCommand.rightButtonTitle,
-        leftButtonTitle: pageCommand.leftButtonTitle,
-        indexDialong: pageCommand.index,
-        image: pageCommand.image,
-        description: pageCommand.description,
-        onRightButtonTab: () {
-          BlocProvider.of<GuardiansBloc>(buildContext).add(const OnNextGuardianOnboardingTapped());
-          Navigator.pop(context);
-        },
-        onLeftButtonTab: () {
-          BlocProvider.of<GuardiansBloc>(buildContext).add(const OnPreviousGuardianOnboardingTapped());
-          Navigator.pop(context);
-        },
-      );
-    },
-  );
+      context: buildContext,
+      builder: (BuildContext context) {
+        return OnboardingDialogDoubleAction(
+          rightButtonTitle: pageCommand.rightButtonTitle,
+          leftButtonTitle: pageCommand.leftButtonTitle,
+          indexDialong: pageCommand.index,
+          image: pageCommand.image,
+          description: pageCommand.description,
+          onRightButtonTab: () {
+            BlocProvider.of<GuardiansBloc>(buildContext).add(OnNextGuardianOnboardingTapped());
+            Navigator.pop(context);
+          },
+          onLeftButtonTab: () {
+            BlocProvider.of<GuardiansBloc>(buildContext).add(OnPreviousGuardianOnboardingTapped());
+            Navigator.pop(context);
+          },
+        );
+      });
 }
 
 void _showActivateGuardianDialog(ShowActivateGuardian pageCommand, BuildContext buildContext) {
   showDialog(
-    context: buildContext,
-    builder: (context) {
-      return OnboardingDialogDoubleAction(
-        rightButtonTitle: pageCommand.rightButtonTitle,
-        leftButtonTitle: pageCommand.leftButtonTitle,
-        indexDialong: pageCommand.index,
-        image: pageCommand.image,
-        description: pageCommand.description,
-        onRightButtonTab: () {
-          BlocProvider.of<GuardiansBloc>(buildContext).add(InitGuardians(pageCommand.myGuardians));
-          Navigator.pop(context);
-        },
-        onLeftButtonTab: () {
-          Navigator.pop(context);
-        },
-      );
-    },
-  );
+      context: buildContext,
+      builder: (BuildContext context) {
+        return OnboardingDialogDoubleAction(
+          rightButtonTitle: pageCommand.rightButtonTitle,
+          leftButtonTitle: pageCommand.leftButtonTitle,
+          indexDialong: pageCommand.index,
+          image: pageCommand.image,
+          description: pageCommand.description,
+          onRightButtonTab: () {
+            BlocProvider.of<GuardiansBloc>(buildContext).add(InitGuardians(pageCommand.myGuardians));
+            Navigator.pop(context);
+          },
+          onLeftButtonTab: () {
+            Navigator.pop(context);
+          },
+        );
+      });
 }

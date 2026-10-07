@@ -5,7 +5,7 @@ class DelegatesState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
   final bool activeDelegate;
-  final ProfileModel? delegate;
+  final MemberModel? delegate;
   final bool shouldRefreshCurrentDelegates;
 
   const DelegatesState({
@@ -32,7 +32,7 @@ class DelegatesState extends Equatable {
     PageState? pageState,
     String? errorMessage,
     bool? activeDelegate,
-    ProfileModel? delegate,
+    MemberModel? delegate,
     bool? shouldRefreshCurrentDelegates,
   }) {
     return DelegatesState(

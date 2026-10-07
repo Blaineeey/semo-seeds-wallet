@@ -1,24 +1,30 @@
-part of 'profile_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/screens/profile_screens/contribution/interactor/viewmodels/scores_view_model.dart';
 
+enum CitizenshipUpgradeStatus { notReady, canResident, canCitizen }
+
+/// --- STATE
 class ProfileState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
   final String? errorMessage;
   final ProfileModel? profile;
-  final ScoreModel? contributionScore;
+  final ScoresViewModel? score;
   final bool isOrganization;
   final bool showLogoutButton;
   final bool hasSecurityNotification;
   final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
   final bool isImportAccountEnabled;
-  bool get showCitizenCard => !(profile == null || profile?.status == ProfileStatus.citizen || isOrganization);
 
   const ProfileState({
     required this.pageState,
     this.pageCommand,
     this.errorMessage,
     this.profile,
-    this.contributionScore,
+    this.score,
     required this.isOrganization,
     required this.showLogoutButton,
     required this.hasSecurityNotification,
@@ -32,15 +38,12 @@ class ProfileState extends Equatable {
         pageCommand,
         errorMessage,
         profile,
-        contributionScore,
+        score,
         isOrganization,
         showLogoutButton,
         hasSecurityNotification,
         citizenshipUpgradeStatus,
         isImportAccountEnabled,
-        showCitizenCard,
-        showShimmer,
-        accountStatus,
       ];
 
   bool get showShimmer => pageState == PageState.loading || pageState == PageState.initial;
@@ -52,7 +55,7 @@ class ProfileState extends Equatable {
     PageCommand? pageCommand,
     String? errorMessage,
     ProfileModel? profile,
-    ScoreModel? contributionScore,
+    ScoresViewModel? score,
     bool? isOrganization,
     bool? showLogoutButton,
     bool? hasSecurityNotification,
@@ -64,7 +67,7 @@ class ProfileState extends Equatable {
       pageCommand: pageCommand,
       errorMessage: errorMessage,
       profile: profile ?? this.profile,
-      contributionScore: contributionScore ?? this.contributionScore,
+      score: score ?? this.score,
       isOrganization: isOrganization ?? this.isOrganization,
       showLogoutButton: showLogoutButton ?? this.showLogoutButton,
       hasSecurityNotification: hasSecurityNotification ?? this.hasSecurityNotification,
@@ -84,5 +87,3 @@ class ProfileState extends Equatable {
     );
   }
 }
-
-enum CitizenshipUpgradeStatus { notReady, canResident, canCitizen }

@@ -1,10 +1,13 @@
-part of 'authentication_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
+import 'package:seeds/datasource/local/models/auth_data_model.dart';
 
+/// --- EVENTS
+@immutable
 abstract class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
-
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class InitAuthStatus extends AuthenticationEvent {
@@ -13,16 +16,16 @@ class InitAuthStatus extends AuthenticationEvent {
   String toString() => 'InitAuthStatus';
 }
 
-class InitAuthTimer extends AuthenticationEvent {
-  const InitAuthTimer();
+class InitOnResumeAuth extends AuthenticationEvent {
+  const InitOnResumeAuth();
   @override
-  String toString() => 'InitAuthTimer';
+  String toString() => 'InitOnResumeAuth';
 }
 
-class StartTimeoutAuth extends AuthenticationEvent {
-  const StartTimeoutAuth();
+class SuccessOnResumeAuth extends AuthenticationEvent {
+  const SuccessOnResumeAuth();
   @override
-  String toString() => 'StartTimeoutAuth';
+  String toString() => 'SuccessOnResumeAuth';
 }
 
 class OnInviteLinkRecived extends AuthenticationEvent {

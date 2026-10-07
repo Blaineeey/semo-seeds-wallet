@@ -1,24 +1,21 @@
-// ignore_for_file: directives_ordering
-
 import 'dart:async';
 
 import 'package:async/async.dart';
 
-import 'package:seeds/crypto/eosdart/eosdart.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart/eosdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_scopes.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_tables.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 import 'package:seeds/datasource/remote/datamappers/toDomainInviteModel.dart';
 import 'package:seeds/datasource/remote/model/invite_model.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
 import 'package:seeds/datasource/remote/model/transaction_response.dart';
+import 'package:seeds/domain-shared/app_constants.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 
-class InviteRepository extends HttpRepository with EosRepository {
-  Future<Result<TransactionResponse>> createInvite({
+class InviteRepository extends NetworkRepository with EosRepository {
+  Future<Result> createInvite({
     required double quantity,
     required String inviteHash,
     required String accountName,
@@ -30,8 +27,8 @@ class InviteRepository extends HttpRepository with EosRepository {
 
     final transaction = buildFreeTransaction([
       Action()
-        ..account = SeedsCode.accountToken.value
-        ..name = SeedsEosAction.actionNameTransfer.value
+        ..account = accountToken
+        ..name = actionNameTransfer
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -39,13 +36,13 @@ class InviteRepository extends HttpRepository with EosRepository {
         ]
         ..data = {
           'from': accountName,
-          'to': SeedsCode.accountJoin.value,
+          'to': accountJoin,
           'quantity': '${quantity.toStringAsFixed(4)} $currencySeedsCode',
           'memo': '',
         },
       Action()
-        ..account = SeedsCode.accountJoin.value
-        ..name = SeedsEosAction.actionNameInvite.value
+        ..account = accountJoin
+        ..name = actionNameInvite
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -61,42 +58,38 @@ class InviteRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));
   }
 
-  Future<Result<ProfileModel>> getMembers() {
+  Future<Result> getMembers() {
     print('[http] get members');
 
     final membersURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
 
-    final request = createRequest(
-        code: SeedsCode.accountAccounts,
-        scope: SeedsCode.accountAccounts.value,
-        table: SeedsTable.tableUsers,
-        limit: 1000);
+    final request = createRequest(code: accountAccounts, scope: accountAccounts, table: tableUsers, limit: 1000);
 
     return http
         .post(membersURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<ProfileModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               final List<dynamic> allAccounts = body['rows'].toList();
-              return allAccounts.map((item) => ProfileModel.fromJson(item)).toList();
+              return allAccounts.map((item) => MemberModel.fromJson(item)).toList();
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<List<InviteModel>>> findInvite(String inviteHash) async {
+  Future<Result> findInvite(String inviteHash) async {
     print('[http] find invite by hash');
 
     final inviteURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
-    // 'https://node.hypha.earth/v1/chain/get_table_rows'; // `todo`: Why is this still Hypha when config has changed?
+    // 'https://node.hypha.earth/v1/chain/get_table_rows'; // todo: Why is this still Hypha when config has changed?
 
     final request = createRequest(
-        code: SeedsCode.accountJoin,
-        scope: SeedsCode.accountJoin.value,
-        table: SeedsTable.tableInvites,
+        code: accountJoin,
+        scope: accountJoin,
+        table: tableInvites,
         lowerBound: inviteHash,
         upperBound: inviteHash,
         indexPosition: 2,
@@ -104,7 +97,7 @@ class InviteRepository extends HttpRepository with EosRepository {
 
     return http
         .post(inviteURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<InviteModel>>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               final List<dynamic> invite = body['rows'].toList();
               return invite.map((item) => InviteModel.fromJson(item)).toList();
             }))
@@ -117,9 +110,9 @@ class InviteRepository extends HttpRepository with EosRepository {
     final inviteURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
 
     final request = createRequest(
-      code: SeedsCode.accountJoin,
-      scope: SeedsCode.accountJoin.value,
-      table: SeedsTable.tableInvites,
+      code: accountJoin,
+      scope: accountJoin,
+      table: tableInvites,
       limit: 200,
       indexPosition: 3,
       lowerBound: userAccount,
@@ -132,7 +125,7 @@ class InviteRepository extends HttpRepository with EosRepository {
         .catchError((e) => mapHttpError(e));
   }
 
-  Future<Result<TransactionResponse>> cancelInvite({
+  Future<Result> cancelInvite({
     required String accountName,
     required String inviteHash,
   }) async {
@@ -140,8 +133,8 @@ class InviteRepository extends HttpRepository with EosRepository {
 
     final transaction = buildFreeTransaction([
       Action()
-        ..account = SeedsCode.accountJoin.value
-        ..name = SeedsEosAction.actionNameCancelInvite.value
+        ..account = accountJoin
+        ..name = actionNameCancelInvite
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -155,7 +148,7 @@ class InviteRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));

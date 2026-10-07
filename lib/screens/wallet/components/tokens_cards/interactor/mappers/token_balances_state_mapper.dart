@@ -6,11 +6,11 @@ import 'package:seeds/datasource/remote/model/token_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/result_to_state_mapper.dart';
 import 'package:seeds/screens/wallet/components/tokens_cards/interactor/viewmodels/token_balance_view_model.dart';
-import 'package:seeds/screens/wallet/components/tokens_cards/interactor/viewmodels/token_balances_bloc.dart';
+import 'package:seeds/screens/wallet/components/tokens_cards/interactor/viewmodels/token_balances_state.dart';
 
 class TokenBalancesStateMapper {
   Future<TokenBalancesState> mapResultToState(
-      TokenBalancesState currentState, List<TokenModel> tokens, List<Result<BalanceModel>> results) async {
+      TokenBalancesState currentState, List<TokenModel> tokens, List<Result> results) async {
     assert(tokens.length == results.length, "invalid results");
 
     final List<TokenBalanceViewModel> available = [];
@@ -36,8 +36,8 @@ class TokenBalancesStateMapper {
             newWhitelist.add(token.id);
           }
         } else {
-          final BalanceModel balance = result.asValue!.value;
-          if (whitelisted || balance.quantity != 0) {
+          final BalanceModel balance = result.asValue?.value as BalanceModel;
+          if (whitelisted || balance.quantity > 0) {
             available.add(TokenBalanceViewModel(token, TokenDataModel(balance.quantity, token: token)));
             newWhitelist.add(token.id);
           }

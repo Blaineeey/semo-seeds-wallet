@@ -2,7 +2,7 @@ part of 'switch_account_bloc.dart';
 
 class SwitchAccountState extends Equatable {
   final PageState pageState;
-  final ImportKeyError? error;
+  final String? errorMessage;
   final List<ProfileModel> accounts;
   final ProfileModel? currentAcccout;
   final List<Keys> keys;
@@ -11,7 +11,7 @@ class SwitchAccountState extends Equatable {
 
   const SwitchAccountState({
     required this.pageState,
-    this.error,
+    this.errorMessage,
     required this.accounts,
     this.currentAcccout,
     required this.keys,
@@ -22,6 +22,7 @@ class SwitchAccountState extends Equatable {
   @override
   List<Object?> get props => [
         pageState,
+        errorMessage,
         accounts,
         currentAcccout,
         keys,
@@ -31,7 +32,7 @@ class SwitchAccountState extends Equatable {
 
   SwitchAccountState copyWith({
     PageState? pageState,
-    ImportKeyError? error,
+    String? errorMessage,
     List<ProfileModel>? accounts,
     ProfileModel? currentAcccout,
     List<Keys>? keys,
@@ -40,7 +41,7 @@ class SwitchAccountState extends Equatable {
   }) {
     return SwitchAccountState(
       pageState: pageState ?? this.pageState,
-      error: error,
+      errorMessage: errorMessage,
       accounts: accounts ?? this.accounts,
       currentAcccout: currentAcccout,
       keys: keys ?? this.keys,

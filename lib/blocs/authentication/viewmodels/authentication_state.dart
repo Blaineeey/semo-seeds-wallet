@@ -1,4 +1,4 @@
-part of 'authentication_bloc.dart';
+import 'package:equatable/equatable.dart';
 
 enum AuthStatus {
   initial,
@@ -10,17 +10,24 @@ enum AuthStatus {
   recoveryMode,
 }
 
+/// --- STATES
 class AuthenticationState extends Equatable {
   final AuthStatus authStatus;
+  final bool isOnResumeAuth;
 
-  const AuthenticationState({required this.authStatus});
+  const AuthenticationState({required this.authStatus, required this.isOnResumeAuth});
 
   @override
-  List<Object?> get props => [authStatus];
+  List<Object?> get props => [authStatus, isOnResumeAuth];
 
-  AuthenticationState copyWith({AuthStatus? authStatus}) {
-    return AuthenticationState(authStatus: authStatus ?? this.authStatus);
+  AuthenticationState copyWith({AuthStatus? authStatus, bool? isOnResumeAuth}) {
+    return AuthenticationState(
+      authStatus: authStatus ?? this.authStatus,
+      isOnResumeAuth: isOnResumeAuth ?? this.isOnResumeAuth,
+    );
   }
 
-  factory AuthenticationState.initial() => const AuthenticationState(authStatus: AuthStatus.initial);
+  factory AuthenticationState.initial() {
+    return const AuthenticationState(authStatus: AuthStatus.initial, isOnResumeAuth: false);
+  }
 }

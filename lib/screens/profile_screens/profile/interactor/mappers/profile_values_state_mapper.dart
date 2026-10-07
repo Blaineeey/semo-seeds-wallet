@@ -1,47 +1,66 @@
 import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/datasource/remote/model/organization_model.dart';
 import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/result_to_state_mapper.dart';
 import 'package:seeds/i18n/profile_screens/profile/profile.i18n.dart';
-import 'package:seeds/screens/profile_screens/profile/interactor/usecases/get_profile_values_use_case.dart';
-import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profile_bloc.dart';
+import 'package:seeds/screens/profile_screens/contribution/interactor/viewmodels/scores_view_model.dart';
+import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profile_state.dart';
+
+const int _profileResultIndex = 0;
+const int _contributionScoreResultIndex = 1;
+const int _communityScoreResultIndex = 2;
+const int _reputationScoreResultIndex = 3;
+const int _plantedScoreResultIndex = 4;
+const int _transactionScoreResultIndex = 5;
+const int _organizationResultIndex = 6;
+const int _canResidentResultIndex = 7;
+const int _canCitizenResultIndex = 8;
 
 class ProfileValuesStateMapper extends StateMapper {
-  ProfileState mapResultToState(ProfileState currentState, Result<GetProfileValuesResponse> result) {
-    if (result.isError) {
+  ProfileState mapResultToState(ProfileState currentState, List<Result> results) {
+    if (areAllResultsError(results)) {
       return currentState.copyWith(pageState: PageState.failure, errorMessage: 'Error Loading Page'.i18n);
     } else {
-      final response = result.asValue!.value;
-      final ProfileModel? profileModel = response.profileModel;
-      if (profileModel != null && profileModel.account == settingsStorage.accountName) {
-        // Storing the status in settings is problematic since it's a server side value.
-        // As a remedy, we are now updating it every time we load the user profile.
-        settingsStorage.saveCitizenshipStatus(profileModel.status);
-      }
-
-      final bool isCitizen = profileModel?.status == ProfileStatus.citizen;
+      // results.retainWhere((Result i) => i.isValue); // seems like a bug if there's 1 bad result it will do the wrong thing
+      final ProfileModel? profile = results[_profileResultIndex].valueOrNull;
+      final bool isCitizen = settingsStorage.isCitizen;
+      final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
 
       if (isCitizen) {
-        return currentState.copyWith(
-            pageState: PageState.success, profile: response.profileModel, contributionScore: response.scoreModel);
-      } else {
-        final organization = response.organizationModel ?? [];
-
-        final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
-        response.canResident != null
-            ? citizenshipUpgradeStatus = CitizenshipUpgradeStatus.canResident
-            : response.canCitizen != null
-                ? citizenshipUpgradeStatus = CitizenshipUpgradeStatus.canCitizen
-                : citizenshipUpgradeStatus = CitizenshipUpgradeStatus.notReady;
-
-        return currentState.copyWith(
-          pageState: PageState.success,
-          profile: response.profileModel,
-          contributionScore: response.scoreModel,
-          isOrganization: organization.isNotEmpty,
-          citizenshipUpgradeStatus: citizenshipUpgradeStatus,
+        final score = ScoresViewModel(
+          contributionScore: results[_contributionScoreResultIndex].valueOrNull,
+          communityScore: results[_communityScoreResultIndex].valueOrNull,
+          reputationScore: results[_reputationScoreResultIndex].valueOrNull,
+          plantedScore: results[_plantedScoreResultIndex].valueOrNull,
+          transactionScore: results[_transactionScoreResultIndex].valueOrNull,
         );
+        return currentState.copyWith(pageState: PageState.success, profile: profile, score: score);
       }
+
+      final score = ScoresViewModel(
+        contributionScore: results[_contributionScoreResultIndex].valueOrNull,
+        communityScore: results[_communityScoreResultIndex].valueOrNull,
+        reputationScore: results[_reputationScoreResultIndex].valueOrNull,
+        plantedScore: results[_plantedScoreResultIndex].valueOrNull,
+        transactionScore: results[_transactionScoreResultIndex].valueOrNull,
+      );
+
+      final organization = results[_organizationResultIndex].asValue?.value as List<OrganizationModel>;
+
+      results[_canResidentResultIndex].isValue
+          ? citizenshipUpgradeStatus = CitizenshipUpgradeStatus.canResident
+          : results[_canCitizenResultIndex].isValue
+              ? citizenshipUpgradeStatus = CitizenshipUpgradeStatus.canCitizen
+              : citizenshipUpgradeStatus = CitizenshipUpgradeStatus.notReady;
+
+      return currentState.copyWith(
+        pageState: PageState.success,
+        profile: profile,
+        score: score,
+        isOrganization: organization.isNotEmpty,
+        citizenshipUpgradeStatus: citizenshipUpgradeStatus,
+      );
     }
   }
 }

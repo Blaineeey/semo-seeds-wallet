@@ -1,9 +1,17 @@
-part of 'invite_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
+class ShowInviteLinkView extends PageCommand {}
+
+/// --- STATE
 class InviteState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
-  final InviteError? errorMessage;
+  final String? errorMessage;
   final RatesState ratesState;
   final bool isAutoFocus;
   final TokenDataModel tokenAmount;
@@ -11,7 +19,7 @@ class InviteState extends Equatable {
   final TokenDataModel? availableBalance;
   final FiatDataModel? availableBalanceFiat;
   final bool isCreateInviteButtonEnabled;
-  final InviteError? alertMessage;
+  final String? alertMessage;
   final String? mnemonicSecretCode;
   final String? dynamicSecretLink;
   final bool showCloseDialogButton;
@@ -52,7 +60,7 @@ class InviteState extends Equatable {
   InviteState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
-    InviteError? errorMessage,
+    String? errorMessage,
     RatesState? ratesState,
     bool? isAutoFocus,
     TokenDataModel? tokenAmount,
@@ -60,7 +68,7 @@ class InviteState extends Equatable {
     TokenDataModel? availableBalance,
     FiatDataModel? availableBalanceFiat,
     bool? isCreateInviteButtonEnabled,
-    InviteError? alertMessage,
+    String? alertMessage,
     String? mnemonicSecretCode,
     String? dynamicSecretLink,
     bool? showCloseDialogButton,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/i18n/explore_screens/vote/vote.i18n.dart';
@@ -10,8 +10,9 @@ import 'package:seeds/screens/explore_screens/vote_screens/proposals/proposals_l
 import 'package:seeds/screens/explore_screens/vote_screens/vote/interactor/viewmodels/proposal_type_model.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/vote/interactor/viewmodels/vote_bloc.dart';
 
+/// VOTE SCREEN
 class VoteScreen extends StatelessWidget {
-  const VoteScreen({super.key});
+  const VoteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +52,11 @@ class VoteScreen extends StatelessWidget {
                     indicatorSize: TabBarIndicatorSize.label,
                     unselectedLabelStyle: Theme.of(context).textTheme.buttonOpacityEmphasis,
                     labelStyle: Theme.of(context).textTheme.buttonLowEmphasis,
-                    tabs: [for (final i in proposalTypes) Tab(child: FittedBox(child: Text(i.type.i18n)))],
+                    tabs: [for (var i in proposalTypes) Tab(child: FittedBox(child: Text(i.type.i18n)))],
                   ),
                 ),
               ),
-              body: SafeArea(child: TabBarView(children: [for (final i in proposalTypes) ProposalsList(i)])),
+              body: SafeArea(child: TabBarView(children: [for (var i in proposalTypes) ProposalsList(i)])),
             );
           },
         ),

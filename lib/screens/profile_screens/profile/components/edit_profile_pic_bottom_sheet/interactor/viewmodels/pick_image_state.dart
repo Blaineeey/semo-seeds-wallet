@@ -1,4 +1,6 @@
-part of 'pick_image_bloc.dart';
+import 'dart:io';
+
+import 'package:equatable/equatable.dart';
 
 class PickImageState extends Equatable {
   final String? errorMessage;

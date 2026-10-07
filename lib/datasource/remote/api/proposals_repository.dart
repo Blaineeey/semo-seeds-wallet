@@ -1,13 +1,11 @@
 import 'package:async/async.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart/eosdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/crypto/eosdart/eosdart.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_scopes.dart';
-import 'package:seeds/datasource/remote/api/http_repo/seeds_tables.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 import 'package:seeds/datasource/remote/model/delegate_model.dart';
-import 'package:seeds/datasource/remote/model/delegator_model.dart';
 import 'package:seeds/datasource/remote/model/moon_phase_model.dart';
 import 'package:seeds/datasource/remote/model/proposal_model.dart';
 import 'package:seeds/datasource/remote/model/referendum_model.dart';
@@ -15,17 +13,18 @@ import 'package:seeds/datasource/remote/model/support_level_model.dart';
 import 'package:seeds/datasource/remote/model/transaction_response.dart';
 import 'package:seeds/datasource/remote/model/vote_cycle_model.dart';
 import 'package:seeds/datasource/remote/model/vote_model.dart';
+import 'package:seeds/domain-shared/app_constants.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/vote/interactor/viewmodels/proposal_type_model.dart';
 
-class ProposalsRepository extends HttpRepository with EosRepository {
-  Future<Result<List<MoonPhaseModel>>> getMoonPhases() {
+class ProposalsRepository extends NetworkRepository with EosRepository {
+  Future<Result> getMoonPhases() {
     print('[http] get moon phases');
 
     final ms = DateTime.now().toUtc().millisecondsSinceEpoch;
     final request = createRequest(
-      code: SeedsCode.accountCycle,
-      scope: SeedsCode.accountCycle.value,
-      table: SeedsTable.tableMoonphases,
+      code: accountCycle,
+      scope: accountCycle,
+      table: tableMoonphases,
       limit: 4,
       lowerBound: '${(ms / 1000).round()}',
     );
@@ -34,7 +33,7 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(proposalsURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<MoonPhaseModel>>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return body['rows'].map<MoonPhaseModel>((i) => MoonPhaseModel.fromJson(i)).toList();
             }))
         .catchError((error) => mapHttpError(error));
@@ -44,9 +43,9 @@ class ProposalsRepository extends HttpRepository with EosRepository {
     print('[http] get vote cycle');
 
     final request = createRequest(
-      code: SeedsCode.accountFunds,
-      scope: SeedsCode.accountFunds.value,
-      table: SeedsTable.tableCycleStats,
+      code: accountFunds,
+      scope: accountFunds,
+      table: tableCycleStats,
       // ignore: avoid_redundant_argument_values
       limit: 1,
       reverse: true,
@@ -66,9 +65,9 @@ class ProposalsRepository extends HttpRepository with EosRepository {
     print('[http] get proposals type - ${proposalType.type}');
 
     final request = createRequest(
-      code: SeedsCode.accountFunds,
-      scope: SeedsCode.accountFunds.value,
-      table: SeedsTable.tableProps,
+      code: accountFunds,
+      scope: accountFunds,
+      table: tableProps,
       lowerBound: proposalType.proposalStage,
       upperBound: proposalType.proposalStage,
       limit: 100,
@@ -91,13 +90,13 @@ class ProposalsRepository extends HttpRepository with EosRepository {
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<List<ReferendumModel>>> getReferendums(String scope, bool isReverse) {
+  Future<Result> getReferendums(String scope, bool isReverse) {
     print('[http] get referendums: stage = [$scope]');
 
     final request = createRequest(
-      code: SeedsCode.accountRules,
+      code: accountRules,
       scope: scope,
-      table: SeedsTable.tableReferendums,
+      table: tableReferendums,
       limit: 100,
       reverse: isReverse,
     );
@@ -106,7 +105,7 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(proposalsURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<ReferendumModel>>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               // The referendums do not have a status field as do the proposals, so the scope must be added
               // to each referendum, which also acts as a status field.
               final List<ReferendumModel> result =
@@ -116,28 +115,28 @@ class ProposalsRepository extends HttpRepository with EosRepository {
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<List<SupportLevelModel>>> getSupportLevel(String scope) {
+  Future<Result> getSupportLevel(String scope) {
     print('[http] get support level for scope: $scope');
 
-    final request = createRequest(code: SeedsCode.accountFunds, scope: scope, table: SeedsTable.tableSupport);
+    final request = createRequest(code: accountFunds, scope: scope, table: tableSupport);
 
     final proposalsURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
 
     return http
         .post(proposalsURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<SupportLevelModel>>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return body['rows'].map<SupportLevelModel>((i) => SupportLevelModel.fromJson(i)).toList();
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<VoteModel>> getProposalVote(int proposalId, String account) {
+  Future<Result> getProposalVote(int proposalId, String account) {
     print('[http] get vote for proposal: $proposalId');
 
     final request = createRequest(
-      code: SeedsCode.accountFunds,
+      code: accountFunds,
       scope: '$proposalId',
-      table: SeedsTable.tableProposalVotes,
+      table: tableProposalVotes,
       lowerBound: account,
       upperBound: account,
       limit: 10,
@@ -147,19 +146,19 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(proposalsURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<VoteModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return VoteModel.fromJson(body);
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<VoteModel>> getReferendumVote(int referendumId, String account) {
+  Future<Result> getReferendumVote(int referendumId, String account) {
     print('[http] get vote for referendum: $referendumId');
 
     final request = createRequest(
-      code: SeedsCode.accountRules,
+      code: accountRules,
       scope: '$referendumId',
-      table: SeedsTable.tableReferendumVoters,
+      table: tableReferendumVoters,
       lowerBound: account,
       upperBound: account,
       limit: 10,
@@ -169,20 +168,19 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(proposalsURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<VoteModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return VoteModel.fromJsonReferendum(body);
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<TransactionResponse>> voteProposal(
-      {required int id, required int amount, required String accountName}) {
+  Future<Result> voteProposal({required int id, required int amount, required String accountName}) {
     print('[eos] vote proposal $id ($amount)');
 
     final transaction = buildFreeTransaction([
       Action()
-        ..account = SeedsCode.accountFunds.value
-        ..name = amount.isNegative ? SeedsEosAction.actionNameAgainst.value : SeedsEosAction.actionNameFavour.value
+        ..account = accountFunds
+        ..name = amount.isNegative ? actionNameAgainst : actionNameFavour
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -193,20 +191,19 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));
   }
 
-  Future<Result<TransactionResponse>> voteReferendum(
-      {required int id, required int amount, required String accountName}) {
+  Future<Result> voteReferendum({required int id, required int amount, required String accountName}) {
     print('[eos] vote referendum $id ($amount)');
 
     final transaction = buildFreeTransaction([
       Action()
-        ..account = SeedsCode.accountRules.value
-        ..name = amount.isNegative ? SeedsEosAction.actionNameAgainst.value : SeedsEosAction.actionNameFavour.value
+        ..account = accountRules
+        ..name = amount.isNegative ? actionNameAgainst : actionNameFavour
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -217,13 +214,13 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));
   }
 
-  Future<Result<TransactionResponse>> setDelegate({required String accountName, required String delegateTo}) {
+  Future<Result> setDelegate({required String accountName, required String delegateTo}) {
     print('[eos] set delegate $accountName -> $delegateTo');
 
     final List<Action> delegateActions = List.from(
@@ -233,20 +230,20 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));
   }
 
   // return DelegateModel
-  Future<Result<DelegateModel>> getDelegate(String account, SeedsCode seedsCode) {
+  Future<Result> getDelegate(String account, String voiceScope) {
     print('[http] get delegate for $account');
 
     final request = createRequest(
-      code: SeedsCode.accountFunds,
-      scope: seedsCode.value,
-      table: SeedsTable.tableDelegates,
+      code: accountFunds,
+      scope: voiceScope,
+      table: tableDelegates,
       lowerBound: account,
       upperBound: account,
     );
@@ -255,20 +252,20 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(url, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<DelegateModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
               return DelegateModel.fromJson(body);
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<List<DelegatorModel>>> getDelegators(String account, SeedsCode seedsCode) {
-    print('[http] get delegators for $account');
+  Future<Result> getDelegators(String account, String voiceScope) {
+    print('[http] get delegate for $account');
 
     final request = createRequest(
-      code: SeedsCode.accountFunds,
+      code: accountFunds,
       indexPosition: 2,
-      scope: seedsCode.value,
-      table: SeedsTable.tableDelegates,
+      scope: voiceScope,
+      table: tableDelegates,
       lowerBound: account,
       upperBound: account,
       limit: 100,
@@ -278,14 +275,13 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return http
         .post(url, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<DelegatorModel>>(response, (dynamic body) {
-              final List<dynamic> allDelegator = body['rows'].toList();
-              return allDelegator.map((item) => DelegatorModel.fromJson(item)).toList();
+        .then((http.Response response) => mapHttpResponse(response, (dynamic body) {
+              return DelegateModel.fromJson(body);
             }))
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<TransactionResponse>> undelegate({required String accountName}) {
+  Future<Result> undelegate({required String accountName}) {
     print('[eos] undelegate all delegations for $accountName');
 
     final List<Action> undelegateActions =
@@ -295,7 +291,7 @@ class ProposalsRepository extends HttpRepository with EosRepository {
 
     return buildEosClient()
         .pushTransaction(transaction)
-        .then((dynamic response) => mapEosResponse<TransactionResponse>(response, (dynamic map) {
+        .then((dynamic response) => mapEosResponse(response, (dynamic map) {
               return TransactionResponse.fromJson(map);
             }))
         .catchError((error) => mapEosError(error));
@@ -307,8 +303,8 @@ class ProposalsRepository extends HttpRepository with EosRepository {
     required String scope,
   }) =>
       Action()
-        ..account = SeedsCode.accountFunds.value
-        ..name = SeedsEosAction.proposalActionNameDelegate.value
+        ..account = accountFunds
+        ..name = proposalActionNameDelegate
         ..authorization = [
           Authorization()
             ..actor = delegator
@@ -325,8 +321,8 @@ class ProposalsRepository extends HttpRepository with EosRepository {
     required String scope,
   }) =>
       Action()
-        ..account = SeedsCode.accountFunds.value
-        ..name = SeedsEosAction.proposalActionNameUndelegate.value
+        ..account = accountFunds
+        ..name = proposalActionNameUndelegate
         ..authorization = [
           Authorization()
             ..actor = delegator

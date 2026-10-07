@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
+import 'package:seeds/i18n/onboarding/onboarding.i18n.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String onboardingImage;
@@ -12,7 +13,7 @@ class OnboardingPage extends StatelessWidget {
   final Widget bottomLeaf2;
 
   const OnboardingPage({
-    super.key,
+    Key? key,
     required this.onboardingImage,
     required this.title,
     required this.subTitle,
@@ -21,7 +22,7 @@ class OnboardingPage extends StatelessWidget {
     required this.bottomLeaf1,
     required this.bottomLeaf2,
     this.topLeaf2,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +62,9 @@ class OnboardingPage extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.displaySmall),
+                        Text(title.i18n, style: Theme.of(context).textTheme.headline3),
                         const SizedBox(height: 30),
-                        Text(subTitle, style: Theme.of(context).textTheme.labelLarge),
+                        Text(subTitle.i18n, style: Theme.of(context).textTheme.button),
                       ],
                     ),
                   ],

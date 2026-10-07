@@ -1,15 +1,14 @@
 import 'package:async/async.dart';
 
-import 'package:seeds/crypto/dart_esr/dart_esr.dart' as esr;
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:dart_esr/dart_esr.dart' as esr;
 import 'package:seeds/datasource/local/models/token_data_model.dart';
-import 'package:seeds/datasource/remote/model/token_model.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 import 'package:seeds/domain-shared/app_constants.dart';
 
 class InvoiceRepository extends EosRepository {
-  Future<Result<String>> createInvoice(
+  Future<Result<dynamic>> createInvoice(
       {required TokenDataModel tokenAmount, required String accountName, required String tokenContract, String? memo}) {
     print('[ESR] create invite accountName: $accountName quantity: ${tokenAmount.asFormattedString()}');
 
@@ -18,13 +17,13 @@ class InvoiceRepository extends EosRepository {
     final Map<String, String> data = {
       'from': esr.ESRConstants.PlaceholderName,
       'to': accountName,
-      'quantity': TokenModel.getAssetString(tokenAmount.id, tokenAmount.amount),
+      'quantity': tokenAmount.asFormattedString(),
       'memo': memo ?? ''
     };
 
     final esr.Action action = esr.Action()
       ..account = tokenContract
-      ..name = SeedsEosAction.actionNameTransfer.value
+      ..name = actionNameTransfer
       ..authorization = auth
       ..data = data;
 

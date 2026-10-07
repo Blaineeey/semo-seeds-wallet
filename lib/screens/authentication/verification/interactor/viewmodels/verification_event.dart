@@ -1,34 +1,54 @@
-part of 'verification_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+/// --- EVENTS
+@immutable
 abstract class VerificationEvent extends Equatable {
   const VerificationEvent();
-
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
-class InitBiometricAuth extends VerificationEvent {
-  const InitBiometricAuth();
+class InitVerification extends VerificationEvent {
+  const InitVerification();
   @override
-  String toString() => 'InitBiometricAuth';
+  String toString() => 'InitVerification';
 }
 
 class OnVerifyPasscode extends VerificationEvent {
   final String passcode;
-  const OnVerifyPasscode(this.passcode);
+  const OnVerifyPasscode({required this.passcode});
   @override
   String toString() => 'OnVerifyPasscode';
 }
 
-class OnPasscodeCreated extends VerificationEvent {
-  final String passcode;
-  const OnPasscodeCreated(this.passcode);
+class OnValidVerifyPasscode extends VerificationEvent {
+  const OnValidVerifyPasscode();
   @override
-  String toString() => 'OnPasscodeCreated';
+  String toString() => 'OnValidVerifyPasscode';
 }
 
-class ClearVerificationPageCommand extends VerificationEvent {
-  const ClearVerificationPageCommand();
+class OnCreatePasscode extends VerificationEvent {
+  final String passcode;
+  const OnCreatePasscode({required this.passcode});
   @override
-  String toString() => 'ClearVerificationPageCommand';
+  String toString() => 'OnCreatePasscode';
+}
+
+class ResetShowSnack extends VerificationEvent {
+  const ResetShowSnack();
+  @override
+  String toString() => 'ResetShowSnack';
+}
+
+class TryAgainBiometric extends VerificationEvent {
+  const TryAgainBiometric();
+  @override
+  String toString() => 'TryAgainBiometric';
+}
+
+class PasscodeAuthenticated extends VerificationEvent {
+  const PasscodeAuthenticated();
+  @override
+  String toString() => 'PasscodeAuthenticated';
 }
