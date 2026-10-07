@@ -10,7 +10,7 @@ class GeocodingService {
     try {
       return Result.value(await placemarkFromCoordinates(lat, lng, localeIdentifier: localeIdentifier));
     } catch (e) {
-      print('Error getting places from coordinates $e');
+      print('Error getting places from coordinates');
       return Result.error(e);
     }
   }

@@ -36,7 +36,7 @@ class RegionRepository extends HttpRepository with EosRepository {
         .catchError((error) => mapHttpError(error));
   }
 
-  Future<Result<RegionModel?>> getRegionById(String regionId) {
+  Future<Result<RegionModel>> getRegionById(String regionId) {
     print('[http] get region: $regionId');
 
     final membersURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
@@ -52,9 +52,13 @@ class RegionRepository extends HttpRepository with EosRepository {
 
     return http
         .post(membersURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<RegionModel?>(response, (dynamic body) {
-              final items = List.from(body['rows']);
-              return items.isEmpty ? null : RegionModel.fromJson(items.first);
+        .then((http.Response response) => mapHttpResponse<RegionModel>(response, (dynamic body) {
+              final List<dynamic> items = body['rows'].toList();
+              if (items.isEmpty) {
+                return null;
+              } else {
+                return RegionModel.fromJson(items.first);
+              }
             }))
         .catchError((error) => mapHttpError(error));
   }
@@ -187,7 +191,6 @@ class RegionRepository extends HttpRepository with EosRepository {
     required String description,
     required double latitude,
     required double longitude,
-    required String regionAddress,
   }) async {
     print('[eos] update region $regionAccount');
 
@@ -204,7 +207,7 @@ class RegionRepository extends HttpRepository with EosRepository {
           'rgnaccount': regionAccount,
           'title': title,
           'description': description,
-          'locationJson': regionAddress,
+          'locationJson': '{lat:$latitude,lon:$longitude}',
           'latitude': latitude,
           'longitude': longitude
         },

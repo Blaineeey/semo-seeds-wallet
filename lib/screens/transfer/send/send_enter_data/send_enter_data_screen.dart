@@ -26,7 +26,7 @@ import 'package:seeds/screens/transfer/send/send_enter_data/interactor/viewmodel
 import 'package:seeds/utils/build_context_extension.dart';
 
 class SendEnterDataScreen extends StatelessWidget {
-  const SendEnterDataScreen({super.key});
+  const SendEnterDataScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +64,19 @@ class SendEnterDataScreen extends StatelessWidget {
               InAppReview.instance.requestReview();
               settingsStorage.saveDateSinceRateAppPrompted(DateTime.now().millisecondsSinceEpoch);
             }
-            SendTransactionSuccessDialog.fromPageCommand(command).show(context);
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button
+              builder: (_) => SendTransactionSuccessDialog.fromPageCommand(command),
+            );
           } else if (command is ShowTransactionSuccess) {
             Navigator.of(context).pop(); // pop send
             Navigator.of(context).pop(); // pop scanner
-            GenericTransactionSuccessDialog(command.transactionModel).show(context);
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button
+              builder: (_) => GenericTransactionSuccessDialog(command.transactionModel),
+            );
           }
         },
         child: Scaffold(
@@ -87,7 +95,7 @@ class SendEnterDataScreen extends StatelessWidget {
                       ? const SendLoadingIndicator()
                       : const SafeArea(child: FullPageLoadingIndicator());
                 case PageState.failure:
-                  return SafeArea(child: FullPageErrorIndicator(errorMessage: state.errorMessage));
+                  return const SafeArea(child: FullPageErrorIndicator());
                 case PageState.success:
                   return SafeArea(
                     minimum: const EdgeInsets.all(horizontalEdgePadding),
@@ -101,7 +109,7 @@ class SendEnterDataScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
                                   context.loc.transferSendSendTo,
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 ),
                               ),
                               const SizedBox(height: 8),

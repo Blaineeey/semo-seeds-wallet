@@ -10,7 +10,7 @@ import 'package:seeds/screens/app/interactor/viewmodels/app_bloc.dart';
 class GuardianApproveOrDenyScreen extends StatelessWidget {
   final GuardianRecoveryRequestData data;
 
-  const GuardianApproveOrDenyScreen({super.key, required this.data});
+  const GuardianApproveOrDenyScreen({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class GuardianApproveOrDenyScreen extends StatelessWidget {
             Text(
               'Account Recovery Request'.i18n,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 30),
             Padding(

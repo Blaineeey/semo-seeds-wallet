@@ -6,7 +6,7 @@ import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 
 class SearchUserTextField extends StatefulWidget {
-  const SearchUserTextField({super.key});
+  const SearchUserTextField({Key? key}) : super(key: key);
 
   @override
   _SearchUserTextFieldState createState() => _SearchUserTextFieldState();

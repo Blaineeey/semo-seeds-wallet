@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:seeds/datasource/local/models/auth_data_model.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/datasource/remote/model/token_model.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,7 +58,7 @@ class _SettingsStorage {
 
   String? get passcode => _passcode;
 
-  bool get passcodeActive => _passcodeActive ?? false;
+  bool? get passcodeActive => _passcodeActive;
 
   bool? get biometricActive => _biometricActive;
 
@@ -67,7 +66,7 @@ class _SettingsStorage {
 
   String get selectedFiatCurrency => _preferences.getString(_kSelectedFiatCurrency) ?? getPlatformCurrency();
 
-  TokenModel get selectedToken => TokenModel.fromId(_preferences.getString(_kSelectedToken) ?? seedsToken.id) ?? seedsToken;
+  TokenModel get selectedToken => TokenModel.fromSymbol(_preferences.getString(_kSelectedToken) ?? seedsToken.symbol);
 
   bool get inRecoveryMode => _preferences.getBool(_kInRecoveryMode) ?? false;
 
@@ -76,6 +75,8 @@ class _SettingsStorage {
   List<String> get tokensWhitelist => _preferences.getStringList(_kTokensWhiteList) ?? [seedsToken.id];
 
   bool get isCitizen => _preferences.getBool(_kIsCitizen) ?? false;
+
+  bool get isVisitor => _preferences.getBool(_kIsVisitor) ?? false;
 
   bool get isFirstTimeOnDelegateScreen => _preferences.getBool(_kIsFirstTimeOnDelegateScreen) ?? false;
 
@@ -138,7 +139,7 @@ class _SettingsStorage {
   }
 
   set selectedToken(TokenModel token) {
-    _preferences.setString(_kSelectedToken, token.id);
+    _preferences.setString(_kSelectedToken, token.symbol);
   }
 
   set tokensWhitelist(List<String> tokensList) {
@@ -148,6 +149,12 @@ class _SettingsStorage {
   set isCitizen(bool? value) {
     if (value != null) {
       _preferences.setBool(_kIsCitizen, value);
+    }
+  }
+
+  set isVisitor(bool? value) {
+    if (value != null) {
+      _preferences.setBool(_kIsVisitor, value);
     }
   }
 
@@ -313,15 +320,10 @@ class _SettingsStorage {
   void saveSelectedFiatCurrency(String value) => selectedFiatCurrency = value;
 
   // ignore: use_setters_to_change_properties
-  void saveCitizenshipStatus(ProfileStatus status) {
-    if (status == ProfileStatus.citizen) {
-      isCitizen = true;
-    } else if (status == ProfileStatus.visitor) {
-      isCitizen = false;
-    } else if (status == ProfileStatus.resident) {
-      isCitizen = false;
-    }
-  }
+  void saveIsCitizen(bool value) => isCitizen = value;
+
+  // ignore: use_setters_to_change_properties
+  void saveIsVisitor(bool value) => isVisitor = value;
 
   // ignore: use_setters_to_change_properties
   void saveFirstTimeOnDelegateScreen(bool value) => isFirstTimeOnDelegateScreen = value;

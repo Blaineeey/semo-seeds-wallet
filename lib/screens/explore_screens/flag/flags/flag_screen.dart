@@ -12,7 +12,7 @@ import 'package:seeds/screens/explore_screens/flag/flags/components/remove_flag_
 import 'package:seeds/screens/explore_screens/flag/flags/interactor/viewmodels/flag_bloc.dart';
 
 class FlagScreen extends StatelessWidget {
-  const FlagScreen({super.key});
+  const FlagScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

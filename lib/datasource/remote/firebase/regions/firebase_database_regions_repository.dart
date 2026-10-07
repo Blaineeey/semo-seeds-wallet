@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
-import 'package:seeds/components/regions_map/interactor/view_models/place.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_database_repository.dart';
 import 'package:seeds/datasource/remote/model/firebase_models/firebase_region_model.dart';
 import 'package:seeds/datasource/remote/model/firebase_models/region_event_model.dart';
@@ -17,23 +16,20 @@ const dateCreatedKey = "dateCreated";
 const _dateUpdatedKey = "dateUpdated";
 const pointKey = "point";
 const geoPointKey = "geopoint";
+const locationIdKey = "locationId";
 
-// Events keys
+// Events
 const eventNameKey = "eventName";
-const eventDescriptionKey = "eventDescription";
 const eventLocationKey = "eventLocation";
-const eventAddressKey = "eventAddress";
 const eventImageKey = "eventImage";
-const eventStartTimeKey = "eventStartTime";
-const eventEndTimeKey = "eventEndTime";
-const eventUsersKey = "eventUsers";
+const eventTimeKey = "eventTime";
 
 // messages
 const messageTextKey = "messageText";
 
 class FirebaseDatabaseRegionsRepository extends FirebaseDatabaseService {
   // Init firestore and geoFlutterFire
-  final _geo = GeoFlutterFire();
+  final _geo = Geoflutterfire();
 
   /// Create a region
   Future<Result<String>> createRegion({
@@ -69,22 +65,16 @@ class FirebaseDatabaseRegionsRepository extends FirebaseDatabaseService {
   }
 
   /// Update a region's Image
-  Future<Result<String>> editRegionImage({
+  Future<void> editRegionImage({
     required String imageUrl,
     required String regionAccount,
   }) {
-    return regionCollection
-        .doc(regionAccount)
-        .update(
-          {
-            imageUrlKey: imageUrl,
-            _dateUpdatedKey: FieldValue.serverTimestamp(),
-          },
-        )
-        .then((value) => mapFirebaseResponse<String>(() {
-              return regionAccount;
-            }))
-        .onError((error, stackTrace) => mapFirebaseError(error));
+    return regionCollection.doc(regionAccount).update(
+      {
+        imageUrlKey: imageUrl,
+        _dateUpdatedKey: FieldValue.serverTimestamp(),
+      },
+    );
   }
 
   /// Delete a region and its matching location
@@ -108,50 +98,27 @@ class FirebaseDatabaseRegionsRepository extends FirebaseDatabaseService {
         .within(center: center, radius: radius, field: pointKey)
         .asyncMap((List<DocumentSnapshot> event) => event
             // ignore: cast_nullable_to_non_nullable
-            .map((DocumentSnapshot document) => FirebaseRegion.fromDocumentSnapshot(document))
+            .map((DocumentSnapshot document) => FirebaseRegion.fromMap(document.data() as Map<String, dynamic>))
             .toList())
         .firstWhere((i) => true);
   }
 
-  Future<Stream<List<FirebaseRegion>>> getAllRegions() async {
-    return regionCollection.snapshots().map((QuerySnapshot<Map<String, dynamic>> event) =>
-        event.docs.map((region) => FirebaseRegion.fromQueryDocumentSnapshot(region)).toList());
-  }
-
-  Future<Result<FirebaseRegion>> getRegionById(String regionId) async {
-    return regionCollection
-        .doc(regionId)
-        .get()
-        .then((DocumentSnapshot<Map<String, dynamic>> document) => mapFirebaseResponse<FirebaseRegion>(() {
-              return FirebaseRegion.fromDocumentSnapshot(document);
-            }))
-        .onError((error, stackTrace) => mapFirebaseError(error));
-  }
-
-  Future<Result<String>> createRegionEvent({
-    required String eventName,
-    required String eventDescription,
-    required String regionAccount,
-    required String creatorAccount,
-    required double latitude,
-    required double longitude,
-    required String eventAddress,
-    required String eventImage,
-    required DateTime eventStartTime,
-    required DateTime eventEndTime,
-  }) async {
+  Future<Result<String>> createRegionEvent(
+    String eventName,
+    String regionAccount,
+    String creatorAccount,
+    String eventLocation,
+    String eventImage,
+    DateTime eventTime,
+  ) async {
     final data = {
       regionAccountKey: regionAccount,
       eventNameKey: eventName,
-      eventDescriptionKey: eventDescription,
       creatorAccountKey: creatorAccount,
-      eventLocationKey: _geo.point(latitude: latitude, longitude: longitude).data,
-      eventAddressKey: eventAddress,
+      eventLocationKey: eventLocation,
       eventImageKey: eventImage,
-      eventStartTimeKey: eventStartTime,
-      eventEndTimeKey: eventEndTime,
+      eventTimeKey: eventTime,
       dateCreatedKey: FieldValue.serverTimestamp(),
-      eventUsersKey: FieldValue.arrayUnion([creatorAccount])
     };
 
     return regionEventCollection
@@ -163,100 +130,43 @@ class FirebaseDatabaseRegionsRepository extends FirebaseDatabaseService {
         .onError((error, stackTrace) => mapFirebaseError(error));
   }
 
-  Future<Result<String>> editRegionEvent({
-    required String eventId,
+  Future<Result<String>> editRegionEvent(
+    String eventId,
     String? eventName,
-    String? eventDescription,
-    Place? place,
+    String? eventLocation,
     String? eventImage,
-    DateTime? eventStartTime,
-    DateTime? eventEndTime,
-  }) async {
-    final Map<String, dynamic> data = {};
+    DateTime? eventTime,
+  ) async {
+    final data = {};
     if (eventName != null) {
       data.putIfAbsent(eventNameKey, () => eventName);
     }
 
-    if (eventDescription != null) {
-      data.putIfAbsent(eventDescriptionKey, () => eventDescription);
-    }
-
-    if (place != null) {
-      data.putIfAbsent(eventLocationKey, () => _geo.point(latitude: place.lat, longitude: place.lng).data);
-      data.putIfAbsent(eventAddressKey, () => place.placeText);
+    if (eventLocation != null) {
+      data.putIfAbsent(eventLocationKey, () => eventLocation);
     }
 
     if (eventImage != null) {
       data.putIfAbsent(eventImageKey, () => eventImage);
     }
 
-    if (eventStartTime != null) {
-      data.putIfAbsent(eventStartTimeKey, () => eventStartTime);
-    }
-
-    if (eventEndTime != null) {
-      data.putIfAbsent(eventEndTimeKey, () => eventEndTime);
+    if (eventTime != null) {
+      data.putIfAbsent(eventTimeKey, () => eventTime);
     }
 
     return regionEventCollection
         .doc(eventId)
         .set(data, SetOptions(merge: true))
         .then((value) => mapFirebaseResponse<String>(() {
-              return eventId;
+              return eventName;
             }))
         .onError((error, stackTrace) => mapFirebaseError(error));
   }
 
-  Future<Result<String>> deleteRegionEvent({required String eventId}) async {
-    return regionEventCollection
-        .doc(eventId)
-        .delete()
-        .then((value) => mapFirebaseResponse<String>(() {
-              return eventId;
-            }))
-        .onError((error, stackTrace) => mapFirebaseError(error));
-  }
-
-  Stream<List<RegionEventModel>> getEventsForRegion(String regionAccount) {
+  Future<Stream<Iterable<RegionEventModel>>> getEventsForRegion(String regionAccount) async {
     return regionEventCollection.where(regionAccountKey, isEqualTo: regionAccount).snapshots().asyncMap(
-        (QuerySnapshot event) => event.docs
-            .map((QueryDocumentSnapshot event) =>
-                RegionEventModel.mapToRegionEventModel(event as QueryDocumentSnapshot<Map<String, dynamic>>))
-            .toList());
-  }
-
-  Stream<RegionEventModel> getEventRegion(String regionId) {
-    return regionEventCollection.where('id', isEqualTo: regionId).snapshots().asyncMap((QuerySnapshot event) {
-      return RegionEventModel.mapToRegionEventModel(event as QueryDocumentSnapshot<Map<String, dynamic>>);
-    });
-  }
-
-  Future<Result<String>> joinEvent(String eventId, String joiningUser) {
-    final data = {
-      eventUsersKey: FieldValue.arrayUnion([joiningUser]),
-    };
-
-    return regionEventCollection
-        .doc(eventId)
-        .set(data, SetOptions(merge: true))
-        .then((value) => mapFirebaseResponse<String>(() {
-              return eventId;
-            }))
-        .onError((error, stackTrace) => mapFirebaseError(error));
-  }
-
-  Future<Result<String>> leaveEvent(String eventId, String leavingUser) {
-    final data = {
-      eventUsersKey: FieldValue.arrayRemove([leavingUser]),
-    };
-
-    return regionEventCollection
-        .doc(eventId)
-        .set(data, SetOptions(merge: true))
-        .then((value) => mapFirebaseResponse<String>(() {
-              return eventId;
-            }))
-        .onError((error, stackTrace) => mapFirebaseError(error));
+        (QuerySnapshot event) =>
+            event.docs.map((QueryDocumentSnapshot event) => RegionEventModel.mapToRegionEventModel(event)));
   }
 
   Future<Result<String>> sendMessageToRegion(String regionAccount, String creatorAccount, String message) {
