@@ -1,51 +1,182 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:seeds/datasource/local/member_model_cache_item.dart';
-import 'package:seeds/datasource/local/models/vote_model_adapter.dart';
-import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_push_notification_service.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
-import 'package:seeds/datasource/remote/model/token_model.dart';
-import 'package:seeds/domain-shared/bloc_observer.dart';
-import 'package:seeds/seeds_app.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_toolbox/flutter_toolbox.dart';
+import 'package:hive/hive.dart';
+import 'package:i18n_extension/i18n_widget.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:seeds/features/biometrics/biometrics_verification.dart';
+import 'package:seeds/models/VoteResultAdapter.dart';
+import 'package:seeds/models/member_adapter.dart';
+import 'package:seeds/models/models.dart';
+import 'package:seeds/models/transaction_adapter.dart';
+import 'package:seeds/providers/notifiers/auth_notifier.dart';
+import 'package:seeds/providers/notifiers/settings_notifier.dart';
+import 'package:seeds/providers/notifiers/voted_notifier.dart';
+import 'package:seeds/providers/providers.dart';
+import 'package:seeds/providers/services/firebase/firebase_database_service.dart';
+import 'package:seeds/providers/services/navigation_service.dart';
+import 'package:seeds/providers/services/firebase/push_notification_service.dart';
+import 'package:seeds/screens/app/app.dart';
+import 'package:seeds/screens/onboarding/onboarding.dart';
+import 'package:seeds/widgets/passcode.dart';
+import 'package:seeds/widgets/splash_screen.dart';
+import 'package:sentry/sentry.dart' as Sentry;
 
-Future<void> main() async {
-  // Zone to handle asynchronous errors (Dart).
-  // for details: https://docs.flutter.dev/testing/errors
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load();
-    await Firebase.initializeApp();
-    await settingsStorage.initialise();
-    await PushNotificationService().initialise();
-    await remoteConfigurations.initialise();
-    await TokenModel.installModels(['localscale','lightwallet','experimental'], [TokenModel.seedsEcosysUsecase]);
-    await Hive.initFlutter();
-    Hive.registerAdapter(MemberModelCacheItemAdapter());
-    Hive.registerAdapter(VoteModelAdapter());
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+import 'generated/r.dart';
 
-    // Called whenever the Flutter framework catches an error.
-    FlutterError.onError = (details) async {
-      FlutterError.presentError(details);
-      // TODO(Raul): use FirebaseCrashlytics or whatever
-      //await FirebaseCrashlytics.instance.recordFlutterError(details);
-    };
+final Sentry.SentryClient _sentry = Sentry.SentryClient(
+    dsn: "https://ee2dd9f706974248b5b4a10850586d94@sentry.io/2239437");
 
-    if (kDebugMode) {
-      /// Bloc logs only in debug (for better performance in release)
-      BlocOverrides.runZoned(() => runApp(const SeedsApp()), blocObserver: DebugBlocObserver());
+bool get isInDebugMode {
+  bool inDebugMode = false;
+  assert(inDebugMode = true);
+  return inDebugMode;
+}
+
+/// Reports [error] along with its [stackTrace] to Sentry.io.
+Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
+  print('Caught error: $error');
+  print('Reporting to Sentry.io...');
+
+  final Sentry.SentryResponse response = await _sentry.captureException(
+    exception: error,
+    stackTrace: stackTrace,
+  );
+
+  if (response.isSuccessful) {
+    print('Success! Event ID: ${response.eventId}');
+  } else {
+    print('Failed to report to Sentry.io: ${response.error}');
+  }
+}
+
+main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var appDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDir.path);
+  Hive.registerAdapter<MemberModel>(MemberAdapter());
+  Hive.registerAdapter<VoteResult>(VoteResultAdapter());
+  Hive.registerAdapter<TransactionModel>(TransactionAdapter());
+  await Firebase.initializeApp();
+  PushNotificationService().initialise();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    if (isInDebugMode) {
+      runApp(SeedsApp());
     } else {
-      runApp(const SeedsApp());
+      FlutterError.onError = (FlutterErrorDetails details) async {
+        print('FlutterError.onError caught an error');
+        await _reportError(details.exception, details.stack);
+      };
+
+      Isolate.current.addErrorListener(
+        RawReceivePort((dynamic pair) async {
+          print('Isolate.current.addErrorListener caught an error');
+          await _reportError(
+            (pair as List<String>).first,
+            (pair as List<String>).last,
+          );
+        }).sendPort,
+      );
+
+      runZonedGuarded<Future<Null>>(() async {
+        runApp(SeedsApp());
+      }, (error, stackTrace) async {
+        print('Zone caught an error');
+        await _reportError(error, stackTrace);
+      });
     }
-  }, (error, stackTrace) async {
-    //await FirebaseCrashlytics.instance.recordError(error, stack);
   });
+}
+
+class SeedsMaterialApp extends MaterialApp {
+  SeedsMaterialApp({home, navigatorKey, onGenerateRoute})
+      : super(
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', "US"),
+              const Locale('es', "ES"),
+            ],
+            //debugShowCheckedModeBanner: false,
+            //debugShowMaterialGrid: true,
+            home: I18n(child: home),
+            navigatorKey: navigatorKey,
+            onGenerateRoute: onGenerateRoute);
+}
+
+class SeedsApp extends StatefulWidget {
+  @override
+  _SeedsAppState createState() => _SeedsAppState();
+}
+
+class _SeedsAppState extends State<SeedsApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: providers,
+      child: MainScreen(),
+    );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  const MainScreen({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthNotifier>(
+      builder: (ctx, auth, _) {
+        NavigationService navigationService = NavigationService.of(context);
+
+        if (auth.status == AuthStatus.emptyAccount) {
+          return SeedsMaterialApp(
+            home: Onboarding(),
+            navigatorKey: navigationService.onboardingNavigatorKey,
+            onGenerateRoute: navigationService.onGenerateRoute,
+          );
+        } else if (auth.status == AuthStatus.unlocked) {
+          String userAccount = SettingsNotifier.of(context).accountName;
+          FirebaseDatabaseService().setFirebaseMessageToken(userAccount);
+
+          return ToolboxApp(
+            child: SeedsMaterialApp(
+              home: App(),
+              navigatorKey: navigationService.appNavigatorKey,
+              onGenerateRoute: navigationService.onGenerateRoute,
+            ),
+            noItemsFoundWidget: Padding(
+              padding: const EdgeInsets.all(32),
+              child: SvgPicture.asset(R.noItemFound),
+            ),
+          );
+        } else if (auth.status == AuthStatus.emptyPasscode) {
+          return SeedsMaterialApp(
+            home: LockWallet(),
+          );
+        } else if (auth.status == AuthStatus.locked) {
+          return SeedsMaterialApp(
+            home: BiometricsVerification(),
+          );
+        } else {
+          return SeedsMaterialApp(
+            home: SplashScreen(),
+          );
+        }
+      },
+    );
+  }
 }
