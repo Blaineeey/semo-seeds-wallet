@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
-import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/proposal_details_bloc.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/bloc.dart';
+
+import '../interactor/viewmodels/proposal_details_bloc.dart';
 
 class CurrentVoteChoiceLabel extends StatelessWidget {
-  const CurrentVoteChoiceLabel({super.key});
+  const CurrentVoteChoiceLabel({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +22,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' in favor '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'of this proposal'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'of this proposal'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),
@@ -37,9 +39,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: 'I'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'I'.i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' refrain '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'from voting'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'from voting'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),
@@ -54,9 +56,9 @@ class CurrentVoteChoiceLabel extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: "I'm".i18n, style: Theme.of(context).textTheme.subtitle2),
                       TextSpan(text: ' against '.i18n, style: Theme.of(context).textTheme.subtitle2Green2),
-                      TextSpan(text: 'this proposal'.i18n, style: Theme.of(context).textTheme.titleSmall),
+                      TextSpan(text: 'this proposal'.i18n, style: Theme.of(context).textTheme.subtitle2),
                     ],
                   ),
                 ),

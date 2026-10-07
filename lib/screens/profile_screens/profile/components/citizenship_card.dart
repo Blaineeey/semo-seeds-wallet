@@ -2,31 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:seeds/components/shimmer_rectangle.dart';
+import 'package:seeds/constants/app_colors.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/datasource/remote/model/profile_model.dart';
-import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/i18n/profile_screens/profile/profile.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/screens/profile_screens/profile/components/citizenship_upgrade_button.dart';
-import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profileValuesArguments.dart';
-import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/profile_bloc.dart';
+import 'package:seeds/screens/profile_screens/profile/interactor/viewmodels/bloc.dart';
+
+import 'citizenship_upgrade_button.dart';
 
 class CitizenshipCard extends StatelessWidget {
-  const CitizenshipCard({super.key});
+  const CitizenshipCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (settingsStorage.isCitizen || state.isOrganization) {
+          return const SizedBox.shrink();
+        } else {
           switch (state.pageState) {
             case PageState.loading:
-              return const ShimmerRectangle(size: Size(328, 145), radius: defaultCardBorderRadius);
+              return const ShimmerRectangle(size: Size(328, 145), radius: 12);
             case PageState.success:
-              return DecoratedBox(
+              return Container(
                 decoration: const BoxDecoration(
                   color: AppColors.lightGreen2,
                   borderRadius: BorderRadius.all(Radius.circular(defaultCardBorderRadius)),
@@ -64,7 +66,7 @@ class CitizenshipCard extends StatelessWidget {
                                   children: [
                                     Text(
                                       'You are on the way from'.i18n,
-                                      style: Theme.of(context).textTheme.titleSmall,
+                                      style: Theme.of(context).textTheme.subtitle2,
                                     ),
                                   ],
                                 ),
@@ -116,6 +118,7 @@ class CitizenshipCard extends StatelessWidget {
                                         Routes.citizenship,
                                         ProfileValuesArguments(
                                           profile: BlocProvider.of<ProfileBloc>(context).state.profile!,
+                                          scores: BlocProvider.of<ProfileBloc>(context).state.score!,
                                         ),
                                       ),
                                       child: Text(
@@ -148,8 +151,8 @@ class CitizenshipCard extends StatelessWidget {
             default:
               return const SizedBox(height: 145.0);
           }
-        },
-      ),
+        }
+      },
     );
   }
 }

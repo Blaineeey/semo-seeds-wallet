@@ -19,7 +19,7 @@ class RefundModel extends Equatable {
     return RefundModel(
       requestId: json['request_id'],
       refundId: json['refund_id'],
-      amount: double.parse(json['amount'].split(' ').first),
+      amount: json['amount'],
       requestTime: json['request_time'],
       weeksDelay: json['weeks_delay'],
     );

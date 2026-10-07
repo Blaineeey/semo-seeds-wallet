@@ -7,21 +7,18 @@ import 'package:seeds/components/balance_row.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
+import 'package:seeds/components/snack_bar_info.dart';
 import 'package:seeds/datasource/local/models/token_data_model.dart';
-import 'package:seeds/design/app_theme.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
-import 'package:seeds/domain-shared/global_error.dart';
+import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/i18n/explore_screens/invite/invite.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/explore_screens/invite/components/invite_link_dialog.dart';
-import 'package:seeds/screens/explore_screens/invite/interactor/viewmodels/invite_bloc.dart';
-import 'package:seeds/screens/explore_screens/invite/interactor/viewmodels/invite_page_command.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:seeds/screens/explore_screens/invite/interactor/viewmodels/bloc.dart';
 
+/// INVITE SCREEN
 class InviteScreen extends StatelessWidget {
-  const InviteScreen({super.key});
+  const InviteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +26,12 @@ class InviteScreen extends StatelessWidget {
       create: (context) => InviteBloc(BlocProvider.of<RatesBloc>(context).state)..add(const LoadUserBalance()),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.loc.inviteScreenAppBarTitle),
+          title: Text('Invite'.i18n),
           actions: [
-            TextButton(
+            IconButton(
               onPressed: () => NavigationService.of(context).navigateTo(Routes.manageInvites),
-              child: Text(
-                context.loc.inviteScreenManageInvitesTitle,
-                style: Theme.of(context).textTheme.subtitle2Green3LowEmphasis,
-              ),
-            ),
-            const SizedBox(width: 8.0),
+              icon: const Icon(Icons.settings),
+            )
           ],
         ),
         body: BlocConsumer<InviteBloc, InviteState>(
@@ -46,7 +39,6 @@ class InviteScreen extends StatelessWidget {
           listener: (context, state) {
             final pageCommand = state.pageCommand;
             if (pageCommand is ShowInviteLinkView) {
-              Navigator.of(context).pop(); // pop invite screen
               showDialog<void>(
                 context: context,
                 barrierDismissible: false,
@@ -59,7 +51,7 @@ class InviteScreen extends StatelessWidget {
               );
             }
             if (pageCommand is ShowErrorMessage) {
-              eventBus.fire(ShowSnackBar(pageCommand.message.localizedDescription(context)));
+              SnackBarInfo(pageCommand.message, ScaffoldMessenger.of(context)).show();
             }
           },
           builder: (context, state) {
@@ -72,17 +64,16 @@ class InviteScreen extends StatelessWidget {
                 return const FullPageErrorIndicator();
               case PageState.success:
                 return SafeArea(
-                  minimum: const EdgeInsets.all(horizontalEdgePadding),
                   child: Stack(
                     children: [
                       SingleChildScrollView(
                         child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           height: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight!,
                           child: Column(
                             children: [
                               const SizedBox(height: 16),
-                              Text(context.loc.inviteScreenInputAmountTitle,
-                                  style: Theme.of(context).textTheme.titleLarge),
+                              Text('Invite amount'.i18n, style: Theme.of(context).textTheme.headline6),
                               const SizedBox(height: 16),
                               AmountEntryWidget(
                                 tokenDataModel: TokenDataModel(0),
@@ -92,13 +83,10 @@ class InviteScreen extends StatelessWidget {
                                 autoFocus: state.isAutoFocus,
                               ),
                               const SizedBox(height: 24),
-                              AlertInputValue(
-                                  state.errorMessage?.localizedDescription(context) ??
-                                      GlobalError.unknown.localizedDescription(context),
-                                  isVisible: state.alertMessage != null),
+                              AlertInputValue(state.alertMessage ?? '', isVisible: state.alertMessage != null),
                               const SizedBox(height: 24),
                               BalanceRow(
-                                label: context.loc.inviteScreenBalanceTitle,
+                                label: 'Available Balance'.i18n,
                                 fiatAmount: state.availableBalanceFiat,
                                 tokenAmount: state.availableBalance,
                               ),
@@ -106,12 +94,16 @@ class InviteScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: FlatButtonLong(
-                          title: context.loc.inviteScreenButtonTitle,
-                          enabled: state.isCreateInviteButtonEnabled,
-                          onPressed: () => BlocProvider.of<InviteBloc>(context).add(const OnCreateInviteButtonTapped()),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: FlatButtonLong(
+                            title: 'Create invite'.i18n,
+                            enabled: state.isCreateInviteButtonEnabled,
+                            onPressed: () =>
+                                BlocProvider.of<InviteBloc>(context).add(const OnCreateInviteButtonTapped()),
+                          ),
                         ),
                       ),
                     ],

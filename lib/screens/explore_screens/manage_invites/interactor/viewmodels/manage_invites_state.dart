@@ -1,40 +1,23 @@
-part of 'manage_invites_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class ManageInvitesState extends Equatable {
   final PageState pageState;
-  final List<InvitesItemsData> invitesItemData;
-  final PageCommand? pageCommand;
 
-  const ManageInvitesState({required this.pageState, required this.invitesItemData, this.pageCommand});
-
-  Iterable<InvitesItemsData> get claimedInvites => invitesItemData.where((element) => element.invite.isClaimed);
-
-  Iterable<InvitesItemsData> get unclaimedInvites => invitesItemData.where((element) => !element.invite.isClaimed);
-
-  String get claimedTabTitle => "Claimed Invites${claimedInvites.isNotEmpty ? " (${claimedInvites.length})" : ""}";
-
-  String get unClaimedTabTitle =>
-      "Unclaimed Invites${unclaimedInvites.isNotEmpty ? " (${unclaimedInvites.length})" : ""}";
+  const ManageInvitesState({required this.pageState});
 
   @override
-  List<Object?> get props => [pageState, invitesItemData, pageCommand];
+  List<Object?> get props => [
+        pageState,
+      ];
 
   ManageInvitesState copyWith({
     PageState? pageState,
-    List<InvitesItemsData>? invitesItemData,
-    PageCommand? pageCommand,
   }) {
-    return ManageInvitesState(
-      pageState: pageState ?? this.pageState,
-      invitesItemData: invitesItemData ?? this.invitesItemData,
-      pageCommand: pageCommand,
-    );
+    return ManageInvitesState(pageState: pageState ?? this.pageState);
   }
 
   factory ManageInvitesState.initial() {
-    return const ManageInvitesState(
-      pageState: PageState.initial,
-      invitesItemData: [],
-    );
+    return const ManageInvitesState(pageState: PageState.initial);
   }
 }

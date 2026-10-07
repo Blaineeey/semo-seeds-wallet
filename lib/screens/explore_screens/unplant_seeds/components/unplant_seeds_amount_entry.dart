@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/datasource/local/models/fiat_data_model.dart';
 import 'package:seeds/datasource/local/models/token_data_model.dart';
-import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/domain-shared/user_input_number_formatter.dart';
 
 class UnplantSeedsAmountEntry extends StatelessWidget {
@@ -10,17 +10,17 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
   final ValueSetter<String> onValueChange;
   final GestureTapCallback onTapMax;
   final bool autoFocus;
-  final TextEditingController? controller;
+  final TextEditingController controller;
 
   const UnplantSeedsAmountEntry({
-    super.key,
+    Key? key,
     required this.tokenDataModel,
     required this.onValueChange,
     required this.autoFocus,
     required this.onTapMax,
     required this.unplantedBalanceFiat,
-    this.controller,
-  });
+    required this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
               child: TextFormField(
                 controller: controller,
                 textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headline4,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
                   hintText: "0.0",
@@ -44,7 +44,7 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
                   disabledBorder: InputBorder.none,
                 ),
                 autofocus: autoFocus,
-                onChanged: (String value) => onValueChange(value),
+                onChanged: (String value) => {onValueChange(value)},
                 inputFormatters: [
                   UserInputNumberFormatter(),
                 ],
@@ -62,9 +62,10 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
                     left: 70,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                        backgroundColor: AppColors.green1,
-                      ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          primary: AppColors.green1),
                       onPressed: onTapMax,
                       child: const Text("MAX"),
                     ),

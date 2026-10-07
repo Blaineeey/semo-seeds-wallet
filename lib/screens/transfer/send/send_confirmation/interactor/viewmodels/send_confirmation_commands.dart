@@ -9,7 +9,9 @@ abstract class TransactionPageCommand extends PageCommand {}
 class ShowTransactionSuccess extends TransactionPageCommand {
   final GenericTransactionModel transactionModel;
 
-  ShowTransactionSuccess(this.transactionModel);
+  ShowTransactionSuccess({
+    required this.transactionModel,
+  });
 }
 
 class ShowTransferSuccess extends TransactionPageCommand {
@@ -17,24 +19,11 @@ class ShowTransferSuccess extends TransactionPageCommand {
   ProfileModel? from;
   ProfileModel? to;
   FiatDataModel? fiatAmount;
-  final bool shouldShowInAppReview;
 
   ShowTransferSuccess({
     required this.transactionModel,
     this.from,
     this.to,
     this.fiatAmount,
-    required this.shouldShowInAppReview,
   });
-}
-
-class ShowInvalidTransactionReason extends TransactionPageCommand {
-  final String reason;
-  ShowInvalidTransactionReason(this.reason);
-}
-
-class ShowFailedTransactionReason extends TransactionPageCommand {
-  final String title;
-  final String details;
-  ShowFailedTransactionReason({required this.title, required this.details});
 }
