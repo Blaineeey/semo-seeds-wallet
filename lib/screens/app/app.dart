@@ -1,174 +1,156 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
-import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
-import 'package:seeds/components/full_page_loading_indicator.dart';
-import 'package:seeds/components/notification_badge.dart';
-import 'package:seeds/design/app_colors.dart';
-import 'package:seeds/design/app_theme.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
-import 'package:seeds/domain-shared/page_command.dart';
-import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/i18n/app/app.i18.dart';
-import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/screens/app/components/account_under_recovery_screen.dart';
-import 'package:seeds/screens/app/components/guardian_approve_or_deny_recovery_screen.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_bloc.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_page_commands.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/app_screen_item.dart';
-import 'package:seeds/screens/app/interactor/viewmodels/connection_notifier.dart';
-import 'package:seeds/screens/explore_screens/explore/explore_screen.dart';
-import 'package:seeds/screens/profile_screens/profile/profile_screen.dart';
-import 'package:seeds/screens/wallet/wallet_screen.dart';
+import 'package:seeds/screens/onboarding/onboarding.dart';
+import 'package:seeds/services/auth_service.dart';
+import 'package:seeds/widgets/passcode.dart';
+import 'package:seeds/widgets/seeds_button.dart';
+
+import './home.dart';
+import './transfer.dart';
+import './harvest.dart';
+import './friends.dart';
 
 class App extends StatefulWidget {
-  const App({super.key});
+  final String accountName;
+
+  App(this.accountName);
 
   @override
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> with WidgetsBindingObserver {
-  final List<AppScreenItem> _appScreenItems = [
-    AppScreenItem(
-      title: "Wallet".i18n,
-      icon: 'assets/images/navigation_bar/wallet.svg',
-      iconSelected: 'assets/images/navigation_bar/wallet_selected.svg',
-      screen: const WalletScreen(),
-      index: 0,
-    ),
-    AppScreenItem(
-      title: "Explore".i18n,
-      icon: 'assets/images/navigation_bar/explore.svg',
-      iconSelected: 'assets/images/navigation_bar/explore_selected.svg',
-      screen: const ExploreScreen(),
-      index: 1,
-    ),
-    AppScreenItem(
-      title: "Profile".i18n,
-      icon: 'assets/images/navigation_bar/user_profile.svg',
-      iconSelected: 'assets/images/navigation_bar/user_profile_selected.svg',
-      screen: const ProfileScreen(),
-      index: 2,
-    ),
+class _AppState extends State<App> {
+  final AuthService authService = AuthService();
+
+  int index = 0;
+
+  final navigationTitles = ["Dashboard", "Transfer", "Harvest", "Friends"];
+  final navigationIcons = [
+    Icons.home,
+    Icons.account_balance_wallet,
+    Icons.settings_backup_restore,
+    Icons.people
   ];
-  final PageController _pageController = PageController();
-  late AppBloc _appBloc;
-  late ConnectionNotifier _connectionNotifier;
+
+  Future requirePasscode() async {
+    String existingPasscode = await authService.getPasscode();
+
+    Future.delayed(Duration.zero, () {
+      if (existingPasscode != null && existingPasscode != "") {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => UnlockWallet(existingPasscode),
+          ),
+        );
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => LockWallet(),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    _appBloc = AppBloc(BlocProvider.of<DeeplinkBloc>(context))..add(const OnAppMounted());
-    _connectionNotifier = ConnectionNotifier()..discoverEndpoints();
-    BlocProvider.of<RatesBloc>(context).add(const OnFetchRates());
-    WidgetsBinding.instance.addObserver(this);
+
+    requirePasscode();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-        break;
-      case AppLifecycleState.paused:
-        break;
-      case AppLifecycleState.resumed:
-        _connectionNotifier.discoverEndpoints();
-        BlocProvider.of<RatesBloc>(context).add(const OnFetchRates());
-        break;
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.hidden:
-        break;
+  List<BottomNavigationBarItem> buildNavigationItems() {
+    List<BottomNavigationBarItem> items = [];
+
+    for (var i = 0; i < navigationTitles.length; i++) {
+      items.add(BottomNavigationBarItem(
+        icon: Icon(navigationIcons[i]),
+        title: Text(navigationTitles[i]),
+      ));
     }
+
+    return items;
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _pageController.dispose();
-    super.dispose();
+  PageController pageController =
+      PageController(initialPage: 0, keepPage: true);
+
+  void movePage(index) {
+    setState(() {
+      pageController.jumpToPage(
+        index,
+      );
+      this.index = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => _appBloc,
-      child: Scaffold(
-        body: BlocConsumer<AppBloc, AppState>(
-          listenWhen: (_, current) => current.pageCommand != null,
-          listener: (context, state) async {
-            final pageCommand = state.pageCommand;
-            _appBloc.add(ClearAppPageCommand());
-            if (pageCommand is BottomBarNavigateToIndex) {
-              _pageController.jumpToPage(pageCommand.index);
-            } else if (pageCommand is ShowErrorMessage) {
-              eventBus.fire(ShowSnackBar(pageCommand.message));
-            } else if (pageCommand is ShowMessage) {
-              eventBus.fire(ShowSnackBar(pageCommand.message));
-            } else if (pageCommand is NavigateToRoute) {
-              await NavigationService.of(context).navigateTo(pageCommand.route);
-            } else if (pageCommand is NavigateToRouteWithArguments) {
-              if (pageCommand is NavigateToSendConfirmation) {
-                await NavigationService.of(context)
-                    .navigateTo(Routes.verificationUnpoppable)
-                    .then((_) => NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments));
-              } else {
-                await NavigationService.of(context).navigateTo(pageCommand.route, pageCommand.arguments);
-              }
-            }
-          },
-          builder: (context, state) {
-            if (state.pageState == PageState.loading) {
-              return const FullPageLoadingIndicator();
-            } else {
-              if (state.showGuardianRecoveryAlert) {
-                return const AccountUnderRecoveryScreen();
-              } else if (state.showGuardianApproveOrDenyScreen != null) {
-                return GuardianApproveOrDenyScreen(data: state.showGuardianApproveOrDenyScreen!);
-              } else {
-                return PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: _appScreenItems.map((i) => i.screen).toList(),
-                );
-              }
-            }
-          },
+    return Container(
+        child: Scaffold(
+          backgroundColor: Color(0xFAFAFAFA),
+          appBar: buildAppBar(context),
+          body: buildPageView(),
+          bottomNavigationBar: buildNavigation(),
         ),
-        bottomNavigationBar: BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) {
-            return DecoratedBox(
-              decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.white, width: 0.2))),
-              child: BottomNavigationBar(
-                currentIndex: state.index,
-                onTap: (index) => _appBloc.add(BottomBarTapped(index: index)),
-                selectedLabelStyle: Theme.of(context).textTheme.subtitle3,
-                unselectedLabelStyle: Theme.of(context).textTheme.subtitle3,
-                selectedItemColor: AppColors.white,
-                items: [
-                  for (final i in _appScreenItems)
-                    BottomNavigationBarItem(
-                      activeIcon:
-                          Padding(padding: const EdgeInsets.only(bottom: 4.0), child: SvgPicture.asset(i.iconSelected)),
-                      icon: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Padding(padding: const EdgeInsets.all(4.0), child: SvgPicture.asset(i.icon)),
-                          if (state.hasNotification && i.index == 2)
-                            const Positioned(top: -2, right: -16, child: NotificationBadge())
-                        ],
-                      ),
-                      label: state.index == i.index ? i.title : '',
-                    ),
-                ],
+      );
+  }
+
+  Widget buildAppBar(BuildContext _context) {
+    return AppBar(
+      title: Image.asset(
+        'assets/images/seeds-logo-with-text.png',
+        height: 40,
+        alignment: Alignment.topLeft,
+      ),
+      centerTitle: false,
+      actions: <Widget>[
+        Container(
+          child: SeedsButton("Logout", () async {
+            await authService.removeAccount();
+
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (ctx) => Onboarding(),
               ),
             );
-          },
+          }, true),
+          height: 20,
+          margin: EdgeInsets.only(
+            top: 20,
+            right: 15,
+          ),
         ),
-      ),
+      ],
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+    );
+  }
+
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      physics: NeverScrollableScrollPhysics(),
+      children: <Widget>[
+        Home(movePage, this.widget.accountName),
+        Transfer(this.widget.accountName),
+        Harvest(),
+        Friends(),
+      ],
+    );
+  }
+
+  Widget buildNavigation() {
+    return BottomNavigationBar(
+      currentIndex: index,
+      onTap: (index) {
+        movePage(index);
+      },
+      elevation: 9,
+      selectedFontSize: 12,
+      unselectedFontSize: 12,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.white,
+      items: buildNavigationItems(),
     );
   }
 }
