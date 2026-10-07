@@ -1,23 +1,17 @@
-import 'package:seeds/utils/double_extension.dart';
+import 'package:intl/intl.dart';
 
-extension StringExtension on String {
-  String get seedsFormatted {
-    final parts = split(' ');
-    final number = double.parse(parts[0]);
-    return number.seedsFormatted;
+
+extension StringExtension on String{
+  get seedsFormatted {
+    if (this != null) {
+      var parts = this.split(" ");
+      var number = double.parse(parts[0]);
+      //number = number + 30000000.0007; // debug
+      var showDecimals = number < 1000000;
+      var seedsFormatter = showDecimals ? NumberFormat("#,###,###,###,###.####") : NumberFormat("#,###,###,###,###,###");
+      return seedsFormatter.format(number);// + " " + parts[1];
+    } else {
+      return null;
+    }
   }
-
-  String get symbolFromAmount {
-    return split(" ")[1];
-  }
-
-  // convert blockchain quantity to double, e.g. "1.0000 SEEDS"
-  double get quantityAsDouble {
-    final parts = split(' ');
-    return double.parse(parts[0]);
-  }
-}
-
-extension NullableStringExtension on String? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
 }
