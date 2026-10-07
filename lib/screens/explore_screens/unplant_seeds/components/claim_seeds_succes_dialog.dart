@@ -10,7 +10,8 @@ class ClaimSeedsSuccessDialog extends StatelessWidget {
   final TokenDataModel claimSeedsAmount;
   final FiatDataModel claimSeedsAmountFiat;
 
-  const ClaimSeedsSuccessDialog({super.key, required this.claimSeedsAmountFiat, required this.claimSeedsAmount});
+  const ClaimSeedsSuccessDialog({Key? key, required this.claimSeedsAmountFiat, required this.claimSeedsAmount})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,22 +34,22 @@ class ClaimSeedsSuccessDialog extends StatelessWidget {
             children: [
               Text(
                 claimSeedsAmount.amountString(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headline4,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12, left: 4),
-                child: Text(claimSeedsAmount.symbol, style: Theme.of(context).textTheme.titleSmall),
+                child: Text(claimSeedsAmount.symbol, style: Theme.of(context).textTheme.subtitle2),
               ),
             ],
           ),
           const SizedBox(height: 4.0),
           Text(
             claimSeedsAmountFiat.asFormattedString(),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.subtitle2,
           ),
           const SizedBox(height: 20.0),
           Text(context.loc.plantSeedsClaimSuccessMessage,
-              textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
+              textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
           const SizedBox(height: 20.0),
         ],
       ),

@@ -14,7 +14,7 @@ import 'package:seeds/screens/explore_screens/swap_seeds/interactor/viewmodels/s
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SwapSeedsScreen extends StatefulWidget {
-  const SwapSeedsScreen({super.key});
+  const SwapSeedsScreen({Key? key}) : super(key: key);
 
   @override
   _SwapSeedsScreenState createState() => _SwapSeedsScreenState();

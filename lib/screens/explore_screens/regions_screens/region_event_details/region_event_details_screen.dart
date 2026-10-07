@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +19,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/region_event_detai
 import 'package:url_launcher/url_launcher.dart';
 
 class RegionEventDetailsScreen extends StatelessWidget {
-  const RegionEventDetailsScreen({super.key});
+  const RegionEventDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +33,8 @@ class RegionEventDetailsScreen extends StatelessWidget {
           final command = state.pageCommand;
           BlocProvider.of<RegionEventDetailsBloc>(context).add(const ClearRegionEventPageCommand());
           if (command is LaunchRegionMapsLocation) {
-            final url = Platform.isIOS
-                ? 'https://maps.apple.com/?q=${event.eventLocation.latitude},${event.eventLocation.longitude}'
-                : 'https://www.google.com/maps/place/${event.eventLocation.latitude}+${event.eventLocation.longitude}/@${event.eventLocation.latitude},${event.eventLocation.longitude},17z';
-            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+            launchUrl(Uri.parse(
+                'https://www.google.com/maps/place/${event.eventLocation.latitude}+-${event.eventLocation.longitude.abs()}/@${event.eventLocation.latitude},${event.eventLocation.longitude},17z'));
           } else if (command is ShowEditRegionEventButtons) {
             showModalBottomSheet(
               shape: const RoundedRectangleBorder(
@@ -148,7 +144,7 @@ class RegionEventDetailsScreen extends StatelessWidget {
                         children: [
                           Text('Details', style: Theme.of(context).textTheme.headline7),
                           const SizedBox(height: 10.0),
-                          Text(event.eventAddress, style: Theme.of(context).textTheme.titleSmall),
+                          Text(event.eventAddress, style: Theme.of(context).textTheme.subtitle2),
                           const SizedBox(height: 16.0),
                           Row(
                             children: [

@@ -6,7 +6,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/create_region_even
 import 'package:seeds/utils/build_context_extension.dart';
 
 class PickRegionEventLocation extends StatelessWidget {
-  const PickRegionEventLocation({super.key});
+  const PickRegionEventLocation({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

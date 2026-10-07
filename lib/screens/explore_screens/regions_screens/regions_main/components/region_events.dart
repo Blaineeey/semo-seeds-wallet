@@ -7,7 +7,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/regions_main/compo
 import 'package:seeds/screens/explore_screens/regions_screens/regions_main/interactor/viewmodel/region_bloc.dart';
 
 class RegionEvents extends StatelessWidget {
-  const RegionEvents({super.key});
+  const RegionEvents({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +27,11 @@ class RegionEvents extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final List<RegionEventModel> events = snapshot.data!;
-                events.sort((a, b) => a.eventStartTime.compareTo(b.eventStartTime));
-                final upcomming = events.where((i) => DateTime.now().isBefore(i.eventStartTime.toDate())).toList();
-                final expired = events.where((i) => DateTime.now().isAfter(i.eventStartTime.toDate())).toList();
-                expired.sort((a, b) => b.eventStartTime.compareTo(a.eventStartTime));
-                final all = [...upcomming, ...expired];
+                events.sort((a, b) => b.eventStartTime.compareTo(a.eventStartTime));
                 return ListView.builder(
                   padding: const EdgeInsets.all(16.0),
-                  itemCount: all.length,
-                  itemBuilder: (_, index) => RegionEventCard(all[index]),
+                  itemCount: events.length,
+                  itemBuilder: (_, index) => RegionEventCard(events[index]),
                 );
               } else {
                 return const FullPageLoadingIndicator();

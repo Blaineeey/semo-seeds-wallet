@@ -5,7 +5,7 @@ class DividerJungle extends StatelessWidget {
   final double thickness;
   final double height;
 
-  const DividerJungle({super.key, this.thickness = 1, this.height = 1});
+  const DividerJungle({Key? key, this.thickness = 1, this.height = 1}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

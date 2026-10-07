@@ -8,7 +8,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegators_t
 import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegators_tab/interactor/viewmodels/delegators_bloc.dart';
 
 class DelegatorsTab extends StatelessWidget {
-  const DelegatorsTab({super.key});
+  const DelegatorsTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class DelegatorsTab extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                             'Delegators are Citizens that have chosen you to vote on their behalf. All votes already cast this cycle will not change.',
-                            style: Theme.of(context).textTheme.titleSmall),
+                            style: Theme.of(context).textTheme.subtitle2),
                       ),
                       Expanded(
                         child: state.delegators.isEmpty

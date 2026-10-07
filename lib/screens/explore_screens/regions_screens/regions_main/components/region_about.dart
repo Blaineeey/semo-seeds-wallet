@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/regions_main/interactor/viewmodel/region_bloc.dart';
 
 class RegionAbout extends StatelessWidget {
-  const RegionAbout({super.key});
+  const RegionAbout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

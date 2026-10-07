@@ -6,7 +6,7 @@ import 'package:seeds/design/app_theme.dart';
 class MemberInfoRow extends StatelessWidget {
   final ProfileModel member;
 
-  const MemberInfoRow(this.member, {super.key});
+  const MemberInfoRow(this.member, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,12 @@ class MemberInfoRow extends StatelessWidget {
                         child: Text(
                           member.nickname.isNotEmpty ? member.nickname : member.account,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.labelLarge,
+                          style: Theme.of(context).textTheme.button,
                         ),
                       ),
                       Text(
                         member.statusString,
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: Theme.of(context).textTheme.button,
                       ),
                     ],
                   ),

@@ -10,7 +10,7 @@ import 'package:seeds/navigation/navigation_service.dart';
 class RegionResultTile extends StatelessWidget {
   final RegionModel region;
 
-  const RegionResultTile(this.region, {super.key});
+  const RegionResultTile(this.region, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

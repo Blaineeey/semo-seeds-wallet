@@ -6,7 +6,7 @@ import 'package:seeds/screens/transfer/send/send_confirmation/components/transac
 import 'package:seeds/utils/build_context_extension.dart';
 
 class TransactionActionsScreen extends StatelessWidget {
-  const TransactionActionsScreen({super.key});
+  const TransactionActionsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

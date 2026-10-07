@@ -15,7 +15,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/
 import 'package:seeds/utils/build_context_extension.dart';
 
 class EditRegionEventImage extends StatelessWidget {
-  const EditRegionEventImage({super.key});
+  const EditRegionEventImage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,10 @@ class EditRegionEventImage extends StatelessWidget {
             final pageCommand = state.pageCommand;
 
             //need  a page command for this screen
-            if (pageCommand is ShowErrorMessage) {
+            if (pageCommand is RemoveAuthenticationScreen) {
+              // This pop remove the authentication screen
+              Navigator.of(context).pop();
+            } else if (pageCommand is ShowErrorMessage) {
               eventBus.fire(ShowSnackBar(pageCommand.message));
             } else if (pageCommand is NavigateToRoute) {
               NavigationService.of(context).pushAndRemoveUntil(route: pageCommand.route, from: Routes.app);

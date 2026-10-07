@@ -9,7 +9,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/create_region_scre
 import 'package:seeds/screens/explore_screens/regions_screens/create_region_screens/select_region.dart';
 
 class CreateRegionScreenController extends StatelessWidget {
-  const CreateRegionScreenController({super.key});
+  const CreateRegionScreenController({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

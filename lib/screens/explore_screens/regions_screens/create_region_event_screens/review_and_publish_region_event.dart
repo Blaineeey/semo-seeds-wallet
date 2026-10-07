@@ -9,7 +9,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/create_region_even
 import 'package:seeds/screens/explore_screens/regions_screens/create_region_event_screens/interactor/viewmodels/create_region_event_bloc.dart';
 
 class ReviewAndPublishRegionEvent extends StatelessWidget {
-  const ReviewAndPublishRegionEvent({super.key});
+  const ReviewAndPublishRegionEvent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class ReviewAndPublishRegionEvent extends StatelessWidget {
               minimum: const EdgeInsets.only(bottom: 16),
               child: Stack(
                 children: [
-                  const SingleChildScrollView(
+                  SingleChildScrollView(
                     child: Column(
                       children: [
-                        ReviewAndPublishRegionEventHeader(),
-                        ReviewAndPublishRegionEventMiddle(),
-                        DividerJungle(),
-                        ReviewAndPublishRegionEventBottom(),
-                        SizedBox(height: 60)
+                        const ReviewAndPublishRegionEventHeader(),
+                        const ReviewAndPublishRegionEventMiddle(),
+                        const DividerJungle(),
+                        const ReviewAndPublishRegionEventBottom(),
+                        const SizedBox(height: 60)
                       ],
                     ),
                   ),

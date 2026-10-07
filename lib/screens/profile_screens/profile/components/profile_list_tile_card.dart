@@ -12,13 +12,13 @@ class ProfileListTileCard extends StatelessWidget {
   final bool hasNotification;
 
   const ProfileListTileCard({
-    super.key,
+    Key? key,
     required this.leadingIcon,
     required this.title,
     required this.trailing,
     required this.onTap,
     this.hasNotification = false,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

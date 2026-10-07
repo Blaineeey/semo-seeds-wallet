@@ -4,6 +4,10 @@ class EditEventImage extends PageCommand {
   EditEventImage();
 }
 
+class RemoveAuthenticationScreen extends PageCommand {
+  RemoveAuthenticationScreen();
+}
+
 class ShowStartTimePicker extends PageCommand {
   ShowStartTimePicker();
 }

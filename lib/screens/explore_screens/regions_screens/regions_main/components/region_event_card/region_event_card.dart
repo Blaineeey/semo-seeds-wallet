@@ -14,7 +14,7 @@ import 'package:seeds/utils/date_time_extension.dart';
 class RegionEventCard extends StatelessWidget {
   final RegionEventModel event;
 
-  const RegionEventCard(this.event, {super.key});
+  const RegionEventCard(this.event, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,8 @@ class RegionEventCard extends StatelessWidget {
             child: InkWell(
               onTap: () => NavigationService.of(context).navigateTo(Routes.regionEventDetails, event),
               borderRadius: BorderRadius.circular(16.0),
-              child: DecoratedBox(
-                decoration: state.isEventExpired
+              child: Container(
+                decoration: state.isEventPassEndDate
                     ? BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(color: AppColors.red),
@@ -54,7 +54,7 @@ class RegionEventCard extends StatelessWidget {
                               errorWidget: (_, __, ___) => const SizedBox.shrink(),
                             ),
                           ),
-                          if (state.isEventExpired)
+                          if (state.isEventPassEndDate)
                             Positioned(
                               bottom: 10,
                               left: 0,
@@ -65,7 +65,7 @@ class RegionEventCard extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                                   child: Text(
                                     "The event has passed",
-                                    style: Theme.of(context).textTheme.titleSmall,
+                                    style: Theme.of(context).textTheme.subtitle2,
                                   ),
                                 ),
                               ),

@@ -36,7 +36,7 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? onSingleLargeButtonPressed;
 
   const CustomDialog({
-    super.key,
+    Key? key,
     this.icon,
     required this.children,
     this.leftButtonTitle = '',
@@ -46,7 +46,7 @@ class CustomDialog extends StatelessWidget {
     this.singleLargeButtonTitle = '',
     this.onSingleLargeButtonPressed,
     this.iconPadding,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class CustomDialog extends StatelessWidget {
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: _avatarRadius,
-                  child: DecoratedBox(
+                  child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       shape: BoxShape.circle,

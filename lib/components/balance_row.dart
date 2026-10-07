@@ -12,11 +12,11 @@ class BalanceRow extends StatelessWidget {
   final FiatDataModel? fiatAmount;
 
   const BalanceRow({
-    super.key,
+    Key? key,
     required this.label,
     required this.tokenAmount,
     required this.fiatAmount,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,7 @@ class BalanceRow extends StatelessWidget {
             Expanded(
                 child: Container(
                     alignment: Alignment.centerRight,
-                    child:
-                        Text(tokenAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.titleMedium)))
+                    child: Text(tokenAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.subtitle1)))
           ],
         ),
         Padding(

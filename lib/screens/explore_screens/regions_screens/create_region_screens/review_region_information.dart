@@ -16,7 +16,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/create_region_scre
 import 'package:seeds/utils/build_context_extension.dart';
 
 class ReviewRegion extends StatelessWidget {
-  const ReviewRegion({super.key});
+  const ReviewRegion({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,7 @@ import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/
 import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/interactor/viewmodel/edit_region_event_page_commands.dart';
 
 class EditRegionEventTimeAndDate extends StatelessWidget {
-  const EditRegionEventTimeAndDate({super.key});
+  const EditRegionEventTimeAndDate({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

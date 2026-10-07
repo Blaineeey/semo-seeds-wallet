@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
+import 'package:seeds/components/full_page_loading_indicator.dart';
 import 'package:seeds/datasource/remote/model/region_model.dart';
 import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/domain-shared/page_command.dart';
@@ -14,64 +14,51 @@ import 'package:seeds/screens/explore_screens/regions_screens/regions_main/compo
 import 'package:seeds/screens/explore_screens/regions_screens/regions_main/interactor/viewmodel/region_bloc.dart';
 
 class RegionScreen extends StatelessWidget {
-  const RegionScreen({super.key});
+  const RegionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final region = ModalRoute.of(context)!.settings.arguments as RegionModel?;
-    return WillPopScope(
-      onWillPop: () async {
-        // Clear region deeplink on navigate back (i.e. cancel region link)
-        if (BlocProvider.of<DeeplinkBloc>(context).state.regionLinkData != null) {
-          BlocProvider.of<DeeplinkBloc>(context).add(const ClearDeepLink());
-        }
-        return true;
-      },
-      child: Scaffold(
-        body: BlocProvider(
-          create: (_) => RegionBloc(region, BlocProvider.of<DeeplinkBloc>(context).state.regionLinkData?.region)
-            ..add(const OnRegionMounted()),
-          child: BlocConsumer<RegionBloc, RegionState>(
-            listenWhen: (_, current) => current.pageCommand != null,
-            listener: (context, state) {
-              final command = state.pageCommand;
-              if (command is NavigateToRoute) {
-                // join region pressed
-                // Clear region deeplink on navigate back (i.e. cancel region link)
-                if (BlocProvider.of<DeeplinkBloc>(context).state.regionLinkData != null) {
-                  BlocProvider.of<DeeplinkBloc>(context).add(const ClearDeepLink());
-                }
-                NavigationService.of(context).pushAndRemoveUntil(route: command.route, from: Routes.app);
-              } else if (command is NavigateToRouteWithArguments) {
-                NavigationService.of(context).navigateTo(command.route, command.arguments);
-              }
-              BlocProvider.of<RegionBloc>(context).add(const ClearRegionPageCommand());
-            },
-            builder: (context, state) {
-              switch (state.pageState) {
-                case PageState.failure:
-                  return const FullPageErrorIndicator();
-                case PageState.success:
-                  return DefaultTabController(
-                    length: 2,
-                    child: SafeArea(
-                      child: NestedScrollView(
-                        headerSliverBuilder: (context, isInnerBoxScrolled) {
-                          return [
-                            const RegionMainAppBar(),
-                            const SliverPersistentHeader(delegate: _SliverAppBarDelegate(), pinned: true),
-                          ];
-                        },
-                        body: const TabBarView(children: [RegionEvents(), RegionAbout()]),
-                      ),
+    return BlocProvider(
+      create: (_) => RegionBloc(region)..add(const OnRegionMounted()),
+      child: BlocConsumer<RegionBloc, RegionState>(
+        listenWhen: (_, current) => current.pageCommand != null,
+        listener: (context, state) {
+          final command = state.pageCommand;
+          if (command is NavigateToRoute) {
+            NavigationService.of(context).pushAndRemoveUntil(route: command.route, from: Routes.app);
+          } else if (command is NavigateToRouteWithArguments) {
+            NavigationService.of(context).navigateTo(command.route, command.arguments);
+          }
+          BlocProvider.of<RegionBloc>(context).add(const ClearRegionPageCommand());
+        },
+        builder: (context, state) {
+          switch (state.pageState) {
+            case PageState.loading:
+              return const Scaffold(body: FullPageLoadingIndicator());
+            case PageState.failure:
+              return const Scaffold(body: FullPageErrorIndicator());
+            case PageState.success:
+              return Scaffold(
+                body: DefaultTabController(
+                  length: 2,
+                  child: SafeArea(
+                    child: NestedScrollView(
+                      headerSliverBuilder: (context, isInnerBoxScrolled) {
+                        return [
+                          const RegionMainAppBar(),
+                          const SliverPersistentHeader(delegate: _SliverAppBarDelegate(), pinned: true),
+                        ];
+                      },
+                      body: const TabBarView(children: [RegionEvents(), RegionAbout()]),
                     ),
-                  );
-                default:
-                  return const SizedBox.shrink();
-              }
-            },
-          ),
-        ),
+                  ),
+                ),
+              );
+            default:
+              return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }

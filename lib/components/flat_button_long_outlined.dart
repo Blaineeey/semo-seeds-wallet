@@ -9,10 +9,10 @@ class FlatButtonLongOutlined extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const FlatButtonLongOutlined({
-    super.key,
+    Key? key,
     required this.title,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

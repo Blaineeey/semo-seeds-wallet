@@ -16,11 +16,11 @@ import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/components/plant_seeds_success_dialog.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/interactor/viewmodels/plant_seeds_bloc.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/interactor/viewmodels/plant_seeds_page_command.dart';
+import 'package:seeds/screens/explore_screens/plant_seeds/plant_seeds_errors.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 
 class PlantSeedsScreen extends StatelessWidget {
-  const PlantSeedsScreen({super.key});
-
+  const PlantSeedsScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -31,15 +31,24 @@ class PlantSeedsScreen extends StatelessWidget {
           listenWhen: (_, current) => current.pageCommand != null,
           listener: (context, state) {
             final pageCommand = state.pageCommand;
+
             if (pageCommand is ShowPlantSeedsSuccess) {
-              const PlantSeedsSuccessDialog().show(context, BlocProvider.of<PlantSeedsBloc>(context));
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) {
+                  return BlocProvider.value(
+                    value: BlocProvider.of<PlantSeedsBloc>(context),
+                    child: const PlantSeedsSuccessDialog(),
+                  );
+                },
+              );
             }
             if (pageCommand is ShowError) {
               eventBus.fire(ShowSnackBar(pageCommand.error.localizedDescription(context)));
             }
           },
-          buildWhen: (previous, current) => previous.pageState != current.pageState,
-          builder: (context, state) {
+          builder: (context, PlantSeedsState state) {
             switch (state.pageState) {
               case PageState.loading:
                 return const FullPageLoadingIndicator();
@@ -56,7 +65,7 @@ class PlantSeedsScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const SizedBox(height: 16),
-                              Text(context.loc.plantSeedsPlantAmount, style: Theme.of(context).textTheme.titleLarge),
+                              Text(context.loc.plantSeedsPlantAmount, style: Theme.of(context).textTheme.headline6),
                               const SizedBox(height: 16),
                               AmountEntryWidget(
                                 tokenDataModel: TokenDataModel(0),
@@ -83,21 +92,14 @@ class PlantSeedsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<PlantSeedsBloc, PlantSeedsState>(
-                        buildWhen: (previous, current) {
-                          return previous.isPlantSeedsButtonEnabled != current.isPlantSeedsButtonEnabled;
-                        },
-                        builder: (context, state) {
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: FlatButtonLong(
-                              title: context.loc.plantSeedsPlantButtonTitle,
-                              enabled: state.isPlantSeedsButtonEnabled,
-                              onPressed: () =>
-                                  BlocProvider.of<PlantSeedsBloc>(context).add(const OnPlantSeedsButtonTapped()),
-                            ),
-                          );
-                        },
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: FlatButtonLong(
+                          title: context.loc.plantSeedsPlantButtonTitle,
+                          enabled: state.isPlantSeedsButtonEnabled,
+                          onPressed: () =>
+                              BlocProvider.of<PlantSeedsBloc>(context).add(const OnPlantSeedsButtonTapped()),
+                        ),
                       ),
                     ],
                   ),

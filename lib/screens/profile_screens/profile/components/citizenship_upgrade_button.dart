@@ -8,7 +8,8 @@ class CitizenshipUpgradeButton extends StatelessWidget {
   final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
   final VoidCallback onPressed;
 
-  const CitizenshipUpgradeButton({super.key, required this.citizenshipUpgradeStatus, required this.onPressed});
+  const CitizenshipUpgradeButton({Key? key, required this.citizenshipUpgradeStatus, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

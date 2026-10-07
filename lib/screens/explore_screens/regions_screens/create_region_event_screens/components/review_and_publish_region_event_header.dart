@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/screens/explore_screens/regions_screens/create_region_event_screens/interactor/viewmodels/create_region_event_bloc.dart';
 
 class ReviewAndPublishRegionEventHeader extends StatelessWidget {
-  const ReviewAndPublishRegionEventHeader({super.key});
+  const ReviewAndPublishRegionEventHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ReviewAndPublishRegionEventHeader extends StatelessWidget {
         return Stack(
           children: [
             Container(
-                width: width, height: height * 0.4, child: ClipRRect(child: Image.file(state.file!, fit: BoxFit.cover))),
+                width: width, height: height * 0.4, child: ClipRRect(child: Image.file(state.file!, fit: BoxFit.fill))),
             Positioned(
               left: 0,
               top: 0,

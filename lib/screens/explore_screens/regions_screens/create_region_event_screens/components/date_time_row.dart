@@ -10,12 +10,12 @@ class DateTimeRow extends StatelessWidget {
   final Widget icon;
 
   const DateTimeRow({
-    super.key,
+    Key? key,
     required this.label,
     required this.timeInfo,
     required this.onTap,
     required this.icon,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
