@@ -1,20 +1,13 @@
-import 'package:seeds/utils/double_extension.dart';
-
+import 'package:seeds/v2/utils/double_extension.dart';
 extension StringExtension on String {
-  String get seedsFormatted {
-    final parts = split(' ');
-    final number = double.parse(parts[0]);
+  String? get seedsFormatted {
+    var parts = split(' ');
+    var number = double.parse(parts[0]);
     return number.seedsFormatted;
   }
 
   String get symbolFromAmount {
     return split(" ")[1];
-  }
-
-  // convert blockchain quantity to double, e.g. "1.0000 SEEDS"
-  double get quantityAsDouble {
-    final parts = split(' ');
-    return double.parse(parts[0]);
   }
 }
 
