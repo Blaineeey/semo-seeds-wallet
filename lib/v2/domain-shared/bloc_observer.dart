@@ -1,0 +1,53 @@
+import 'package:bloc/bloc.dart';
+
+/// Custom [BlocObserver] which observes all bloc and cubit instances.
+/// Their life cycles events.
+///
+/// Every event of BlocObserver has a reference to a cubit/bloc instance that sends the event.
+/// So you can compare it with the reference with your specific cubit/bloc instance.
+/// And if references are equal you can handle it somehow
+///
+/// ```dart
+///   class MyObserver extends BlocObserver {
+///
+///   final Cubit<Object> _cubit;
+///
+///   MyObserver(this._cubit) : assert(_cubit != null);
+///
+///   @override
+///   void onClose(Cubit cubit) {
+///     if (cubit == _cubit) {
+///       // do whatever you need
+///     }
+///
+///     super.onClose(cubit);
+///   }
+/// }
+/// ```
+class SimpleBlocObserver extends BlocObserver {
+  static const bool enable_trace = true;
+
+  @override
+  void onEvent(Bloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+    if (enable_trace) {
+      print(event);
+    }
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    if (enable_trace) {
+      print(transition);
+    }
+  }
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    if (enable_trace) {
+      print(error);
+    }
+    super.onError(bloc, error, stackTrace);
+  }
+}
