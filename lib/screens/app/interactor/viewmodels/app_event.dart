@@ -4,14 +4,7 @@ abstract class AppEvent extends Equatable {
   const AppEvent();
 
   @override
-  List<Object?> get props => [];
-}
-
-class OnAppMounted extends AppEvent {
-  const OnAppMounted();
-
-  @override
-  String toString() => 'OnAppMounted';
+  List<Object> get props => [];
 }
 
 class ShouldShowNotificationBadge extends AppEvent {
@@ -53,12 +46,6 @@ class OnApproveGuardianRecoveryTapped extends AppEvent {
 
   const OnApproveGuardianRecoveryTapped(this.data);
 
-  @override
-  String toString() => 'OnApproveGuardianRecoveryTapped';
-}
-
-class OnDeepRegionReceived extends AppEvent {
-  const OnDeepRegionReceived();
   @override
   String toString() => 'OnApproveGuardianRecoveryTapped';
 }

@@ -1,11 +1,12 @@
 import 'package:async/async.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart/eosdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/crypto/eosdart/eosdart.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
 import 'package:seeds/datasource/remote/api/http_repo/seeds_scopes.dart';
 import 'package:seeds/datasource/remote/api/http_repo/seeds_tables.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 import 'package:seeds/datasource/remote/model/organization_model.dart';
 import 'package:seeds/datasource/remote/model/profile_model.dart';
@@ -14,7 +15,7 @@ import 'package:seeds/datasource/remote/model/score_model.dart';
 import 'package:seeds/datasource/remote/model/transaction_response.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 
-class ProfileRepository extends HttpRepository with EosRepository {
+class ProfileRepository extends NetworkRepository with EosRepository {
   Future<Result<ProfileModel>> getProfile(String accountName) {
     print('[http] get seeds getProfile $accountName');
 
@@ -37,8 +38,8 @@ class ProfileRepository extends HttpRepository with EosRepository {
 
   // TODO(Raul): Unify this code with _getAccountPermissions in guardians repo
   // Returns the first active key permission - String
-  Future<Result> getAccountPublicKeys(String accountName) async {
-    print('[http] getAccountPublicKeys');
+  Future<Result> getAccountPublicKey(String accountName) async {
+    print('[http] getAccountPublicKey');
 
     final url = Uri.parse('$host/v1/chain/get_account');
     final body = '{ "account_name": "$accountName" }';
@@ -49,8 +50,8 @@ class ProfileRepository extends HttpRepository with EosRepository {
               final List<dynamic> allAccounts = body['permissions'].toList();
               final permissions = allAccounts.map((item) => Permission.fromJson(item)).toList();
               final Permission activePermission = permissions.firstWhere((element) => element.permName == "active");
-              final RequiredAuth? activeAuth = activePermission.requiredAuth;
-              return activeAuth?.keys?.map((e)=>e?.key).toList();
+              final RequiredAuth activeAuth = activePermission.requiredAuth;
+              return activeAuth.keys.first.key;
             }))
         .catchError((error) => mapHttpError(error));
   }
@@ -69,7 +70,7 @@ class ProfileRepository extends HttpRepository with EosRepository {
     final transaction = buildFreeTransaction([
       Action()
         ..account = SeedsCode.accountAccounts.value
-        ..name = SeedsEosAction.actionNameUpdate.value
+        ..name = actionNameUpdate
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -150,7 +151,7 @@ class ProfileRepository extends HttpRepository with EosRepository {
     final transaction = buildFreeTransaction([
       Action()
         ..account = SeedsCode.accountToken.value
-        ..name = SeedsEosAction.actionNameTransfer.value
+        ..name = actionNameTransfer
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -178,7 +179,7 @@ class ProfileRepository extends HttpRepository with EosRepository {
     final transaction = buildFreeTransaction([
       Action()
         ..account = SeedsCode.accountHarvest.value
-        ..name = SeedsEosAction.actionNameUnplant.value
+        ..name = actionNameUnplant
         ..authorization = [
           Authorization()
             ..actor = accountName
@@ -209,7 +210,7 @@ class ProfileRepository extends HttpRepository with EosRepository {
         List.from(requestIds.map(
           (id) => Action()
             ..account = SeedsCode.accountHarvest.value
-            ..name = SeedsEosAction.actionNameClaimRefund.value
+            ..name = actionNameClaimRefund
             ..authorization = [
               Authorization()
                 ..actor = accountName
@@ -255,11 +256,11 @@ class ProfileRepository extends HttpRepository with EosRepository {
 
     final actionName = isMake
         ? isCitizen
-            ? SeedsEosAction.actionNameMakecitizen.value
-            : SeedsEosAction.actionNameMakeresident.value
+            ? actionNameMakecitizen
+            : actionNameMakeresident
         : isCitizen
-            ? SeedsEosAction.actionNameCakecitizen.value
-            : SeedsEosAction.actionNameCanresident.value;
+            ? actionNameCakecitizen
+            : actionNameCanresident;
 
     final transaction = buildFreeTransaction([
       Action()

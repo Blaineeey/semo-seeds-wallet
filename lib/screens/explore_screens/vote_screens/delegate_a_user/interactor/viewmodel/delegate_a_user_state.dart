@@ -3,7 +3,7 @@ part of 'delegate_a_user_bloc.dart';
 class DelegateAUserState extends Equatable {
   final PageCommand? pageCommand;
   final PageState pageState;
-  final Set<ProfileModel> selectedDelegate;
+  final Set<MemberModel> selectedDelegate;
   final List<String> noShowUsers;
 
   const DelegateAUserState({
@@ -24,7 +24,7 @@ class DelegateAUserState extends Equatable {
   DelegateAUserState copyWith({
     PageCommand? pageCommand,
     PageState? pageState,
-    Set<ProfileModel>? selectedDelegate,
+    Set<MemberModel>? selectedDelegate,
     List<String>? noShowUsers,
   }) {
     return DelegateAUserState(

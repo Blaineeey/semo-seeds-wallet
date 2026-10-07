@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/flat_button_long.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
@@ -11,7 +11,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/comp
 import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/proposal_details_bloc.dart';
 
 class ProposalDetailsBottom extends StatelessWidget {
-  const ProposalDetailsBottom({super.key});
+  const ProposalDetailsBottom({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

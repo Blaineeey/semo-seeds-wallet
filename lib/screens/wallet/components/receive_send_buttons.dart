@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
+import 'package:seeds/i18n/wallet/wallet.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/wallet/components/tokens_cards/interactor/viewmodels/token_balances_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:seeds/screens/wallet/components/tokens_cards/interactor/viewmodels/token_balances_state.dart';
 
 class ReceiveSendButtons extends StatelessWidget {
-  const ReceiveSendButtons({super.key});
+  const ReceiveSendButtons({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class ReceiveSendButtons extends StatelessWidget {
                         const Icon(Icons.arrow_upward, color: AppColors.white),
                         Container(
                           padding: const EdgeInsets.only(left: 4, top: 4),
-                          child: Text(context.loc.walletSendButtonTitle, style: Theme.of(context).textTheme.labelLarge),
+                          child: Text('Send'.i18n, style: Theme.of(context).textTheme.button),
                         ),
                       ],
                     ),
@@ -67,7 +68,7 @@ class ReceiveSendButtons extends StatelessWidget {
                         const Icon(Icons.arrow_downward, color: AppColors.white),
                         Container(
                           padding: const EdgeInsets.only(left: 4, top: 4),
-                          child: Text(context.loc.walletReceiveButtonTitle, style: Theme.of(context).textTheme.labelLarge),
+                          child: Text('Receive'.i18n, style: Theme.of(context).textTheme.button),
                         ),
                       ],
                     ),

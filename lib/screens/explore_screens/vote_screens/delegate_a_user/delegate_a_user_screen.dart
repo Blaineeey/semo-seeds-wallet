@@ -3,18 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
 import 'package:seeds/components/search_user/search_user.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
+import 'package:seeds/components/snack_bar_info.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/domain-shared/user_citizenship_status.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/component/delegate_a_user_confirmation_dialog.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/component/delegate_a_user_success_dialog.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/interactor/viewmodel/delegate_a_user_bloc.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate_a_user/interactor/viewmodel/delegate_a_user_page_commands.dart';
 
 class DelegateAUserScreen extends StatelessWidget {
-  const DelegateAUserScreen({super.key});
+  const DelegateAUserScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class DelegateAUserScreen extends StatelessWidget {
               },
             );
           } else if (pageCommand is ShowErrorMessage) {
-            eventBus.fire(ShowSnackBar(pageCommand.message));
+            SnackBarInfo(pageCommand.message, ScaffoldMessenger.of(context)).show();
           }
           BlocProvider.of<DelegateAUserBloc>(context).add(const ClearPageCommand());
         },
@@ -65,7 +64,7 @@ class DelegateAUserScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SearchUser(
-                        filterByCitizenshipStatus: ProfileStatus.citizen,
+                        filterByCitizenshipStatus: UserCitizenshipStatus.citizen,
                         noShowUsers: state.noShowUsers,
                         title: "Citizens",
                         onUserSelected: (selectedUser) {

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/components/search_user/interactor/viewmodels/search_user_bloc.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/components/search_user/interactor/search_user_bloc.dart';
+import 'package:seeds/components/search_user/interactor/viewmodels/search_user_events.dart';
+import 'package:seeds/components/search_user/interactor/viewmodels/search_user_state.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:seeds/i18n/components/components.i18n.dart';
 
 class SearchUserTextField extends StatefulWidget {
-  const SearchUserTextField({super.key});
+  const SearchUserTextField({Key? key}) : super(key: key);
 
   @override
   _SearchUserTextFieldState createState() => _SearchUserTextFieldState();
@@ -32,7 +34,7 @@ class _SearchUserTextFieldState extends State<SearchUserTextField> {
       autocorrect: false,
       controller: _controller,
       onChanged: (value) {
-        BlocProvider.of<SearchUserBloc>(context).add(OnSearchChange(searchQuery: value.toLowerCase()));
+        BlocProvider.of<SearchUserBloc>(context).add(OnSearchChange(searchQuery: value));
       },
       decoration: InputDecoration(
         suffixIcon: BlocBuilder<SearchUserBloc, SearchUserState>(
@@ -43,10 +45,10 @@ class _SearchUserTextFieldState extends State<SearchUserTextField> {
                     child: const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.green)),
                   )
                 : IconButton(
-                    icon: Icon(state.showClearIcon ? Icons.clear : Icons.search, color: AppColors.white, size: 26),
+                    icon: Icon(state.searchBarIcon, color: AppColors.white, size: 26),
                     onPressed: () {
-                      if (state.showClearIcon) {
-                        BlocProvider.of<SearchUserBloc>(context).add(const ClearIconTapped());
+                      if (state.searchBarIcon == Icons.clear) {
+                        BlocProvider.of<SearchUserBloc>(context).add(ClearIconTapped());
                         _controller.clear();
                       }
                     },
@@ -56,7 +58,7 @@ class _SearchUserTextFieldState extends State<SearchUserTextField> {
         enabledBorder: _searchBorder,
         focusedBorder: _searchBorder,
         border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-        hintText: context.loc.searchUserHintText,
+        hintText: 'Search...'.i18n,
       ),
     );
   }

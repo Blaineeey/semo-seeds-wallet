@@ -5,13 +5,11 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:seeds/blocs/deeplink/mappers/deep_link_state_mapper.dart';
 import 'package:seeds/blocs/deeplink/mappers/eosio_signing_request_state_mapper.dart';
-import 'package:seeds/blocs/deeplink/model/deep_link_data.dart';
 import 'package:seeds/blocs/deeplink/model/guardian_recovery_request_data.dart';
 import 'package:seeds/blocs/deeplink/model/invite_link_data.dart';
-import 'package:seeds/blocs/deeplink/model/region_link_data.dart';
 import 'package:seeds/blocs/deeplink/usecase/get_initial_deep_link_use_case.dart';
+import 'package:seeds/blocs/deeplink/usecase/get_signing_request_use_case.dart';
 import 'package:seeds/datasource/local/models/scan_qr_code_result_data.dart';
-import 'package:seeds/domain-shared/shared_use_cases/get_signing_request_use_case.dart';
 import 'package:uni_links/uni_links.dart';
 
 part 'deeplink_event.dart';
@@ -36,16 +34,15 @@ class DeeplinkBloc extends Bloc<DeeplinkEvent, DeeplinkState> {
   }
 
   Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen(
-      (pendingDynamicLinkData) {
-        // Set up the `onLink` event listener next as it may be received here
-        final Uri deepLink = pendingDynamicLinkData.link;
-        // Example of using the dynamic link to push the user to a different screen
-        add(HandleIncomingFirebaseDeepLink(deepLink));
-        // }
-      },
-      onError: (error) async {},
-    );
+    FirebaseDynamicLinks.instance.onLink(
+        onError: (error) async {},
+        onSuccess: (dynamicLink) async {
+          final Uri? deepLink = dynamicLink?.link;
+
+          if (deepLink != null) {
+            add(HandleIncomingFirebaseDeepLink(deepLink));
+          }
+        });
 
     final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri? deepLink = data?.link;
@@ -71,14 +68,13 @@ class DeeplinkBloc extends Bloc<DeeplinkEvent, DeeplinkState> {
         add(HandleIncomingSigningRequest(uri));
       }
     }, onError: (err) {
-      print("ESR Error: $err");
+      print("ESR Error: ${err.toString()}");
     });
   }
 
   Future<void> _handleIncomingFirebaseDeepLink(
       HandleIncomingFirebaseDeepLink event, Emitter<DeeplinkState> emit) async {
-    final DeepLinkData result = await GetInitialDeepLinkUseCase().run(event.newLink);
-
+    final result = await GetInitialDeepLinkUseCase().run(event.newLink);
     emit(DeepLinkStateMapper().mapResultToState(state, result));
   }
 

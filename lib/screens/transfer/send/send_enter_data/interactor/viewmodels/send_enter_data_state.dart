@@ -1,10 +1,17 @@
-part of 'send_enter_data_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
-class SendEnterDataState extends Equatable {
+class SendEnterDataPageState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
   final String? errorMessage;
-  final ProfileModel sendTo;
+  final MemberModel sendTo;
   final TokenDataModel tokenAmount;
   final FiatDataModel? fiatAmount;
   final RatesState ratesState;
@@ -16,7 +23,7 @@ class SendEnterDataState extends Equatable {
   final bool showAlert;
   final bool showSendingAnimation;
 
-  const SendEnterDataState({
+  const SendEnterDataPageState({
     required this.pageState,
     this.pageCommand,
     this.errorMessage,
@@ -51,11 +58,11 @@ class SendEnterDataState extends Equatable {
         showSendingAnimation,
       ];
 
-  SendEnterDataState copyWith({
+  SendEnterDataPageState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
     String? errorMessage,
-    ProfileModel? sendTo,
+    MemberModel? sendTo,
     FiatDataModel? fiatAmount,
     RatesState? ratesState,
     TokenDataModel? availableBalance,
@@ -67,7 +74,7 @@ class SendEnterDataState extends Equatable {
     bool? showAlert,
     bool? showSendingAnimation,
   }) {
-    return SendEnterDataState(
+    return SendEnterDataPageState(
       pageState: pageState ?? this.pageState,
       pageCommand: pageCommand,
       errorMessage: errorMessage,
@@ -85,8 +92,8 @@ class SendEnterDataState extends Equatable {
     );
   }
 
-  factory SendEnterDataState.initial(ProfileModel memberModel, RatesState ratesState) {
-    return SendEnterDataState(
+  factory SendEnterDataPageState.initial(MemberModel memberModel, RatesState ratesState) {
+    return SendEnterDataPageState(
       pageState: PageState.initial,
       sendTo: memberModel,
       ratesState: ratesState,

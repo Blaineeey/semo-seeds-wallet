@@ -3,7 +3,7 @@ part of 'delegators_bloc.dart';
 class DelegatorsState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
-  final List<ProfileModel> delegators;
+  final List<MemberModel> delegators;
 
   const DelegatorsState({
     required this.pageState,
@@ -21,7 +21,7 @@ class DelegatorsState extends Equatable {
   DelegatorsState copyWith({
     PageState? pageState,
     String? errorMessage,
-    List<ProfileModel>? delegators,
+    List<MemberModel>? delegators,
   }) {
     return DelegatorsState(
       pageState: pageState ?? this.pageState,

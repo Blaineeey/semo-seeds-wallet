@@ -1,15 +1,16 @@
-// ignore_for_file: directives_ordering
-
 import 'package:async/async.dart';
-import 'package:seeds/crypto/eosdart/eosdart.dart';
-import 'package:seeds/crypto/eosdart_ecc/eosdart_ecc.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart/eosdart.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:eosdart_ecc/eosdart_ecc.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:http/http.dart' as http;
-import 'package:seeds/datasource/remote/api/eos_repo/eos_repository.dart';
-import 'package:seeds/datasource/remote/api/eos_repo/seeds_eos_actions.dart';
-import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
+import 'package:seeds/datasource/remote/api/eos_repository.dart';
+import 'package:seeds/datasource/remote/api/network_repository.dart';
 
-class SignupRepository extends EosRepository with HttpRepository {
+class SignupRepository extends EosRepository with NetworkRepository {
   Future<Result> unpackDynamicLink(String scannedLink) async {
     final PendingDynamicLinkData? unpackedLink =
         await FirebaseDynamicLinks.instance.getDynamicLink(Uri.parse(scannedLink));
@@ -54,13 +55,15 @@ class SignupRepository extends EosRepository with HttpRepository {
   }) async {
     final EOSPublicKey publicKey = privateKey.toEOSPublicKey();
 
+    final applicationAccount = onboardingAccountName;
+
     final actions = <Action>[
       Action()
-        ..account = onboardingAccountName
-        ..name = SeedsEosAction.actionNameAcceptnew.value
+        ..account = applicationAccount
+        ..name = actionNameAcceptnew
         ..authorization = <Authorization>[
           Authorization()
-            ..actor = onboardingAccountName
+            ..actor = applicationAccount
             ..permission = permissionApplication
         ]
         ..data = {

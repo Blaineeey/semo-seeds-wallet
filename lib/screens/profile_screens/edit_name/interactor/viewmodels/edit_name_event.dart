@@ -13,25 +13,20 @@ class OnNameChanged extends EditNameEvent {
   const OnNameChanged({required this.name});
 
   @override
-  List<Object?> get props => [name];
+  List<Object> get props => [name];
 
   @override
   String toString() => 'OnNameChanged { name: $name }';
 }
 
 class SubmitName extends EditNameEvent {
-  const SubmitName();
+  final ProfileModel? profile;
+
+  const SubmitName({required this.profile});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [profile];
 
   @override
-  String toString() => 'SubmitName';
-}
-
-class ClearPageCommand extends EditNameEvent {
-  const ClearPageCommand();
-
-  @override
-  String toString() => 'ClearPageCommand';
+  String toString() => 'SubmitName { profile: $profile }';
 }

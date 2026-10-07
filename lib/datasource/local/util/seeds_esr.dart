@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
-import 'package:seeds/crypto/dart_esr/dart_esr.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:dart_esr/dart_esr.dart';
 import 'package:seeds/datasource/local/models/eos_transaction.dart';
 import 'package:seeds/datasource/local/models/scan_qr_code_result_data.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
@@ -8,8 +9,6 @@ class SeedsESR {
   late SigningRequestManager manager;
 
   late List<Action> actions;
-
-  String? get callback => manager.signingRequest.callback;
 
   SeedsESR({String? uri}) {
     manager = TelosSigningManager.from(uri);
@@ -25,11 +24,11 @@ class SeedsESR {
   // Better ways to do that
   // Pass around the whole ESR object, or an Action object.
   // instead of canProcess, have an isValid accessor on the ESR and handle this case in the mappers.
-  Result<ScanQrCodeResultData> processResolvedRequest() {
-    final EOSTransaction eosTransaction = EOSTransaction.fromESRActionsList(actions);
+  Result processResolvedRequest() {
+    final EOSTransaction eosTransaction = EOSTransaction.fromActionsList(actions);
     if (eosTransaction.isValid) {
       print("processResolvedRequest: Success QR");
-      return ValueResult(ScanQrCodeResultData(transaction: eosTransaction, esr: this));
+      return ValueResult(ScanQrCodeResultData(transaction: eosTransaction));
     } else {
       print("processResolvedRequest: ESR transaction invalid ${actions.length} $actions");
       return ErrorResult("Unable to process this request");

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:seeds/datasource/local/models/auth_data_model.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/datasource/remote/model/token_model.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,11 +23,8 @@ const String _kInRecoveryMode = 'in_recovery_mode';
 const String _kRecoveryLink = 'recovery_link';
 const String _kTokensWhiteList = 'tokens_whitelist';
 const String _kIsCitizen = 'is_citizen';
-const String _kIsVisitor = 'is_visitor';
 const String _kIsFirstRun = 'is_first_run';
 const String _kIsFirstTimeOnDelegateScreen = 'is_first_time_on_delegate_screen';
-const String _kDateSinceRateAppPrompted = 'date_since_rate_app_prompted';
-const String _kIsFirstTimeOnRegionsScreen = 'IsFirstTimeOnRegionsScreen';
 
 class _SettingsStorage {
   late SharedPreferences _preferences;
@@ -59,7 +55,7 @@ class _SettingsStorage {
 
   String? get passcode => _passcode;
 
-  bool get passcodeActive => _passcodeActive ?? false;
+  bool? get passcodeActive => _passcodeActive;
 
   bool? get biometricActive => _biometricActive;
 
@@ -67,7 +63,7 @@ class _SettingsStorage {
 
   String get selectedFiatCurrency => _preferences.getString(_kSelectedFiatCurrency) ?? getPlatformCurrency();
 
-  TokenModel get selectedToken => TokenModel.fromId(_preferences.getString(_kSelectedToken) ?? seedsToken.id) ?? seedsToken;
+  TokenModel get selectedToken => TokenModel.fromSymbol(_preferences.getString(_kSelectedToken) ?? seedsToken.symbol);
 
   bool get inRecoveryMode => _preferences.getBool(_kInRecoveryMode) ?? false;
 
@@ -79,11 +75,7 @@ class _SettingsStorage {
 
   bool get isFirstTimeOnDelegateScreen => _preferences.getBool(_kIsFirstTimeOnDelegateScreen) ?? false;
 
-  bool get isFirstTimeOnRegionsScreen => _preferences.getBool(_kIsFirstTimeOnRegionsScreen) ?? true;
-
   List<String> get recoveryWords => _recoveryWords;
-
-  int? get dateSinceRateAppPrompted => _preferences.getInt(_kDateSinceRateAppPrompted);
 
   set inRecoveryMode(bool value) => _preferences.setBool(_kInRecoveryMode, value);
 
@@ -138,7 +130,7 @@ class _SettingsStorage {
   }
 
   set selectedToken(TokenModel token) {
-    _preferences.setString(_kSelectedToken, token.id);
+    _preferences.setString(_kSelectedToken, token.symbol);
   }
 
   set tokensWhitelist(List<String> tokensList) {
@@ -153,16 +145,6 @@ class _SettingsStorage {
 
   set isFirstTimeOnDelegateScreen(bool value) {
     _preferences.setBool(_kIsFirstTimeOnDelegateScreen, value);
-  }
-
-  set isFirstTimeOnRegionsScreen(bool value) {
-    _preferences.setBool(_kIsFirstTimeOnRegionsScreen, value);
-  }
-
-  set dateSinceRateAppPrompted(int? value) {
-    if (value != null) {
-      _preferences.setInt(_kDateSinceRateAppPrompted, value);
-    }
   }
 
   Future<void> initialise() async {
@@ -301,7 +283,6 @@ class _SettingsStorage {
       _preferences.remove(_kSelectedToken),
       _preferences.remove(_kTokensWhiteList),
       _preferences.remove(_kIsCitizen),
-      _preferences.remove(_kIsVisitor),
       _preferences.remove(_kIsFirstTimeOnDelegateScreen),
     ]);
   }
@@ -313,21 +294,10 @@ class _SettingsStorage {
   void saveSelectedFiatCurrency(String value) => selectedFiatCurrency = value;
 
   // ignore: use_setters_to_change_properties
-  void saveCitizenshipStatus(ProfileStatus status) {
-    if (status == ProfileStatus.citizen) {
-      isCitizen = true;
-    } else if (status == ProfileStatus.visitor) {
-      isCitizen = false;
-    } else if (status == ProfileStatus.resident) {
-      isCitizen = false;
-    }
-  }
+  void saveIsCitizen(bool value) => isCitizen = value;
 
   // ignore: use_setters_to_change_properties
   void saveFirstTimeOnDelegateScreen(bool value) => isFirstTimeOnDelegateScreen = value;
-
-  // ignore: use_setters_to_change_properties
-  void saveDateSinceRateAppPrompted(int value) => dateSinceRateAppPrompted = value;
 
   Future<void> removeAccount() async {
     await _preferences.clear();

@@ -1,26 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/search_result_row.dart';
 import 'package:seeds/components/search_user/components/search_user_text_field.dart';
-import 'package:seeds/components/search_user/interactor/viewmodels/search_user_bloc.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/components/search_user/interactor/search_user_bloc.dart';
+import 'package:seeds/components/search_user/interactor/viewmodels/search_user_state.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:seeds/domain-shared/user_citizenship_status.dart';
+import 'package:seeds/i18n/components/components.i18n.dart';
 
 class SearchUser extends StatelessWidget {
   final String? title;
   final List<String>? noShowUsers;
-  final ProfileStatus? filterByCitizenshipStatus;
-  final ValueSetter<ProfileModel> onUserSelected;
+  final UserCitizenshipStatus? filterByCitizenshipStatus;
+  final ValueSetter<MemberModel> onUserSelected;
 
   const SearchUser({
-    super.key,
+    Key? key,
     this.title,
     this.noShowUsers,
     this.filterByCitizenshipStatus,
     required this.onUserSelected,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +43,14 @@ class SearchUser extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    Text(title!, style: Theme.of(context).textTheme.titleSmall),
+                    Text(title!, style: Theme.of(context).textTheme.subtitle2),
                   ],
                 ),
               ),
             ),
           const SizedBox(height: 16),
           BlocBuilder<SearchUserBloc, SearchUserState>(
-            builder: (_, state) {
+            builder: (context, state) {
               switch (state.pageState) {
                 case PageState.loading:
                 case PageState.failure:
@@ -55,14 +58,14 @@ class SearchUser extends StatelessWidget {
                   if (state.pageState == PageState.success && state.users.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Center(child: Text(context.loc.searchUserNoUserFound)),
+                      child: Center(child: Text("No users found.".i18n)),
                     );
                   } else {
                     return Expanded(
                       child: ListView.builder(
                         itemCount: state.users.length,
-                        itemBuilder: (_, index) {
-                          final ProfileModel user = state.users[index];
+                        itemBuilder: (context, index) {
+                          final MemberModel user = state.users[index];
                           return SearchResultRow(
                             key: Key(user.account),
                             member: user,

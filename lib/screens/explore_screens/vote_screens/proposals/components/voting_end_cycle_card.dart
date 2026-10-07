@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/i18n/explore_screens/vote/proposals/proposals.i18n.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/vote/interactor/viewmodels/vote_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
 class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
   const VotingCycleEndCard();
@@ -20,7 +20,7 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
           Container(color: AppColors.primary),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: DecoratedBox(
+            child: Container(
               decoration: BoxDecoration(color: AppColors.darkGreen2, borderRadius: BorderRadius.circular(12)),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(top: 16, bottom: 16, right: 14, left: 14),
@@ -29,9 +29,7 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(voteCycleEnded
-                        ? context.loc.proposalVoteCycleEndedStatusMessage
-                        : context.loc.proposalVoteCycleIsInProgressStatusMessage),
+                    Text(voteCycleEnded ? 'New cycle starts soon' : 'Voting cycle ends in'.i18n),
                     const SizedBox(height: 16.0),
                     Builder(
                       builder: (context) {
@@ -39,21 +37,20 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                           case PageState.initial:
                             return const SizedBox.shrink();
                           case PageState.loading:
-                            return const Row(
+                            return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [SizedBox(height: 20, width: 20, child: CircularProgressIndicator())],
+                              children: [const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())],
                             );
                           case PageState.failure:
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text(state.errorMessage!, style: Theme.of(context).textTheme.headlineSmall)],
+                              children: [Text(state.errorMessage!, style: Theme.of(context).textTheme.headline5)],
                             );
                           case PageState.success:
                             return voteCycleEnded
                                 ? Row(
                                     children: [
-                                      Text(context.loc.proposalVoteCycleEndedTimeRemaining,
-                                          style: Theme.of(context).textTheme.headlineSmall)
+                                      Text("Waiting for next cycle".i18n, style: Theme.of(context).textTheme.headline5)
                                     ],
                                   )
                                 : Row(
@@ -62,12 +59,11 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                                       Row(
                                         children: [
                                           Text('${state.currentRemainingTime?.days ?? 0} ',
-                                              style: Theme.of(context).textTheme.headlineSmall),
+                                              style: Theme.of(context).textTheme.headline5),
                                           Column(
                                             children: [
                                               const SizedBox(height: 12),
-                                              Text(context.loc.proposalVoteCycleIsInProgressTimeRemainingDays,
-                                                  style: Theme.of(context).textTheme.subtitle3Opacity),
+                                              Text('days'.i18n, style: Theme.of(context).textTheme.subtitle3Opacity),
                                             ],
                                           )
                                         ],
@@ -75,12 +71,11 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                                       Row(
                                         children: [
                                           Text('${state.currentRemainingTime?.hours ?? 0} ',
-                                              style: Theme.of(context).textTheme.headlineSmall),
+                                              style: Theme.of(context).textTheme.headline5),
                                           Column(
                                             children: [
                                               const SizedBox(height: 12),
-                                              Text(context.loc.proposalVoteCycleIsInProgressTimeRemainingHours,
-                                                  style: Theme.of(context).textTheme.subtitle3Opacity),
+                                              Text('hrs'.i18n, style: Theme.of(context).textTheme.subtitle3Opacity),
                                             ],
                                           )
                                         ],
@@ -88,12 +83,12 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                                       Row(
                                         children: [
                                           Text('${state.currentRemainingTime?.min ?? 0} ',
-                                              style: Theme.of(context).textTheme.headlineSmall),
+                                              style: Theme.of(context).textTheme.headline5),
                                           Column(
                                             children: [
                                               const SizedBox(height: 12),
                                               Text(
-                                                context.loc.proposalVoteCycleIsInProgressTimeRemainingMinutes,
+                                                'mins'.i18n,
                                                 style: Theme.of(context).textTheme.subtitle3Opacity,
                                               ),
                                             ],
@@ -103,12 +98,11 @@ class VotingCycleEndCard implements SliverPersistentHeaderDelegate {
                                       Row(
                                         children: [
                                           Text('${state.currentRemainingTime?.sec ?? 0} ',
-                                              style: Theme.of(context).textTheme.headlineSmall),
+                                              style: Theme.of(context).textTheme.headline5),
                                           Column(
                                             children: [
                                               const SizedBox(height: 12),
-                                              Text(context.loc.proposalVoteCycleIsInProgressTimeRemainingSeconds,
-                                                  style: Theme.of(context).textTheme.subtitle3Opacity),
+                                              Text('sec'.i18n, style: Theme.of(context).textTheme.subtitle3Opacity),
                                             ],
                                           )
                                         ],

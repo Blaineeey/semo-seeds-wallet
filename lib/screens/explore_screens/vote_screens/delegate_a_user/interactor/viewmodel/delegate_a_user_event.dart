@@ -4,11 +4,11 @@ abstract class DelegateAUserEvent extends Equatable {
   const DelegateAUserEvent();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class OnUserSelected extends DelegateAUserEvent {
-  final ProfileModel user;
+  final MemberModel user;
 
   const OnUserSelected(this.user);
 
@@ -17,7 +17,7 @@ class OnUserSelected extends DelegateAUserEvent {
 }
 
 class OnConfirmDelegateTab extends DelegateAUserEvent {
-  final ProfileModel user;
+  final MemberModel user;
 
   const OnConfirmDelegateTab(this.user);
 

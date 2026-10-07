@@ -13,7 +13,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/inte
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposals_args_data.dart';
 
 class ProposalDetailsScreen extends StatefulWidget {
-  const ProposalDetailsScreen({super.key});
+  const ProposalDetailsScreen({Key? key}) : super(key: key);
 
   @override
   _ProposalDetailsScreenState createState() => _ProposalDetailsScreenState();
@@ -64,6 +64,8 @@ class _ProposalDetailsScreenState extends State<ProposalDetailsScreen> {
           },
           builder: (context, state) {
             switch (state.pageState) {
+              case PageState.initial:
+                return const SizedBox.shrink();
               case PageState.loading:
                 return const FullPageLoadingIndicator();
               case PageState.failure:

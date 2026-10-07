@@ -1,5 +1,12 @@
-part of 'profile_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/datasource/remote/model/score_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
+enum CitizenshipUpgradeStatus { notReady, canResident, canCitizen }
+
+/// --- STATE
 class ProfileState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
@@ -11,7 +18,6 @@ class ProfileState extends Equatable {
   final bool hasSecurityNotification;
   final CitizenshipUpgradeStatus citizenshipUpgradeStatus;
   final bool isImportAccountEnabled;
-  bool get showCitizenCard => !(profile == null || profile?.status == ProfileStatus.citizen || isOrganization);
 
   const ProfileState({
     required this.pageState,
@@ -38,9 +44,6 @@ class ProfileState extends Equatable {
         hasSecurityNotification,
         citizenshipUpgradeStatus,
         isImportAccountEnabled,
-        showCitizenCard,
-        showShimmer,
-        accountStatus,
       ];
 
   bool get showShimmer => pageState == PageState.loading || pageState == PageState.initial;
@@ -84,5 +87,3 @@ class ProfileState extends Equatable {
     );
   }
 }
-
-enum CitizenshipUpgradeStatus { notReady, canResident, canCitizen }

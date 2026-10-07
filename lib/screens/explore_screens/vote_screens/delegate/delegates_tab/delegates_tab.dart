@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
-import 'package:seeds/domain-shared/event_bus/event_bus.dart';
-import 'package:seeds/domain-shared/event_bus/events.dart';
+import 'package:seeds/components/snack_bar_info.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
@@ -15,7 +14,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegates_ta
 import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegates_tab/interactor/viewmodels/delegates_page_commands.dart';
 
 class DelegatesTab extends StatelessWidget {
-  const DelegatesTab({super.key});
+  const DelegatesTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +43,7 @@ class DelegatesTab extends StatelessWidget {
               builder: (_) => const IntroducingDelegatesDialog(),
             );
           } else if (pageCommand is ShowErrorMessage) {
-            eventBus.fire(ShowSnackBar(pageCommand.message));
+            SnackBarInfo(pageCommand.message, ScaffoldMessenger.of(context)).show();
           }
         },
         builder: (context, state) {
@@ -68,7 +67,7 @@ class DelegatesTab extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                             'Delegating your vote means to entrust the power of your vote to another Citizen.  Please choose your delegate carefully!',
-                            style: Theme.of(context).textTheme.titleSmall),
+                            style: Theme.of(context).textTheme.subtitle2),
                       ),
                       const SizedBox(height: 30),
                       DelegateCard(

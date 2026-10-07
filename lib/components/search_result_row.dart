@@ -1,13 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:seeds/components/profile_avatar.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
 import 'package:seeds/design/app_theme.dart';
+import 'package:seeds/utils/cap_utils.dart';
 
 class SearchResultRow extends StatelessWidget {
-  final ProfileModel member;
+  final MemberModel member;
   final GestureTapCallback? onTap;
 
-  const SearchResultRow({super.key, required this.member, this.onTap});
+  const SearchResultRow({Key? key, required this.member, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +34,14 @@ class SearchResultRow extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Text(
-                            member.nickname.isNotEmpty ? member.nickname : member.account,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
                         Text(
-                          member.statusString,
-                          style: Theme.of(context).textTheme.labelLarge,
+                          member.nickname.isNotEmpty ? member.nickname : member.account,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                        Text(
+                          describeEnum(member.userCitizenshipStatus).inCaps,
+                          style: Theme.of(context).textTheme.button,
                         ),
                       ],
                     ),

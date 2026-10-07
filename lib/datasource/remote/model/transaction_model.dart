@@ -25,20 +25,15 @@ class TransactionModel extends Equatable {
   @override
   List<Object?> get props => [transactionId];
 
-  static TransactionModel? fromJson(Map<String, dynamic> json) {
-    try {
-      return TransactionModel(
-        from: json['act']['data']['from'],
-        to: json['act']['data']['to'],
-        quantity: json['act']['data']['quantity'],
-        memo: json['act']['data']['memo'],
-        timestamp: parseTimestamp(json['@timestamp']),
-        transactionId: json['trx_id'],
-      );
-    }
-    catch (e){
-      return null;
-    }
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    return TransactionModel(
+      from: json['act']['data']['from'],
+      to: json['act']['data']['to'],
+      quantity: json['act']['data']['quantity'],
+      memo: json['act']['data']['memo'],
+      timestamp: parseTimestamp(json['@timestamp']),
+      transactionId: json['trx_id'],
+    );
   }
 
   factory TransactionModel.fromJsonMongo(Map<String, dynamic> json) {
@@ -57,10 +52,10 @@ class TransactionModel extends Equatable {
     if (genericModel.transaction.isTransfer) {
       final action = genericModel.transaction.actions.first;
       final data = action.data;
-      final String? from = data?['from'];
-      final String? to = data?['to'];
-      final String? quantity = data?['quantity'];
-      final String memo = data?['memo'] ?? "";
+      final String? from = data['from'];
+      final String? to = data['to'];
+      final String? quantity = data['quantity'];
+      final String memo = data['memo'] ?? "";
       if (from != null && to != null && quantity != null) {
         return TransactionModel(
           from: from,

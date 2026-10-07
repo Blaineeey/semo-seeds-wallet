@@ -2,7 +2,7 @@ part of 'import_key_bloc.dart';
 
 class ImportKeyState extends Equatable {
   final PageState pageState;
-  final ImportKeyError? error;
+  final String? errorMessage;
   final AuthDataModel? authData;
   final List<ProfileModel> accounts;
   final bool enableButton;
@@ -11,7 +11,7 @@ class ImportKeyState extends Equatable {
 
   const ImportKeyState({
     required this.pageState,
-    this.error,
+    this.errorMessage,
     required this.accounts,
     this.authData,
     required this.enableButton,
@@ -26,7 +26,7 @@ class ImportKeyState extends Equatable {
   @override
   List<Object?> get props => [
         pageState,
-        error,
+        errorMessage,
         authData,
         accounts,
         enableButton,
@@ -36,7 +36,7 @@ class ImportKeyState extends Equatable {
 
   ImportKeyState copyWith({
     PageState? pageState,
-    ImportKeyError? error,
+    String? errorMessage,
     List<ProfileModel>? accounts,
     AuthDataModel? authData,
     bool? enableButton,
@@ -45,7 +45,7 @@ class ImportKeyState extends Equatable {
   }) {
     return ImportKeyState(
       pageState: pageState ?? this.pageState,
-      error: error,
+      errorMessage: errorMessage,
       accounts: accounts ?? this.accounts,
       authData: authData ?? this.authData,
       enableButton: enableButton ?? this.enableButton,

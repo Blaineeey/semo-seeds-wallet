@@ -1,4 +1,7 @@
-part of 'transactions_list_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/transaction_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class TransactionsListState extends Equatable {
   final PageCommand? pageCommand;
