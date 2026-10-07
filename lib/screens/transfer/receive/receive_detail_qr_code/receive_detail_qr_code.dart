@@ -74,7 +74,7 @@ class ReceiveDetailQrCodeScreen extends StatelessWidget {
                               ),
                             ),
                           const SizedBox(height: 40),
-                          Text(context.loc.transferReceiveWaiting, style: Theme.of(context).textTheme.titleLarge),
+                          Text(context.loc.transferReceiveWaiting, style: Theme.of(context).textTheme.headline6),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(60.0, 40, 60.0, 0),
                             child: FlatButtonLong(

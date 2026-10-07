@@ -25,10 +25,10 @@ class RemoveDelegateConfirmationDialog extends StatelessWidget {
         },
         children: [
           const SizedBox(height: 10.0),
-          Text('Remove Delegate?', style: Theme.of(context).textTheme.titleLarge),
+          Text('Remove Delegate?', style: Theme.of(context).textTheme.headline6),
           const SizedBox(height: 30.0),
           Text('Are you sure you would like to remove this person as your Delegate?',
-              style: Theme.of(context).textTheme.titleSmall),
+              style: Theme.of(context).textTheme.subtitle2),
           const SizedBox(height: 20.0),
         ],
       ),

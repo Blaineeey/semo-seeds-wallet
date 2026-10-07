@@ -17,31 +17,31 @@ const String _featureFlagTokenMasterList = 'feature_flag_token_master_list_enabl
 
 // MAINNET CONFIG
 const String _eosEndpoints = '[ { "url": "https://mainnet.telos.net", "isDefault": true } ]';
-const String _hyphaEndPointUrl = 'https://node.hypha.earth';
-const String _defaultEndPointUrl = "https://api.telosfoundation.io";
+const String _hyphaEndPointUrl = 'https://mainnet.telos.net';
+const String _defaultEndPointUrl = "https://mainnet.telos.net";
 // we need a separate endpoint for v2/history as most nodes don't support v2
-const String _defaultV2EndpointUrl = "https://api.telosfoundation.io";
+const String _defaultV2EndpointUrl = "https://mainnet.telos.net";
 
 // DO NOT PUSH TO PROD WITH THIS SET TO TRUE. This is used for testing purposes only
 const bool testnetMode = false;
 const bool unitTestMode = false; // set testnetMode and unitTestMode to true for automated tests
 
 // TESTNET CONFIG: Used for testing purposes.
-const String _testnetEosEndpoints = '[ { "url": "https://api-test.telosfoundation.io", "isDefault": true } ]';
-const String _testnetHyphaEndPointUrl = 'https://api-test.telosfoundation.io';
-const String _testnetDefaultEndPointUrl = "https://api-test.telosfoundation.io";
-const String _testnetDefaultV2EndpointUrl = "https://api-test.telosfoundation.io";
+const String _testnetEosEndpoints = '[ { "url": "https://testnet.telos.net", "isDefault": true } ]';
+const String _testnetHyphaEndPointUrl = 'https://testnet.telos.net';
+const String _testnetDefaultEndPointUrl = "https://testnet.telos.net";
+const String _testnetDefaultV2EndpointUrl = "https://testnet.telos.net";
 // END - TESTNET CONFIG
 
 // UNIT TEST CONFIG: Used for automated testing
-const String _unitTestEosEndpoints = '[ { "url": "https://node.hypha.earth", "isDefault": true } ]';
-const String _unitTestHyphaEndPointUrl = 'https://node.hypha.earth';
-const String _unitTestDefaultEndPointUrl = "https://node.hypha.earth";
-const String _unitTestDefaultV2EndpointUrl = "https://api.telosfoundation.io";
+const String _unitTestEosEndpoints = '[ { "url": "https://mainnet.telos.net", "isDefault": true } ]';
+const String _unitTestHyphaEndPointUrl = 'https://mainnet.telos.net';
+const String _unitTestDefaultEndPointUrl = "https://mainnet.telos.net";
+const String _unitTestDefaultV2EndpointUrl = "https://mainnet.telos.net";
 // END - UNIT TEST CONFIG
 
 class _FirebaseRemoteConfigService {
-  late FirebaseRemoteConfig _remoteConfig;
+  late RemoteConfig _remoteConfig;
 
   factory _FirebaseRemoteConfigService() => _instance;
 
@@ -77,7 +77,7 @@ class _FirebaseRemoteConfigService {
   }
 
   Future initialise() async {
-    _remoteConfig = FirebaseRemoteConfig.instance;
+    _remoteConfig = RemoteConfig.instance;
     await _remoteConfig.setDefaults(defaults);
 
     /// Maximum age of a cached config before it is considered stale. we set to 60 secs since we store important data.

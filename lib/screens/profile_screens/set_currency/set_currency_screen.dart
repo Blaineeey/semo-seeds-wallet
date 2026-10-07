@@ -65,10 +65,10 @@ class _SetCurrencyScreenState extends State<SetCurrencyScreen> {
                           itemBuilder: (_, index) => ListTile(
                             key: Key(state.queryCurrenciesResults![index].code),
                             leading: Text(state.queryCurrenciesResults![index].flagEmoji,
-                                style: Theme.of(context).textTheme.headlineMedium),
+                                style: Theme.of(context).textTheme.headline4),
                             title: Text(
                               state.queryCurrenciesResults![index].code,
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: Theme.of(context).textTheme.button,
                             ),
                             subtitle: Text(state.queryCurrenciesResults![index].name,
                                 style: Theme.of(context).textTheme.subtitle4),

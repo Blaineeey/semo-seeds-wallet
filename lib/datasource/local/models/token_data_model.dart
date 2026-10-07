@@ -7,8 +7,7 @@ import 'package:seeds/utils/rate_states_extensions.dart';
 
 class TokenDataModel extends AmountDataModel {
   String? id;
-  final TokenModel token;
-  TokenDataModel(double amount, {TokenModel this.token = seedsToken})
+  TokenDataModel(double amount, {TokenModel token = seedsToken})
       : super(
           amount: amount,
           symbol: token.symbol,
@@ -38,7 +37,7 @@ class TokenDataModel extends AmountDataModel {
   }
 
   TokenDataModel copyWith(double amount) {
-    return TokenDataModel(amount, token: token);
+    return TokenDataModel(amount, token: TokenModel.fromId(id!));
   }
 }
 

@@ -11,10 +11,11 @@ class QrCodeGeneratorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QrImageView(
+    return QrImage(
       data: data,
       size: size,
       backgroundColor: AppColors.white,
+      foregroundColor: AppColors.black,
       errorStateBuilder: (_, err) {
         return Center(child: Text(GlobalError.unknown.localizedDescription(context), textAlign: TextAlign.center));
       },

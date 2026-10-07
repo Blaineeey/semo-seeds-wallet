@@ -33,7 +33,7 @@ class ReceiveSelectionCard extends StatelessWidget {
             ),
             Text(
               title,
-              style: Theme.of(context).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.button,
               textAlign: TextAlign.center,
             ),
           ],

@@ -61,9 +61,9 @@ class OnboardingPage extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.displaySmall),
+                        Text(title, style: Theme.of(context).textTheme.headline3),
                         const SizedBox(height: 30),
-                        Text(subTitle, style: Theme.of(context).textTheme.labelLarge),
+                        Text(subTitle, style: Theme.of(context).textTheme.button),
                       ],
                     ),
                   ],
