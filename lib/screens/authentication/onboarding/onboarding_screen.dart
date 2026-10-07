@@ -15,7 +15,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class OnboardingState extends State<OnboardingScreen> {
-  final CarouselSliderController _controller = CarouselSliderController();
+  final CarouselController _controller = CarouselController();
   int _selectedIndex = 0;
 
   void _onPageChangeForward() {
