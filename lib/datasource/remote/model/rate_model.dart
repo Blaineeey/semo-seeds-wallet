@@ -1,39 +1,24 @@
-import 'dart:math';
-
-/// Token per USD
+/// The current SEEDS per USD
 class RateModel {
-  final String tokenId;
-  final double tokensPerUSD;
+  final double seedsPerUSD;
 
-  const RateModel(this.tokenId, this.tokensPerUSD);
+  const RateModel(this.seedsPerUSD);
 
-  double? tokenToUSD(double seedsAmount) {
-    return tokensPerUSD > 0 ? seedsAmount / tokensPerUSD : null;
+  double? seedsToUSD(double seedsAmount) {
+    return seedsPerUSD > 0 ? seedsAmount / seedsPerUSD : null;
   }
 
-  double? usdToToken(double usdAmount) {
-    return tokensPerUSD > 0 ? usdAmount * tokensPerUSD : null;
+  double? usdToSeeds(double usdAmount) {
+    return seedsPerUSD > 0 ? usdAmount * seedsPerUSD : null;
   }
 
-  factory RateModel.fromSeedsJson(Map<String, dynamic>? json) {
-    const seedsTokenId = 'token.seeds#SEEDS';
+  factory RateModel.fromJson(Map<String, dynamic>? json) {
     if (json != null && json['rows'].isNotEmpty) {
       final value = json['rows'][0]['current_seeds_per_usd'] ?? 0.toString();
       final amount = double.parse(value.split(' ').first);
-      return RateModel(seedsTokenId, amount);
+      return RateModel(amount);
     } else {
-      return const RateModel(seedsTokenId, 0);
-    }
-  }
-
-  factory RateModel.fromOracleJson(String tokenId, int precision, Map<String, dynamic>? json) {
-    if (json != null && json['rows'].isNotEmpty) {
-      print("JSON $json");
-      final int value = json['rows'][0]['median'] ?? 0;
-      final double amount = value / pow(10, precision).toDouble();
-      return RateModel(tokenId, 1 / amount);
-    } else {
-      return RateModel(tokenId, 0);
+      return const RateModel(0);
     }
   }
 }

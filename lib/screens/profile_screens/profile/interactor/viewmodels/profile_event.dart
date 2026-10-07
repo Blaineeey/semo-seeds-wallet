@@ -1,10 +1,15 @@
-part of 'profile_bloc.dart';
+import 'dart:io';
 
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
+
+/// --- EVENTS
+@immutable
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class LoadProfileValues extends ProfileEvent {
@@ -18,7 +23,7 @@ class OnUpdateProfileImage extends ProfileEvent {
   const OnUpdateProfileImage(this.file);
 
   @override
-  List<Object?> get props => [file];
+  List<Object> get props => [file];
 
   @override
   String toString() => 'OnUpdateProfileImage { file: $file }';
@@ -30,7 +35,7 @@ class OnNameChanged extends ProfileEvent {
   const OnNameChanged(this.name);
 
   @override
-  List<Object?> get props => [name];
+  List<Object> get props => [name];
 
   @override
   String toString() => 'OnNameChanged { name: $name }';
@@ -55,13 +60,6 @@ class OnSavePrivateKeyButtonPressed extends ProfileEvent {
 
   @override
   String toString() => 'OnSavePrivateKeyButtonPressed';
-}
-
-class OnSaveRecoveryPhraseButtonPressed extends ProfileEvent {
-  const OnSaveRecoveryPhraseButtonPressed();
-
-  @override
-  String toString() => 'OnSaveRecoveryPhraseButtonPressed';
 }
 
 class ClearProfilePageCommand extends ProfileEvent {

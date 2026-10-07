@@ -1,10 +1,12 @@
-part of 'authentication_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+/// --- EVENTS
+@immutable
 abstract class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
-
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class InitAuthStatus extends AuthenticationEvent {
@@ -13,36 +15,30 @@ class InitAuthStatus extends AuthenticationEvent {
   String toString() => 'InitAuthStatus';
 }
 
-class InitAuthTimer extends AuthenticationEvent {
-  const InitAuthTimer();
+class InitOnResumeAuth extends AuthenticationEvent {
+  const InitOnResumeAuth();
   @override
-  String toString() => 'InitAuthTimer';
+  String toString() => 'InitOnResumeAuth';
 }
 
-class StartTimeoutAuth extends AuthenticationEvent {
-  const StartTimeoutAuth();
+class SuccessOnResumeAuth extends AuthenticationEvent {
+  const SuccessOnResumeAuth();
   @override
-  String toString() => 'StartTimeoutAuth';
-}
-
-class OnInviteLinkRecived extends AuthenticationEvent {
-  const OnInviteLinkRecived();
-  @override
-  String toString() => 'OnInviteLinkRecived';
+  String toString() => 'SuccessOnResumeAuth';
 }
 
 class OnCreateAccount extends AuthenticationEvent {
   final String account;
-  final AuthDataModel authData;
-  const OnCreateAccount({required this.account, required this.authData});
+  final String privateKey;
+  const OnCreateAccount({required this.account, required this.privateKey});
   @override
   String toString() => 'OnCreateAccount { account: $account }';
 }
 
 class OnImportAccount extends AuthenticationEvent {
   final String account;
-  final AuthDataModel authData;
-  const OnImportAccount({required this.account, required this.authData});
+  final String privateKey;
+  const OnImportAccount({required this.account, required this.privateKey});
   @override
   String toString() => 'OnImportAccount { account: $account }';
 }
@@ -51,14 +47,6 @@ class OnRecoverAccount extends AuthenticationEvent {
   const OnRecoverAccount();
   @override
   String toString() => 'OnRecoverAccount';
-}
-
-class OnSwitchAccount extends AuthenticationEvent {
-  final String account;
-  final AuthDataModel authData;
-  const OnSwitchAccount(this.account, this.authData);
-  @override
-  String toString() => 'OnSwitchAccount { account: $account }';
 }
 
 class UnlockWallet extends AuthenticationEvent {

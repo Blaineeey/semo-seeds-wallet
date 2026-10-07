@@ -1,4 +1,9 @@
-part of 'unplant_seeds_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class UnplantSeedsState extends Equatable {
   final PageState pageState;
@@ -9,33 +14,20 @@ class UnplantSeedsState extends Equatable {
   final TokenDataModel? plantedBalance;
   final FiatDataModel? plantedBalanceFiat;
   final bool isUnplantSeedsButtonEnabled;
-  final bool showOverBalanceAlert;
-  final bool showMinPlantedBalanceAlert;
-  final PageCommand? pageCommand;
-  final bool showUnclaimedBalance;
-  final TokenDataModel? availableClaimBalance;
-  final FiatDataModel? availableClaimBalanceFiat;
-  final List<int>? availableRequestIds;
-  final bool isClaimButtonEnabled;
+  final bool showAlert;
+  final TextEditingController controller;
 
-  const UnplantSeedsState({
-    required this.pageState,
-    required this.ratesState,
-    required this.unplantedInputAmountFiat,
-    required this.onFocus,
-    this.plantedBalance,
-    this.plantedBalanceFiat,
-    required this.isUnplantSeedsButtonEnabled,
-    required this.showOverBalanceAlert,
-    required this.showMinPlantedBalanceAlert,
-    required this.unplantedInputAmount,
-    this.pageCommand,
-    required this.showUnclaimedBalance,
-    this.availableClaimBalance,
-    this.availableClaimBalanceFiat,
-    this.availableRequestIds,
-    required this.isClaimButtonEnabled,
-  });
+  const UnplantSeedsState(
+      {required this.pageState,
+      required this.ratesState,
+      required this.unplantedInputAmountFiat,
+      required this.onFocus,
+      this.plantedBalance,
+      this.plantedBalanceFiat,
+      required this.isUnplantSeedsButtonEnabled,
+      required this.showAlert,
+      required this.unplantedInputAmount,
+      required this.controller});
 
   @override
   List<Object?> get props => [
@@ -45,16 +37,10 @@ class UnplantSeedsState extends Equatable {
         plantedBalance,
         plantedBalanceFiat,
         isUnplantSeedsButtonEnabled,
-        showOverBalanceAlert,
+        showAlert,
         unplantedInputAmountFiat,
         unplantedInputAmount,
-        pageCommand,
-        showMinPlantedBalanceAlert,
-        showUnclaimedBalance,
-        availableClaimBalance,
-        availableClaimBalanceFiat,
-        availableRequestIds,
-        isClaimButtonEnabled,
+        controller,
       ];
 
   UnplantSeedsState copyWith({
@@ -65,49 +51,34 @@ class UnplantSeedsState extends Equatable {
     TokenDataModel? plantedBalance,
     FiatDataModel? plantedBalanceFiat,
     bool? isUnplantSeedsButtonEnabled,
-    bool? showOverBalanceAlert,
-    bool? showMinPlantedBalanceAlert,
+    bool? showAlert,
     FiatDataModel? unplantedInputAmountFiat,
     TokenDataModel? unplantedInputAmount,
-    PageCommand? pageCommand,
-    bool? showUnclaimedBalance,
-    TokenDataModel? availableClaimBalance,
-    FiatDataModel? availableClaimBalanceFiat,
-    List<int>? availableRequestIds,
-    bool? isClaimButtonEnabled,
+    TextEditingController? controller,
   }) {
     return UnplantSeedsState(
-      pageState: pageState ?? this.pageState,
-      ratesState: ratesState ?? this.ratesState,
-      onFocus: onFocus ?? this.onFocus,
-      plantedBalance: plantedBalance ?? this.plantedBalance,
-      plantedBalanceFiat: plantedBalanceFiat ?? this.plantedBalanceFiat,
-      isUnplantSeedsButtonEnabled: isUnplantSeedsButtonEnabled ?? this.isUnplantSeedsButtonEnabled,
-      showOverBalanceAlert: showOverBalanceAlert ?? this.showOverBalanceAlert,
-      showMinPlantedBalanceAlert: showMinPlantedBalanceAlert ?? this.showMinPlantedBalanceAlert,
-      unplantedInputAmountFiat: unplantedInputAmountFiat ?? this.unplantedInputAmountFiat,
-      unplantedInputAmount: unplantedInputAmount ?? this.unplantedInputAmount,
-      pageCommand: pageCommand,
-      showUnclaimedBalance: showUnclaimedBalance ?? this.showUnclaimedBalance,
-      availableClaimBalance: availableClaimBalance ?? this.availableClaimBalance,
-      availableClaimBalanceFiat: availableClaimBalanceFiat ?? this.availableClaimBalanceFiat,
-      availableRequestIds: availableRequestIds ?? this.availableRequestIds,
-      isClaimButtonEnabled: isClaimButtonEnabled ?? this.isClaimButtonEnabled,
-    );
+        pageState: pageState ?? this.pageState,
+        ratesState: ratesState ?? this.ratesState,
+        onFocus: onFocus ?? this.onFocus,
+        plantedBalance: plantedBalance ?? this.plantedBalance,
+        plantedBalanceFiat: plantedBalanceFiat ?? this.plantedBalanceFiat,
+        isUnplantSeedsButtonEnabled: isUnplantSeedsButtonEnabled ?? this.isUnplantSeedsButtonEnabled,
+        showAlert: showAlert ?? this.showAlert,
+        unplantedInputAmountFiat: unplantedInputAmountFiat ?? this.unplantedInputAmountFiat,
+        unplantedInputAmount: unplantedInputAmount ?? this.unplantedInputAmount,
+        controller: controller ?? this.controller);
   }
 
-  factory UnplantSeedsState.initial(RatesState ratesState, bool claimUnplantedSeedsEnabled) {
+  factory UnplantSeedsState.initial(RatesState ratesState) {
     return UnplantSeedsState(
       pageState: PageState.success,
       ratesState: ratesState,
       onFocus: true,
       unplantedInputAmountFiat: FiatDataModel(0),
-      showOverBalanceAlert: false,
-      showMinPlantedBalanceAlert: false,
+      showAlert: false,
       isUnplantSeedsButtonEnabled: false,
       unplantedInputAmount: TokenDataModel(0),
-      showUnclaimedBalance: claimUnplantedSeedsEnabled,
-      isClaimButtonEnabled: false,
+      controller: TextEditingController(),
     );
   }
 }

@@ -1,12 +1,16 @@
-part of 'recover_account_found_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/current_remaining_time.dart';
 
 class RecoverAccountFoundState extends Equatable {
   final PageState pageState;
-  final RecoverAccountFoundError? error;
+  final String? errorMessage;
   final String userAccount;
   final Uri? linkToActivateGuardians;
   final List<String> alreadySignedGuardians;
-  final List<ProfileModel> userGuardiansData;
+  final List<MemberModel> userGuardiansData;
   final int confirmedGuardianSignatures;
   final RecoveryStatus recoveryStatus;
   final int timeLockExpirySeconds;
@@ -19,7 +23,7 @@ class RecoverAccountFoundState extends Equatable {
     required this.pageState,
     required this.linkToActivateGuardians,
     required this.userGuardiansData,
-    this.error,
+    this.errorMessage,
     required this.confirmedGuardianSignatures,
     required this.recoveryStatus,
     required this.alreadySignedGuardians,
@@ -34,7 +38,7 @@ class RecoverAccountFoundState extends Equatable {
         pageState,
         linkToActivateGuardians,
         userGuardiansData,
-        error,
+        errorMessage,
         confirmedGuardianSignatures,
         recoveryStatus,
         alreadySignedGuardians,
@@ -48,8 +52,8 @@ class RecoverAccountFoundState extends Equatable {
     PageState? pageState,
     Uri? linkToActivateGuardians,
     List<String>? userGuardians,
-    List<ProfileModel>? userGuardiansData,
-    RecoverAccountFoundError? error,
+    List<MemberModel>? userGuardiansData,
+    String? errorMessage,
     int? confirmedGuardianSignatures,
     List<String>? alreadySignedGuardians,
     RecoveryStatus? recoveryStatus,
@@ -61,7 +65,7 @@ class RecoverAccountFoundState extends Equatable {
       pageState: pageState ?? this.pageState,
       linkToActivateGuardians: linkToActivateGuardians ?? this.linkToActivateGuardians,
       userGuardiansData: userGuardiansData ?? this.userGuardiansData,
-      error: error,
+      errorMessage: errorMessage,
       confirmedGuardianSignatures: confirmedGuardianSignatures ?? this.confirmedGuardianSignatures,
       recoveryStatus: recoveryStatus ?? this.recoveryStatus,
       alreadySignedGuardians: alreadySignedGuardians ?? this.alreadySignedGuardians,
@@ -78,7 +82,7 @@ class RecoverAccountFoundState extends Equatable {
       linkToActivateGuardians: null,
       userGuardiansData: [],
       confirmedGuardianSignatures: 0,
-      recoveryStatus: RecoveryStatus.waitingForGuardiansToSign,
+      recoveryStatus: RecoveryStatus.WAITING_FOR_GUARDIANS_TO_SIGN,
       alreadySignedGuardians: [],
       timeLockExpirySeconds: 0,
       userAccount: userAccount,
@@ -87,7 +91,7 @@ class RecoverAccountFoundState extends Equatable {
 }
 
 enum RecoveryStatus {
-  waitingForGuardiansToSign,
-  waitingFor24HourCoolPeriod,
-  readyToClaimAccount,
+  WAITING_FOR_GUARDIANS_TO_SIGN,
+  WAITING_FOR_24_HOUR_COOL_PERIOD,
+  READY_TO_CLAIM_ACCOUNT,
 }

@@ -1,5 +1,7 @@
-part of 'unplant_seeds_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+@immutable
 abstract class UnplantSeedsEvent extends Equatable {
   const UnplantSeedsEvent();
 
@@ -17,31 +19,17 @@ class LoadUserPlantedBalance extends UnplantSeedsEvent {
 class OnAmountChange extends UnplantSeedsEvent {
   final String amountChanged;
 
-  const OnAmountChange(this.amountChanged);
+  const OnAmountChange({required this.amountChanged});
 
   @override
   String toString() => 'OnAmountChange { OnAmountChange: $amountChanged }';
 }
 
-class OnMaxButtonTapped extends UnplantSeedsEvent {
+class OnMaxButtonTap extends UnplantSeedsEvent {
   final String maxAmount;
 
-  const OnMaxButtonTapped(this.maxAmount);
+  const OnMaxButtonTap({required this.maxAmount});
 
   @override
-  String toString() => 'OnMaxButtonTapped { OnAmountChange: $maxAmount }';
-}
-
-class OnUnplantSeedsButtonTapped extends UnplantSeedsEvent {
-  const OnUnplantSeedsButtonTapped();
-
-  @override
-  String toString() => 'OnUnplantSeedsButtonTapped';
-}
-
-class OnClaimButtonTapped extends UnplantSeedsEvent {
-  const OnClaimButtonTapped();
-
-  @override
-  String toString() => 'OnClaimButtonTaped';
+  String toString() => 'OnMaxButtonTap { OnAmountChange: $maxAmount }';
 }

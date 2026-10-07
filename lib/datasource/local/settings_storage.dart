@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:seeds/datasource/local/models/auth_data_model.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/datasource/remote/model/token_model.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +11,6 @@ const String _kAccountName = 'accountName';
 const String _kAccountsList = 'accountsList';
 const String _kPrivateKey = 'privateKey';
 const String _kPrivateKeysList = 'privateKeysList';
-const String _kRecoveryWords = 'recoveryWords';
 const String _kPasscode = 'passcode';
 const String _kPasscodeActive = 'passcode_active';
 const String _kBiometricActive = 'biometric_active';
@@ -24,24 +21,22 @@ const String _kInRecoveryMode = 'in_recovery_mode';
 const String _kRecoveryLink = 'recovery_link';
 const String _kTokensWhiteList = 'tokens_whitelist';
 const String _kIsCitizen = 'is_citizen';
-const String _kIsVisitor = 'is_visitor';
 const String _kIsFirstRun = 'is_first_run';
-const String _kIsFirstTimeOnDelegateScreen = 'is_first_time_on_delegate_screen';
-const String _kDateSinceRateAppPrompted = 'date_since_rate_app_prompted';
-const String _kIsFirstTimeOnRegionsScreen = 'IsFirstTimeOnRegionsScreen';
+
+// Defaults
+const bool _kPasscodeActiveDefault = true;
+const bool _kBiometricActiveDefault = false;
+const bool _kIsCitizenDefault = false;
 
 class _SettingsStorage {
   late SharedPreferences _preferences;
   late FlutterSecureStorage _secureStorage;
-
-  // These nullable fields below are initialized from
-  // secure storage, to avoid call a Future often
   String? _privateKey;
   List<String>? _privateKeysList;
   String? _passcode;
   bool? _passcodeActive;
   bool? _biometricActive;
-  List<String> _recoveryWords = [];
+  bool? _privateKeyBackedUp;
 
   factory _SettingsStorage() => _instance;
 
@@ -59,47 +54,35 @@ class _SettingsStorage {
 
   String? get passcode => _passcode;
 
-  bool get passcodeActive => _passcodeActive ?? false;
+  bool? get passcodeActive => _passcodeActive;
 
   bool? get biometricActive => _biometricActive;
 
-  bool get privateKeyBackedUp => _preferences.getBool(_kPrivateKeyBackedUp) ?? false; // <-- No used, need re-add PR 182
+  bool get privateKeyBackedUp => _privateKeyBackedUp ?? false; // <-- No used, need re-add PR 182
 
   String get selectedFiatCurrency => _preferences.getString(_kSelectedFiatCurrency) ?? getPlatformCurrency();
 
-  TokenModel get selectedToken => TokenModel.fromId(_preferences.getString(_kSelectedToken) ?? seedsToken.id) ?? seedsToken;
+  TokenModel get selectedToken => TokenModel.fromSymbol(_preferences.getString(_kSelectedToken) ?? SeedsToken.symbol);
 
   bool get inRecoveryMode => _preferences.getBool(_kInRecoveryMode) ?? false;
 
   String get recoveryLink => _preferences.getString(_kRecoveryLink) ?? '';
 
-  List<String> get tokensWhitelist => _preferences.getStringList(_kTokensWhiteList) ?? [seedsToken.id];
+  List<String> get tokensWhitelist => _preferences.getStringList(_kTokensWhiteList) ?? [SeedsToken.id];
 
-  bool get isCitizen => _preferences.getBool(_kIsCitizen) ?? false;
-
-  bool get isFirstTimeOnDelegateScreen => _preferences.getBool(_kIsFirstTimeOnDelegateScreen) ?? false;
-
-  bool get isFirstTimeOnRegionsScreen => _preferences.getBool(_kIsFirstTimeOnRegionsScreen) ?? true;
-
-  List<String> get recoveryWords => _recoveryWords;
-
-  int? get dateSinceRateAppPrompted => _preferences.getInt(_kDateSinceRateAppPrompted);
+  bool get isCitizen => _preferences.getBool(_kIsCitizen) ?? _kIsCitizenDefault;
 
   set inRecoveryMode(bool value) => _preferences.setBool(_kInRecoveryMode, value);
 
   set recoveryLink(String? value) =>
       value == null ? _preferences.remove(_kRecoveryLink) : _preferences.setString(_kRecoveryLink, value);
 
-  // ignore: avoid_setters_without_getters
   set _accountName(String? value) {
-    // When start cancelRecoveryProcess funtion is fired a null value is recived.
-    // if null arrives here the account name is saved with empty string (I think this is a bad practice)
     _preferences.setString(_kAccountName, value ?? '');
     // Retrieve accounts list
     final List<String> accts = accountsList;
     // If new account --> add to list
-    // but check accountName is not a empty string to add
-    if (!accountsList.contains(value) && accountName.isNotEmpty) {
+    if (!accountsList.contains(value)) {
       accts.add(accountName);
       // Save updated accounts list
       _preferences.setStringList(_kAccountsList, accts);
@@ -125,9 +108,17 @@ class _SettingsStorage {
     }
   }
 
-  set privateKeyBackedUp(bool? value) {
+  set privateKey(String? value) {
+    _secureStorage.write(key: _kPrivateKey, value: value);
     if (value != null) {
-      _preferences.setBool(_kPrivateKeyBackedUp, value);
+      _privateKey = value;
+    }
+  }
+
+  set privateKeyBackedUp(bool? value) {
+    _secureStorage.write(key: _kPrivateKeyBackedUp, value: value.toString());
+    if (value != null) {
+      _privateKeyBackedUp = value;
     }
   }
 
@@ -138,7 +129,7 @@ class _SettingsStorage {
   }
 
   set selectedToken(TokenModel token) {
-    _preferences.setString(_kSelectedToken, token.id);
+    _preferences.setString(_kSelectedToken, token.symbol);
   }
 
   set tokensWhitelist(List<String> tokensList) {
@@ -148,20 +139,6 @@ class _SettingsStorage {
   set isCitizen(bool? value) {
     if (value != null) {
       _preferences.setBool(_kIsCitizen, value);
-    }
-  }
-
-  set isFirstTimeOnDelegateScreen(bool value) {
-    _preferences.setBool(_kIsFirstTimeOnDelegateScreen, value);
-  }
-
-  set isFirstTimeOnRegionsScreen(bool value) {
-    _preferences.setBool(_kIsFirstTimeOnRegionsScreen, value);
-  }
-
-  set dateSinceRateAppPrompted(int? value) {
-    if (value != null) {
-      _preferences.setInt(_kDateSinceRateAppPrompted, value);
     }
   }
 
@@ -187,17 +164,19 @@ class _SettingsStorage {
       if (values.containsKey(_kPasscodeActive)) {
         _passcodeActive = values[_kPasscodeActive] == 'true';
       } else {
-        _passcodeActive = true;
-      }
-
-      if (values.containsKey(_kRecoveryWords)) {
-        _recoveryWords = values[_kRecoveryWords]!.split(',');
+        _passcodeActive = _kPasscodeActiveDefault;
       }
 
       if (values.containsKey(_kBiometricActive)) {
         _biometricActive = values[_kBiometricActive] == 'true';
       } else {
-        _biometricActive = false;
+        _biometricActive = _kBiometricActiveDefault;
+      }
+
+      if (values.containsKey(_kPrivateKeyBackedUp)) {
+        _privateKeyBackedUp = values[_kPrivateKeyBackedUp] == 'true';
+      } else {
+        _privateKeyBackedUp = false;
       }
     });
   }
@@ -213,121 +192,47 @@ class _SettingsStorage {
     return value;
   }
 
-  Future<void> startRecoveryProcess({
-    required String accountName,
-    required AuthDataModel authData,
-    required String recoveryLink,
-  }) async {
+  void enableRecoveryMode({required String accountName, required String privateKey, required String recoveryLink}) {
     inRecoveryMode = true;
     _accountName = accountName;
     this.recoveryLink = recoveryLink;
-    await _savePrivateKey(authData.eOSPrivateKey.toString());
-    await _saveRecoverWords(authData.words);
+    this.privateKey = privateKey;
   }
 
   void finishRecoveryProcess() {
-    privateKeyBackedUp = false;
     inRecoveryMode = false;
     recoveryLink = null;
   }
 
-  /// Notice this function it's also called on `Import (login screen)`
-  /// and `Singup`. To cancel any recover process previously started
-  Future<void> cancelRecoveryProcess() async {
-    await _preferences.clear();
-    await _secureStorage.deleteAll();
+  void cancelRecoveryProcess() {
+    inRecoveryMode = false;
     _accountName = null;
+    privateKey = null;
+    recoveryLink = null;
   }
 
-  void enablePasscode(String? passcode) {
-    this.passcode = passcode;
-    passcodeActive = true;
-  }
+  void savePasscode(String? passcode) => this.passcode = passcode;
 
-  void disablePasscode() {
-    passcode = null;
-    passcodeActive = false;
-    biometricActive = false;
-  }
-
-  Future<void> _savePrivateKey(String privateKey) async {
-    if (privateKey.isNotEmpty) {
-      // Update storage privateKey
-      await _secureStorage.write(key: _kPrivateKey, value: privateKey);
-      // Update local privateKey
-      _privateKey = privateKey;
-      // Verify if its a new privateKey
-      final List<String> pkeys = _privateKeysList ?? [];
-      // If new private key --> add to list
-      if (!pkeys.contains(privateKey)) {
-        pkeys.add(privateKey);
-        // Save updated private keys list
-        await _secureStorage.write(key: _kPrivateKeysList, value: pkeys.join(','));
-        // Update local private keys list
-        _privateKeysList = pkeys;
-      }
+  Future<void> saveAccount(String accountName, String privateKey) async {
+    _accountName = accountName;
+    _privateKey = privateKey;
+    this.privateKey = privateKey;
+    final List<String> pkeys = _privateKeysList ?? [];
+    // If new private key --> add to list
+    if (!pkeys.contains(privateKey)) {
+      pkeys.add(privateKey);
+      // Save updated private keys list
+      await _secureStorage.write(key: _kPrivateKeysList, value: pkeys.join(","));
+      // Update local field
+      _privateKeysList = pkeys;
     }
   }
 
-  Future<void> _saveRecoverWords(List<String> words) async {
-    final String newWords = words.join('-');
-    if (words.isNotEmpty && newWords.isNotEmpty) {
-      final List<String> wordsList = _recoveryWords;
-      // If new words --> add to list
-      if (!wordsList.contains(newWords)) {
-        wordsList.add(newWords);
-        // Save updated private keys list
-        await _secureStorage.write(key: _kRecoveryWords, value: wordsList.join(','));
-        // Update local field
-        _recoveryWords = wordsList;
-      }
-    }
-  }
-
-  Future<void> saveAccount(String accountName, AuthDataModel authData) async {
-    _accountName = accountName;
-    privateKeyBackedUp = false;
-    await _savePrivateKey(authData.eOSPrivateKey.toString());
-    await _saveRecoverWords(authData.words);
-  }
-
-  /// Update current accout name, private key and remove some pref
-  Future<void> switchAccount(String accountName, AuthDataModel authData) async {
-    privateKeyBackedUp = false;
-    _accountName = accountName;
-    await Future.wait([
-      _savePrivateKey(authData.eOSPrivateKey.toString()),
-      _preferences.remove(_kSelectedFiatCurrency),
-      _preferences.remove(_kSelectedToken),
-      _preferences.remove(_kTokensWhiteList),
-      _preferences.remove(_kIsCitizen),
-      _preferences.remove(_kIsVisitor),
-      _preferences.remove(_kIsFirstTimeOnDelegateScreen),
-    ]);
-  }
-
-  // ignore: use_setters_to_change_properties
   void savePrivateKeyBackedUp(bool value) => privateKeyBackedUp = value;
 
-  // ignore: use_setters_to_change_properties
   void saveSelectedFiatCurrency(String value) => selectedFiatCurrency = value;
 
-  // ignore: use_setters_to_change_properties
-  void saveCitizenshipStatus(ProfileStatus status) {
-    if (status == ProfileStatus.citizen) {
-      isCitizen = true;
-    } else if (status == ProfileStatus.visitor) {
-      isCitizen = false;
-    } else if (status == ProfileStatus.resident) {
-      isCitizen = false;
-    }
-  }
-
-  // ignore: use_setters_to_change_properties
-  void saveFirstTimeOnDelegateScreen(bool value) => isFirstTimeOnDelegateScreen = value;
-
-  // ignore: use_setters_to_change_properties
-  void saveDateSinceRateAppPrompted(int value) => dateSinceRateAppPrompted = value;
+  void saveIsCitizen(bool value) => isCitizen = value;
 
   Future<void> removeAccount() async {
     await _preferences.clear();
@@ -335,9 +240,8 @@ class _SettingsStorage {
     _privateKey = null;
     _privateKeysList = null;
     _passcode = null;
-    _passcodeActive = true;
-    _biometricActive = false;
-    _recoveryWords = [];
+    _passcodeActive = _kPasscodeActiveDefault;
+    _biometricActive = _kBiometricActiveDefault;
   }
 
   String getPlatformCurrency() {

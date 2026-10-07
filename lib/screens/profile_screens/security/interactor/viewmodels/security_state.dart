@@ -1,8 +1,10 @@
-part of 'security_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 enum CurrentChoice { initial, passcodeCard, biometricCard }
 enum GuardiansStatus { active, inactive, readyToActivate }
 
+/// STATE
 class SecurityState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
@@ -68,11 +70,12 @@ class SecurityState extends Equatable {
     );
   }
 
-  factory SecurityState.initial(bool shouldShowRecoveryWordsFeature) {
+  factory SecurityState.initial(bool featureFlagExportRecoveryPhraseEnabled) {
     return SecurityState(
-        pageState: PageState.initial,
-        currentChoice: CurrentChoice.initial,
-        hasNotification: false,
-        shouldShowExportRecoveryPhrase: shouldShowRecoveryWordsFeature);
+      pageState: PageState.initial,
+      currentChoice: CurrentChoice.initial,
+      hasNotification: false,
+      shouldShowExportRecoveryPhrase: featureFlagExportRecoveryPhraseEnabled,
+    );
   }
 }
