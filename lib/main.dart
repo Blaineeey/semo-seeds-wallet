@@ -1,51 +1,56 @@
-import 'dart:async';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:seeds/datasource/local/member_model_cache_item.dart';
-import 'package:seeds/datasource/local/models/vote_model_adapter.dart';
-import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_push_notification_service.dart';
-import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
-import 'package:seeds/datasource/remote/model/token_model.dart';
-import 'package:seeds/domain-shared/bloc_observer.dart';
-import 'package:seeds/seeds_app.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_toolbox/flutter_toolbox.dart';
+import 'package:seeds/screens/app/app.dart';
+import 'package:seeds/screens/onboarding/onboarding.dart';
+import 'package:seeds/services/auth_service.dart';
 
-Future<void> main() async {
-  // Zone to handle asynchronous errors (Dart).
-  // for details: https://docs.flutter.dev/testing/errors
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load();
-    await Firebase.initializeApp();
-    await settingsStorage.initialise();
-    await PushNotificationService().initialise();
-    await remoteConfigurations.initialise();
-    await TokenModel.installModels(['localscale','lightwallet','experimental'], [TokenModel.seedsEcosysUsecase]);
-    await Hive.initFlutter();
-    Hive.registerAdapter(MemberModelCacheItemAdapter());
-    Hive.registerAdapter(VoteModelAdapter());
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+import 'constants/custom_colors.dart';
+import 'generated/r.dart';
 
-    // Called whenever the Flutter framework catches an error.
-    FlutterError.onError = (details) async {
-      FlutterError.presentError(details);
-      // TODO(Raul): use FirebaseCrashlytics or whatever
-      //await FirebaseCrashlytics.instance.recordFlutterError(details);
-    };
+main(List<String> args) async {
+  await DotEnv().load('.env');
 
-    if (kDebugMode) {
-      /// Bloc logs only in debug (for better performance in release)
-      BlocOverrides.runZoned(() => runApp(const SeedsApp()), blocObserver: DebugBlocObserver());
-    } else {
-      runApp(const SeedsApp());
-    }
-  }, (error, stackTrace) async {
-    //await FirebaseCrashlytics.instance.recordError(error, stack);
-  });
+  runApp(SeedsApp());
+}
+
+class SeedsApp extends StatefulWidget {
+  @override
+  _SeedsAppState createState() => _SeedsAppState();
+}
+
+class _SeedsAppState extends State<SeedsApp> {
+  final AuthService authService = AuthService();
+
+  @override
+  Widget build(BuildContext context) {
+    return ToolboxApp(
+      noItemsFoundWidget: Padding(
+        padding: const EdgeInsets.all(32),
+        child: SvgPicture.asset(R.noItemFound),
+      ),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: primary,
+          tabBarTheme: TabBarTheme(
+            indicator: TabRoundedLineIndicator(
+              context,
+              indicatorColor: primary,
+            ),
+          ),
+        ),
+        home: FutureBuilder(
+          future: authService.initializedAccount(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              return App(snapshot.data);
+            }
+            return Onboarding();
+          },
+        ),
+      ),
+    );
+  }
 }
