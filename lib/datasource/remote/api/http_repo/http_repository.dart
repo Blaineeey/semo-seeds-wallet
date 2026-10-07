@@ -15,23 +15,23 @@ abstract class HttpRepository {
   String fxApiKey = "thesecretapikey989";
   Map<String, String> headers = {'Content-type': 'application/json'};
 
-  FutureOr<Result<T>> mapHttpResponse<T>(http.Response response, Function modelMapper) {
+  FutureOr<Result<T>> mapHttpResponse<T>(http.Response response, Function modelMapper, {String? about}) {
     switch (response.statusCode) {
       case 200:
         {
-          print('Model Class: $modelMapper');
+          print('Model Class: $modelMapper ${about ?? ""}');
           final body = response.parseJson();
-          return ValueResult(modelMapper(body));
+          return ValueResult(modelMapper(body) as T);
         }
       default:
-        print("network error: ${response.reasonPhrase}");
+        print('network error: ${response.reasonPhrase} ${about ?? ""}');
         return ErrorResult(NetworkError(response.statusCode));
     }
   }
 
-  ErrorResult mapHttpError(dynamic error) {
-    print('mapHttpError: $error');
-    return ErrorResult(error);
+  ErrorResult mapHttpError(dynamic error, {String? about}) {
+    print('mapHttpError: $error ${about ?? ""}');
+    return ErrorResult(error as Object);
   }
 
   String createRequest({

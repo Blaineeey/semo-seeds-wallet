@@ -27,6 +27,7 @@ class BiometricsService {
   }
 
   Future<bool> authenticateBiometric(BiometricType type) async {
+    //TODO(chuck): handle ios
     late AndroidAuthMessages androidAuthStrings;
     switch (type) {
       case BiometricType.fingerprint:

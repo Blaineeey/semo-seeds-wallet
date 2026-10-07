@@ -21,7 +21,7 @@ Future<void> main() async {
   // for details: https://docs.flutter.dev/testing/errors
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load();
+    await dotenv.load(fileName: '.env');
     await Firebase.initializeApp();
     await settingsStorage.initialise();
     await PushNotificationService().initialise();
@@ -41,10 +41,9 @@ Future<void> main() async {
 
     if (kDebugMode) {
       /// Bloc logs only in debug (for better performance in release)
-      BlocOverrides.runZoned(() => runApp(const SeedsApp()), blocObserver: DebugBlocObserver());
-    } else {
-      runApp(const SeedsApp());
-    }
+      Bloc.observer = DebugBlocObserver();
+    } 
+    runApp(const SeedsApp());
   }, (error, stackTrace) async {
     //await FirebaseCrashlytics.instance.recordError(error, stack);
   });

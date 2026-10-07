@@ -49,6 +49,7 @@ import 'package:seeds/screens/profile_screens/recovery_phrase/recovery_phrase_sc
 import 'package:seeds/screens/profile_screens/security/security_screen.dart';
 import 'package:seeds/screens/profile_screens/set_currency/set_currency_screen.dart';
 import 'package:seeds/screens/profile_screens/support/support_screen.dart';
+import 'package:seeds/screens/transfer/receive/receive_detail_qr_code/interactor/viewmodels/receive_details.dart';
 import 'package:seeds/screens/transfer/receive/receive_detail_qr_code/receive_detail_qr_code.dart';
 import 'package:seeds/screens/transfer/receive/receive_enter_data/receive_seeds_screen.dart';
 import 'package:seeds/screens/transfer/receive/receive_selection/receive_screen.dart';
@@ -120,7 +121,8 @@ class Routes {
 
 class NavigationService {
   final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
-  final _appRoutes = {
+  
+  final Map<String, Widget Function(Object?)> _appRoutes = {
     Routes.onboarding: (_) => const OnboardingScreen(),
     Routes.splash: (_) => const SplashScreen(),
     Routes.login: (_) => const LoginScreen(),
@@ -154,7 +156,7 @@ class NavigationService {
     Routes.joinRegion: (_) => const JoinRegionScreen(),
     Routes.receiveScreen: (_) => const ReceiveScreen(), // <- This route is not used
     Routes.receiveEnterData: (_) => const ReceiveEnterDataScreen(),
-    Routes.receiveQR: (args) => ReceiveDetailQrCodeScreen(args),
+    Routes.receiveQR: (args) => ReceiveDetailQrCodeScreen(args! as ReceiveDetails),
     Routes.selectGuardians: (_) => const SelectGuardiansScreen(),
     Routes.inviteGuardians: (args) => const InviteGuardians(),
     Routes.inviteGuardiansSent: (_) => const InviteGuardiansSentScreen(),

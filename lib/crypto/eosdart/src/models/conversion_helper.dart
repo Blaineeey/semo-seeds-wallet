@@ -10,14 +10,14 @@ mixin ConversionHelper {
   static int? getIntFromJson(dynamic value) {
     switch (value.runtimeType) {
       case String:
-        return int.parse(value);
+        return int.parse(value as String);
       default:
         return value as int?;
     }
   }
 
   static Uint8List base64ToBuffer(String base64String) {
-    return utf8.encode(base64String);
+    return utf8.encode(base64String) as Uint8List;
   }
 
   static String bufferToBase64(Uint8List buffer) {

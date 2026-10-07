@@ -14,13 +14,14 @@ const String _featureFlagClaimUnplantedSeeds = 'feature_flag_unplant_claim_seeds
 const String _featureFlagP2P = 'feature_flag_p2p';
 const String _featureFlagRegions = 'feature_flag_regions_enabled';
 const String _featureFlagTokenMasterList = 'feature_flag_token_master_list_enabled';
+const String _featureFlagNonMemberUse = 'feature_flag_non_member_use_enabled';
 
 // MAINNET CONFIG
 const String _eosEndpoints = '[ { "url": "https://mainnet.telos.net", "isDefault": true } ]';
 const String _hyphaEndPointUrl = 'https://node.hypha.earth';
-const String _defaultEndPointUrl = "https://api.telosfoundation.io";
+const String _defaultEndPointUrl = "https://mainnet.telos.net";
 // we need a separate endpoint for v2/history as most nodes don't support v2
-const String _defaultV2EndpointUrl = "https://api.telosfoundation.io";
+const String _defaultV2EndpointUrl = "https://mainnet.telos.net";
 
 // DO NOT PUSH TO PROD WITH THIS SET TO TRUE. This is used for testing purposes only
 const bool testnetMode = false;
@@ -37,7 +38,7 @@ const String _testnetDefaultV2EndpointUrl = "https://api-test.telosfoundation.io
 const String _unitTestEosEndpoints = '[ { "url": "https://node.hypha.earth", "isDefault": true } ]';
 const String _unitTestHyphaEndPointUrl = 'https://node.hypha.earth';
 const String _unitTestDefaultEndPointUrl = "https://node.hypha.earth";
-const String _unitTestDefaultV2EndpointUrl = "https://api.telosfoundation.io";
+const String _unitTestDefaultV2EndpointUrl = "https://mainnet.telos.net";
 // END - UNIT TEST CONFIG
 
 class _FirebaseRemoteConfigService {
@@ -56,7 +57,8 @@ class _FirebaseRemoteConfigService {
     _featureFlagClaimUnplantedSeeds: false,
     _featureFlagP2P: false,
     _featureFlagRegions: false,
-    _featureFlagTokenMasterList: false,
+    _featureFlagTokenMasterList: true,
+    _featureFlagNonMemberUse: false,
     _activeEOSEndpointKey: _eosEndpoints,
     _hyphaEndPointKey: _hyphaEndPointUrl,
     _defaultEndPointUrlKey: _defaultEndPointUrl,
@@ -83,7 +85,7 @@ class _FirebaseRemoteConfigService {
     /// Maximum age of a cached config before it is considered stale. we set to 60 secs since we store important data.
     await _remoteConfig.setConfigSettings(RemoteConfigSettings(
       minimumFetchInterval: const Duration(seconds: 60),
-      fetchTimeout: const Duration(seconds: 60),
+      fetchTimeout: const Duration(seconds: 5),
     ));
 
     refresh();
@@ -96,6 +98,7 @@ class _FirebaseRemoteConfigService {
   bool get featureFlagP2PEnabled => _remoteConfig.getBool(_featureFlagP2P);
   bool get featureFlagRegionsEnabled => _remoteConfig.getBool(_featureFlagRegions);
   bool get featureFlagTokenMasterListEnabled => _remoteConfig.getBool(_featureFlagTokenMasterList);
+  bool get featureFlagNonMeberUseEnabledEnabled => _remoteConfig.getBool(_featureFlagNonMemberUse);
 
   String get hyphaEndPoint => testnetMode
       ? unitTestMode
@@ -128,7 +131,8 @@ class _FirebaseRemoteConfigService {
 List<FirebaseEosServer> parseEosServers(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-  return parsed.map<FirebaseEosServer>((json) => FirebaseEosServer.fromJson(json)).toList();
+  return List<FirebaseEosServer>.of(parsed.map<FirebaseEosServer>((json) => FirebaseEosServer.fromJson(json as Map<String, dynamic>))
+     as Iterable<FirebaseEosServer>);
 }
 
 /// Singleton

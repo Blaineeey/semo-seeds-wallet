@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
@@ -71,7 +73,7 @@ class DeeplinkBloc extends Bloc<DeeplinkEvent, DeeplinkState> {
         add(HandleIncomingSigningRequest(uri));
       }
     }, onError: (err) {
-      print("ESR Error: $err");
+      print("ESR Error: ${err}");
     });
   }
 

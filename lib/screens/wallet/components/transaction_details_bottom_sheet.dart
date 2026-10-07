@@ -10,7 +10,7 @@ import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/screens/wallet/interactor/viewmodels/member_bloc.dart';
 import 'package:seeds/utils/string_extension.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TransactionDetailsBottomSheet extends StatelessWidget {
   final TransactionModel transaction;
@@ -90,7 +90,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
                             else
                               Text('-', style: Theme.of(context).textTheme.subtitle1Red2),
                             const SizedBox(width: 4),
-                            Text(transaction.quantity.seedsFormatted, style: Theme.of(context).textTheme.headlineSmall)
+                            Text(transaction.quantity.seedsFormatted, style: Theme.of(context).textTheme.headline5)
                           ],
                         ),
                         Padding(

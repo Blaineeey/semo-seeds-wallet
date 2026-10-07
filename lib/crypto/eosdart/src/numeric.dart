@@ -88,7 +88,7 @@ Uint8List signedDecimalToBinary(int size, String s) {
 
 /// Convert `bignum` to an unsigned decimal number
 /// @param minDigits 0-pad result to this many digits
-String binaryToDecimal(Uint8List bignum, {minDigits = 1}) {
+String binaryToDecimal(Uint8List bignum, {int minDigits = 1}) {
   var result = List.filled(minDigits, '0'.codeUnitAt(0), growable: true);
   for (var i = bignum.length - 1; i >= 0; --i) {
     var carry = bignum[i];
@@ -109,7 +109,7 @@ String binaryToDecimal(Uint8List bignum, {minDigits = 1}) {
 /// @param minDigits 0-pad result to this many digits
 String signedBinaryToDecimal(Uint8List bignum, {int minDigits = 1}) {
   if (isNegative(bignum)) {
-    var x = Uint8List.fromList(bignum.getRange(0, bignum.length).toList());
+    var x = bignum.getRange(0, 0) as Uint8List;
     negate(x);
     return '-' + binaryToDecimal(x, minDigits: minDigits);
   }
@@ -245,7 +245,7 @@ IKey stringToKey(String s, KeyType type, int size, String suffix) {
   var whole = base58ToBinary(size + 4, s);
 
   IKey result;
-  List<int> digest;
+  List digest;
   if (suffix == '') {
     result = IKey(type, whole.sublist(1,size));
     digest = digestSha256X2(whole.sublist(0,size));
@@ -301,7 +301,7 @@ IKey stringToPublicKey(String s) {
 }
 
 /// Convert `key` to string (base-58) form
-publicKeyToString(IKey key) {
+String publicKeyToString(IKey key) {
   if (key.type == KeyType.k1 && key.data.length == publicKeyDataSize) {
     return keyToString(key, 'K1', 'PUB_K1_');
   } else if (key.type == KeyType.r1 && key.data.length == publicKeyDataSize) {

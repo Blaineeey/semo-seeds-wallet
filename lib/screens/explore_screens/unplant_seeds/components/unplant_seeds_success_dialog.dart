@@ -36,27 +36,27 @@ class UnplantSeedsSuccessDialog extends StatelessWidget {
             children: [
               Text(
                 unplantedInputAmount.amountString(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headline4,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12, left: 4),
-                child: Text(unplantedInputAmount.symbol, style: Theme.of(context).textTheme.titleSmall),
+                child: Text(unplantedInputAmount.symbol, style: Theme.of(context).textTheme.subtitle2),
               ),
             ],
           ),
           const SizedBox(height: 4.0),
           Text(
             unplantedInputAmountFiat.asFormattedString(),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.subtitle2,
           ),
           const SizedBox(height: 20.0),
           Text(context.loc.plantSeedsUnplantSuccessMessage,
-              textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
+              textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
           const SizedBox(height: 20.0),
           Text(
             context.loc.plantSeedsUnplantExplanationMessage,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme.of(context).textTheme.button,
           ),
         ],
       ),

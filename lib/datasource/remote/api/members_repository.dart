@@ -19,9 +19,9 @@ class MembersRepository extends HttpRepository {
 
     return http
         .post(membersURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (dynamic body) {
-              final List<dynamic> allAccounts = body['rows'].toList();
-              return allAccounts.map((item) => ProfileModel.fromJson(item)).toList();
+        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (Map<String, dynamic> body) {
+              final List<dynamic> allAccounts = body['rows'] as List;
+              return allAccounts.map((item) => ProfileModel.fromJson(item as Map<String, dynamic>)).toList();
             }))
         .catchError((error) => mapHttpError(error));
   }
@@ -46,9 +46,9 @@ class MembersRepository extends HttpRepository {
 
     return http
         .post(membersURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (dynamic body) {
-              final List<dynamic> allAccounts = body['rows'].toList();
-              return allAccounts.map((item) => ProfileModel.fromJson(item)).toList();
+        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (Map<String, dynamic> body) {
+              final List<dynamic> allAccounts = body['rows'] as List;
+              return allAccounts.map((item) => ProfileModel.fromJson(item as Map<String, dynamic>)).toList();
             }))
         .catchError((error) => mapHttpError(error));
   }
@@ -57,6 +57,7 @@ class MembersRepository extends HttpRepository {
     print("[http] getFullNameSearchMembers $filter");
 
     final mongoUrl = Uri.parse("https://mongo-api.hypha.earth/find");
+    final aboutMessage = 'getFullNameSearchMembers $filter from $mongoUrl';
 
     final params = '''
     {
@@ -79,11 +80,12 @@ class MembersRepository extends HttpRepository {
 
     return http
         .post(mongoUrl, headers: headers, body: params)
-        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (dynamic body) {
-              final List<dynamic> allAccounts = body['items'].toList();
-              return allAccounts.map((item) => ProfileModel.fromJson(item)).toList();
-            }))
-        .catchError((error) => mapHttpError(error));
+        .then((http.Response response) => mapHttpResponse<List<ProfileModel>>(response, (Map<String, dynamic> body) {
+              final List<dynamic> allAccounts = body['items'] as List;
+              return allAccounts.map((item) => ProfileModel.fromJson(item as Map<String, dynamic>)).toList();
+            },
+            about: aboutMessage))
+        .catchError((error) => mapHttpError(error, about: aboutMessage));
   }
 
   // for now this returns 0 or 1 results
@@ -106,13 +108,14 @@ class MembersRepository extends HttpRepository {
         .catchError((error) => mapHttpError(error));
   }
 
-  /// accountName must be greater than 2 or we return empty list of users.
+  /// accountName must be greater than 1 or we return empty list of users.
   /// This will return one account if found or null if not found.
   Future<Result<ProfileModel?>> getMemberByAccountName(String accountName) {
     print('[http] getMemberByAccountName $accountName ');
-    assert(accountName.length > 2);
+    assert(accountName.length >= 2);
 
     final membersURL = Uri.parse('$baseURL/v1/chain/get_table_rows');
+    final String aboutMessage = 'getMemberByAccountName $accountName from $membersURL';
 
     final request = createRequest(
         code: SeedsCode.accountAccounts,
@@ -123,14 +126,15 @@ class MembersRepository extends HttpRepository {
 
     return http
         .post(membersURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<ProfileModel?>(response, (dynamic body) {
-              final List<dynamic> allAccounts = body['rows'].toList();
+        .then((http.Response response) => mapHttpResponse<ProfileModel?>(response, (Map<String, dynamic> body) {
+              final List<dynamic> allAccounts = body['rows'] as List;
               if (allAccounts.isNotEmpty) {
-                return ProfileModel.fromJson(allAccounts[0]);
+                return ProfileModel.fromJson(allAccounts[0] as Map<String, dynamic>);
               } else {
                 return null;
               }
-            }))
-        .catchError((error) => mapHttpError(error));
+            },
+            about: aboutMessage))
+        .catchError((error) => mapHttpError(error, about: aboutMessage));
   }
 }

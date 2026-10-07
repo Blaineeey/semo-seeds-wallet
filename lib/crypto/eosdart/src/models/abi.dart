@@ -53,7 +53,7 @@ class AbiResp with ConversionHelper {
   /// Decodes an abi as Uint8List into json. */
   static Abi? _rawAbiToJson(Uint8List rawAbi) {
     Map<String?, Type> abiTypes = ser.getTypesFromAbi(
-        ser.createInitialTypes(), Abi.fromJson(json.decode(abiJson)));
+        ser.createInitialTypes(), Abi.fromJson(json.decode(abiJson) as Map<String, dynamic>));
     try {
       var buffer = ser.SerialBuffer(rawAbi);
       var str = buffer.getString();
@@ -63,7 +63,7 @@ class AbiResp with ConversionHelper {
       buffer.restartRead();
       var t = abiTypes['abi_def']!;
       var b = t.deserialize!(t, buffer);
-      return Abi.fromJson(json.decode(json.encode(b)));
+      return Abi.fromJson(json.decode(json.encode(b)) as Map<String, dynamic>);
     } catch (e) {
       print(e);
       return null;

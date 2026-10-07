@@ -27,11 +27,11 @@ class ErrorDialog extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.headline6,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 20.0),
-        Text(details, style: Theme.of(context).textTheme.titleSmall),
+        Text(details, style: Theme.of(context).textTheme.subtitle2),
       ],
     );
   }

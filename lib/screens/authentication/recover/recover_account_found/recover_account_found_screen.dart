@@ -19,7 +19,7 @@ import 'package:seeds/screens/authentication/recover/recover_account_found/compo
 import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_bloc.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_page_command.dart';
 import 'package:seeds/utils/build_context_extension.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class RecoverAccountFoundScreen extends StatelessWidget {
   const RecoverAccountFoundScreen({super.key});
@@ -27,7 +27,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: cast_nullable_to_non_nullable
-    final String userAccount = ModalRoute.of(context)!.settings.arguments! as String;
+    final String userAccount = ModalRoute.of(context)!.settings.arguments as String;
     return BlocProvider(
       create: (_) => RecoverAccountFoundBloc(userAccount)..add(const FetchInitialData()),
       child: BlocConsumer<RecoverAccountFoundBloc, RecoverAccountFoundState>(
@@ -206,33 +206,33 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(state.currentRemainingTime?.hoursFormatted ?? '00',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
-                                  child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+                                  child: Text(':', style: Theme.of(context).textTheme.headline4),
                                 )
                               ],
                             ),
                             Row(
                               children: [
                                 Text(state.currentRemainingTime?.minFormatted ?? '00',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
-                                  child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+                                  child: Text(':', style: Theme.of(context).textTheme.headline4),
                                 )
                               ],
                             ),
                             Row(
                               children: [
                                 Text('${state.currentRemainingTime?.secFormatted ?? '00'} ',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                               ],
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 14),
                               child: Text(context.loc.recoverAccountFoundHoursLeft,
-                                  style: Theme.of(context).textTheme.titleSmall),
+                                  style: Theme.of(context).textTheme.subtitle2),
                             )
                           ],
                         ),

@@ -8,7 +8,6 @@ import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 
 abstract class EosRepository {
   late final String cpuPrivateKey = dotenv.env['PAYCPU_SEEDS_KEY'] ?? '';
-
   late final String onboardingPrivateKey = dotenv.env['ONBOARDING_SEEDS_KEY'] ?? '';
 
   String onboardingAccountName = 'join.seeds';
@@ -29,11 +28,13 @@ abstract class EosRepository {
     // "referendum", // referendum delegation not working on the contract side at the moment
   ];
 
+  //TODO(CH): generalize this to (1) don't fail on non-SEEDS-members, (2) support
+  //  alternative cpu payers
   Transaction buildFreeTransaction(List<Action> actions, String? accountName) {
-    if (testnetMode) {
+    if (testnetMode|| !settingsStorage.isSeedsMember ) {
       return Transaction()..actions = actions;
     }
-
+    
     final freeAuth = <Authorization>[
       Authorization()
         ..actor = SeedsCode.accountHarvest.value
@@ -65,18 +66,18 @@ abstract class EosRepository {
     print('mapEosResponse - transaction id: ${response['transaction_id']}');
     if (response['transaction_id'] != null) {
       print('Model Class: $modelMapper');
-      final map = Map<String, dynamic>.from(response);
-      return ValueResult(modelMapper(map));
+      final map = Map<String, dynamic>.from(response as Map<String, dynamic>);
+      return ValueResult<T>(modelMapper(map) as T);
     } else {
       print('ErrorResult: $response');
-      return ErrorResult(EosError(response['processed']['error_code']));
+      return ErrorResult(EosError(response['processed']['error_code'] as int?));
     }
   }
 
   ErrorResult mapEosError(dynamic error) {
     final regex = RegExp(r'^.*Internal Service Error.*assertion failure with message: ([^\"]*)');
     print('mapEosError: $error');
-    final match = regex.firstMatch(error);
+    final match = regex.firstMatch(error as String);
     if (match != null && match.groupCount == 1) {
       return ErrorResult("Transaction error:\n${match.group(1)!}");
     }

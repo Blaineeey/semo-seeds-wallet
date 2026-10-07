@@ -4,7 +4,8 @@ import 'package:seeds/datasource/remote/api/http_repo/http_repository.dart';
 import 'package:seeds/datasource/remote/model/stat_model.dart';
 
 class StatRepository extends HttpRepository {
-  Future<Result<StatModel>> getTokenStat({required String tokenContract, required String symbol}) {
+  Future<Result<StatModel>> getTokenStat(
+      {required String tokenContract, required String symbol}) {
     print('[http] get getTokenStat for $symbol');
 
     final String request = '''
@@ -20,7 +21,7 @@ class StatRepository extends HttpRepository {
 
     return http
         .post(statURL, headers: headers, body: request)
-        .then((http.Response response) => mapHttpResponse<StatModel>(response, (dynamic body) {
+        .then((http.Response response) => mapHttpResponse<StatModel>(response, (Map<String, dynamic> body) {
               return StatModel.fromJson(body);
             }))
         .catchError((dynamic error) => mapHttpError(error));

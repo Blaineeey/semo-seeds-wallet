@@ -31,7 +31,7 @@ class VoteScreen extends StatelessWidget {
                               await NavigationService.of(context)
                                   .navigateTo(Routes.delegate)
                                   .then((shouldRefreshDelegates) {
-                                if (shouldRefreshDelegates != null && shouldRefreshDelegates) {
+                                if (shouldRefreshDelegates != null && shouldRefreshDelegates as bool) {
                                   BlocProvider.of<VoteBloc>(context).add(const OnRefreshCurrentDelegates());
                                 }
                               });
@@ -51,7 +51,7 @@ class VoteScreen extends StatelessWidget {
                     indicatorSize: TabBarIndicatorSize.label,
                     unselectedLabelStyle: Theme.of(context).textTheme.buttonOpacityEmphasis,
                     labelStyle: Theme.of(context).textTheme.buttonLowEmphasis,
-                    tabs: [for (final i in proposalTypes) Tab(child: FittedBox(child: Text(i.type.i18n)))],
+                    tabs: [for (var i in proposalTypes) Tab(child: FittedBox(child: Text(i.type.i18n)))],
                   ),
                 ),
               ),

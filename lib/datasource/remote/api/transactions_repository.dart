@@ -11,10 +11,10 @@ class TransactionsListRepository extends HttpRepository {
 
     return http
         .get(transactionsUrl)
-        .then((http.Response response) => mapHttpResponse<List<TransactionModel>>(response, (dynamic body) {
-              final List<dynamic> transfers = body['actions'].toList();
-
-              return List<TransactionModel>.of(transfers.map((transfer) => TransactionModel.fromJson(transfer)).whereNotNull());
+        .then((http.Response response) => mapHttpResponse<List<TransactionModel>>(response, (Map<String, dynamic> body) {
+              final List<dynamic> transfers = body['actions'] as List;
+              return List<TransactionModel>.of(transfers.map((transfer) => 
+                TransactionModel.fromJson(transfer as Map<String, dynamic>)).whereNotNull());
             }))
         .catchError((dynamic error) => mapHttpError(error));
   }

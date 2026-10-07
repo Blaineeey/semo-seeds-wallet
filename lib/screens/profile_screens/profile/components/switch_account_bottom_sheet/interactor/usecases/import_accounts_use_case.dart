@@ -10,14 +10,14 @@ class ImportAccountsUseCase {
 
   Future<List<Result>> run(List<String> publicKeys) async {
     final List<Future<Result>> getKeyAccountsFutures =
-        publicKeys.map((i) => _keyAccountsRepository.getKeyAccounts(i)).toList();
+        publicKeys.map((i) => _keyAccountsRepository.getAccountsByKey(i)).toList();
 
     final List<Result> keyAccountsResponse = await Future.wait(getKeyAccountsFutures);
     if (keyAccountsResponse.singleWhereOrNull((i) => i.isError) != null) {
       return keyAccountsResponse;
     } else {
       final List<List<String>> keyAccountsValues =
-          keyAccountsResponse.map<List<String>>((i) => (i.asValue!.value as List).cast<String>()).toList();
+          keyAccountsResponse.map<List<String>>((i) => i.asValue!.value as List<String>).toList();
       final List<String> keyAccounts = keyAccountsValues.expand((i) => i).toList();
       final List<String> savedAccounts = settingsStorage.accountsList;
       // Remove duplicated accounts

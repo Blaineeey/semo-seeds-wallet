@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:seeds/components/scanner/components/qr_code_view.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:seeds/components/scanner/interactor/viewmodels/scanner_bloc.dart';
-import 'package:seeds/utils/string_extension.dart';
 
 class ScannerView extends StatefulWidget {
   final ScannerBloc _scannerBloc = ScannerBloc();
@@ -19,52 +17,44 @@ class ScannerView extends StatefulWidget {
 
 class _ScannerViewState extends State<ScannerView> {
   // This key is necessary for iOS in order to get the render context
-  final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
-  late QRViewController _controller;
+  //final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
+   @override
   Widget build(BuildContext context) {
+    final mediaSize = MediaQuery.of(context).size;
     return BlocProvider(
       create: (_) => widget._scannerBloc,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          BlocBuilder<ScannerBloc, ScannerState>(
-            builder: (_, state) {
-              return QRCodeView(
-                qrKey: _qrKey,
-                onQRViewCreated: (controller) async {
-                  _controller = controller;
-                  _controller.scannedDataStream.listen((event) {
-                    if (state.gotValidQR || event.code.isNullOrEmpty) {
-                      return;
-                    } else {
-                      widget._scannerBloc.add(const ShowLoading());
-                      widget.onCodeScanned(event.code!);
-                    }
-                  });
-                },
-              );
-            },
-          ),
-          BlocBuilder<ScannerBloc, ScannerState>(
-            builder: (_, state) {
-              switch (state.scanStatus) {
-                case ScanStatus.processing:
-                  return const Center(child: CircularProgressIndicator());
-                default:
-                  return const SizedBox.shrink();
-              }
-            },
-          ),
-        ],
-      ),
+      child: Container(
+        constraints: BoxConstraints.expand(height:mediaSize.width*0.9, width:mediaSize.width*0.9),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            BlocBuilder<ScannerBloc, ScannerState>(
+              builder: (_, state) {
+                  return MobileScanner(
+                    onDetect: (capture) {
+                      if (state.gotValidQR ) {
+                          return;
+                      } else {
+                        widget._scannerBloc.add(const ShowLoading());
+                        widget.onCodeScanned(capture.barcodes.first.rawValue!);
+                      }
+                    });
+                  },
+              ),
+            BlocBuilder<ScannerBloc, ScannerState>(
+              builder: (_, state) {
+                switch (state.scanStatus) {
+                  case ScanStatus.processing:
+                    return const Center(child: CircularProgressIndicator());
+                  default:
+                    return const SizedBox.shrink();
+                }
+              },
+            ),
+          ],
+        ),
+      )
     );
   }
 }
