@@ -7,7 +7,7 @@ import 'package:seeds/i18n/app/app.i18.dart';
 import 'package:seeds/screens/app/interactor/viewmodels/app_bloc.dart';
 
 class AccountUnderRecoveryScreen extends StatelessWidget {
-  const AccountUnderRecoveryScreen({super.key});
+  const AccountUnderRecoveryScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class AccountUnderRecoveryScreen extends StatelessWidget {
             Text(
               'Recovery Mode Initiated'.i18n,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 30),
             Padding(

@@ -24,9 +24,11 @@ class Snack extends SnackBar {
     return Snack._(title, scaffoldMessengerState, color: color, duration: duration);
   }
 
-  Snack._(this.title, this.scaffoldMessengerState, {required Color color, required super.duration})
+  Snack._(this.title, this.scaffoldMessengerState, {Key? key, required Color color, required Duration duration})
       : super(
+          key: key,
           backgroundColor: color,
+          duration: duration,
           content: Row(
             children: [
               Expanded(child: Text(title, textAlign: TextAlign.center)),

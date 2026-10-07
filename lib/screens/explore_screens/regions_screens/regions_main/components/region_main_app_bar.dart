@@ -8,22 +8,22 @@ import 'package:seeds/screens/explore_screens/regions_screens/regions_main/inter
 import 'package:seeds/utils/build_context_extension.dart';
 
 class RegionMainAppBar extends StatelessWidget {
-  const RegionMainAppBar({super.key});
+  const RegionMainAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegionBloc, RegionState>(
       builder: (context, state) {
         return SliverAppBar(
-          title: Text(state.region?.title ?? "", overflow: TextOverflow.ellipsis),
           actions: [
             if (!state.isBrowseView)
               IconButton(
                 icon: const Icon(Icons.more_horiz),
-                onPressed: () => RegionBottomSheet(state.userType!).show(context),
+                onPressed: () => const RegionBottomSheet().show(context),
               )
           ],
           expandedHeight: 220.0,
+          pinned: true,
           flexibleSpace: FlexibleSpaceBar(
               background: Stack(
             fit: StackFit.expand,
@@ -64,31 +64,21 @@ class RegionMainAppBar extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 10,
-                bottom: 10,
+                left: 22,
+                bottom: 30,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width - 48,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              state.region?.locationJson ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.headline7LowEmphasis,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Text(
+                      state.region?.description ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline7LowEmphasis,
                     ),
                     Text(
                       context.loc.regionMainMembersTitle(
                         state.region?.membersCount ?? 0,
-                        '  ${state.region?.readableMembersCount ?? 0}',
+                        '${state.region?.readableMembersCount ?? 0}',
                       ),
                       style: Theme.of(context).textTheme.buttonWhiteL,
                     ),
@@ -113,14 +103,14 @@ class RegionMainAppBar extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 30),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: Colors.transparent,
                         border: Border.all(color: AppColors.green3),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       child: Center(
                           child: Text(
                         context.loc.regionMainJoinTitle,
-                        style: Theme.of(context).textTheme.subtitle2LowEmphasis,
+                        style: Theme.of(context).textTheme.subtitle2Green3LowEmphasis,
                       )),
                     ),
                   ),

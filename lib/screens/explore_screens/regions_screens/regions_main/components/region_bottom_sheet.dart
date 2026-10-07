@@ -6,18 +6,15 @@ import 'package:seeds/screens/explore_screens/regions_screens/regions_main/inter
 import 'package:seeds/utils/build_context_extension.dart';
 
 class RegionBottomSheet extends StatelessWidget {
-  final TypeOfUsers userType;
-
-  const RegionBottomSheet(this.userType, {super.key});
+  const RegionBottomSheet({Key? key}) : super(key: key);
 
   void show(BuildContext context) {
     showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
-      ),
-      context: context,
-      builder: (_) => BlocProvider.value(value: BlocProvider.of<RegionBloc>(context), child: this),
-    );
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+        ),
+        context: context,
+        builder: (_) => BlocProvider.value(value: BlocProvider.of<RegionBloc>(context), child: this));
   }
 
   @override
@@ -35,53 +32,31 @@ class RegionBottomSheet extends StatelessWidget {
               child: const DividerJungle(thickness: 4, height: 4),
             ),
           ),
-          Builder(
-            builder: (context) {
-              switch (userType) {
-                case TypeOfUsers.admin:
-                  return Column(
-                    children: [
-                      ListTile(
-                        onTap: () => BlocProvider.of<RegionBloc>(context).add(const OnEditRegionImageButtonPressed()),
-                        leading: const Icon(Icons.add_photo_alternate_outlined),
-                        title: const Text("Edit Region Image"),
-                      ),
-                      ListTile(
-                        onTap: () =>
-                            BlocProvider.of<RegionBloc>(context).add(const OnEditRegionDescriptionButtonPressed()),
-                        leading: const Icon(Icons.edit),
-                        title: const Text("Edit Description"),
-                      ),
-                    ],
-                  );
-                case TypeOfUsers.member:
-                  return Column(
-                    children: [
-                      ListTile(
-                        onTap: () => BlocProvider.of<RegionBloc>(context).add(const OnShareRegionPressed()),
-                        leading: const Icon(Icons.share),
-                        title: const Text('Share Region'),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          GenericRegionDialog(
-                                  title: context.loc.leaveRegionConfirmDialogTitle,
-                                  description: context.loc.leaveRegionConfirmDialogDescription)
-                              .show(context)
-                              .then((isConfirmed) {
-                            if (isConfirmed ?? false) {
-                              Navigator.of(context).pop();
-                              BlocProvider.of<RegionBloc>(context).add(const OnLeaveRegionButtonPressed());
-                            }
-                          });
-                        },
-                        leading: const Icon(Icons.logout),
-                        title: Text(context.loc.regionBottomSheetLeaveRegionTitle),
-                      ),
-                    ],
-                  );
-              }
+          ListTile(
+            onTap: () => BlocProvider.of<RegionBloc>(context).add(const OnEditRegionImageButtonPressed()),
+            leading: const Icon(Icons.add_photo_alternate_outlined),
+            title: const Text("Edit Region Image"),
+          ),
+          ListTile(
+            onTap: () => BlocProvider.of<RegionBloc>(context).add(const OnEditRegionDescriptionButtonPressed()),
+            leading: const Icon(Icons.edit),
+            title: const Text("Edit Description"),
+          ),
+          ListTile(
+            onTap: () {
+              GenericRegionDialog(
+                      title: context.loc.leaveRegionConfirmDialogTitle,
+                      description: context.loc.leaveRegionConfirmDialogDescription)
+                  .show(context)
+                  .then((isConfirmed) {
+                if (isConfirmed ?? false) {
+                  Navigator.of(context).pop();
+                  BlocProvider.of<RegionBloc>(context).add(const OnLeaveRegionButtonPressed());
+                }
+              });
             },
+            leading: const Icon(Icons.logout),
+            title: Text(context.loc.regionBottomSheetLeaveRegionTitle),
           )
         ],
       ),

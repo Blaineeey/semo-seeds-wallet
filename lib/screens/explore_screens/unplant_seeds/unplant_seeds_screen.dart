@@ -21,7 +21,7 @@ import 'package:seeds/screens/explore_screens/unplant_seeds/interactor/viewmodel
 import 'package:seeds/screens/explore_screens/unplant_seeds/interactor/viewmodels/unplant_seeds_page_commands.dart';
 
 class UnplantSeedsScreen extends StatefulWidget {
-  const UnplantSeedsScreen({super.key});
+  const UnplantSeedsScreen({Key? key}) : super(key: key);
 
   @override
   State<UnplantSeedsScreen> createState() => _UnplantSeedsScreenState();
@@ -96,7 +96,7 @@ class _UnplantSeedsScreenState extends State<UnplantSeedsScreen> {
                           child: Column(
                             children: [
                               const SizedBox(height: 26),
-                              Text('Unplant amount', style: Theme.of(context).textTheme.titleLarge),
+                              Text('Unplant amount', style: Theme.of(context).textTheme.headline6),
                               const SizedBox(height: 16),
                               UnplantSeedsAmountEntry(
                                 controller: _amountController,

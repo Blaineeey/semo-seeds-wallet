@@ -26,7 +26,7 @@ class SendTransactionSuccessDialog extends StatelessWidget {
   final String transactionID;
 
   const SendTransactionSuccessDialog({
-    super.key,
+    Key? key,
     required this.amount,
     required this.tokenSymbol,
     this.fiatAmount,
@@ -37,7 +37,7 @@ class SendTransactionSuccessDialog extends StatelessWidget {
     this.fromName,
     required this.fromAccount,
     required this.transactionID,
-  });
+  }) : super(key: key);
 
   factory SendTransactionSuccessDialog.fromPageCommand(ShowTransferSuccess pageCommand) {
     return SendTransactionSuccessDialog(
@@ -54,10 +54,6 @@ class SendTransactionSuccessDialog extends StatelessWidget {
     );
   }
 
-  Future<void> show(BuildContext context) {
-    return showDialog<void>(context: context, barrierDismissible: false, builder: (_) => this);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -70,14 +66,14 @@ class SendTransactionSuccessDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(amount, style: Theme.of(context).textTheme.headlineMedium),
+                Text(amount, style: Theme.of(context).textTheme.headline4),
                 Padding(
                   padding: const EdgeInsets.only(top: 14, left: 4),
-                  child: Text(tokenSymbol, style: Theme.of(context).textTheme.titleSmall),
+                  child: Text(tokenSymbol, style: Theme.of(context).textTheme.subtitle2),
                 ),
               ],
             ),
-            Text(fiatAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.titleSmall),
+            Text(fiatAmount?.asFormattedString() ?? "", style: Theme.of(context).textTheme.subtitle2),
             const SizedBox(height: 30.0),
             DialogRow(
                 imageUrl: toImage,
@@ -93,23 +89,23 @@ class SendTransactionSuccessDialog extends StatelessWidget {
             const SizedBox(height: 30.0),
             Row(
               children: [
-                Text(context.loc.transferTransactionSuccessDate, style: Theme.of(context).textTheme.titleSmall),
+                Text(context.loc.transferTransactionSuccessDate, style: Theme.of(context).textTheme.subtitle2),
                 const SizedBox(width: 16),
                 Text(
                   DateFormat('dd MMMM yyyy').format(DateTime.now()),
-                  style: Theme.of(context).textTheme.titleSmall,
+                  style: Theme.of(context).textTheme.subtitle2,
                 ),
               ],
             ),
             Row(
               children: [
-                Text(context.loc.transferTransactionSuccessID, style: Theme.of(context).textTheme.titleSmall),
+                Text(context.loc.transferTransactionSuccessID, style: Theme.of(context).textTheme.subtitle2),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     transactionID,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                 ),
                 IconButton(
@@ -124,9 +120,9 @@ class SendTransactionSuccessDialog extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(context.loc.transferTransactionSuccessStatus, style: Theme.of(context).textTheme.titleSmall),
+                Text(context.loc.transferTransactionSuccessStatus, style: Theme.of(context).textTheme.subtitle2),
                 const SizedBox(width: 16),
-                DecoratedBox(
+                Container(
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)), color: AppColors.lightGreen6),
                   child: Padding(
@@ -134,7 +130,7 @@ class SendTransactionSuccessDialog extends StatelessWidget {
                     child: Text(
                       context.loc.transferTransactionSuccessSuccessful,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),
                 ),
@@ -153,7 +149,7 @@ class DialogRow extends StatelessWidget {
   final String? name;
   final String? toOrFromText;
 
-  const DialogRow({super.key, this.imageUrl, required this.account, this.name, this.toOrFromText});
+  const DialogRow({Key? key, this.imageUrl, required this.account, this.name, this.toOrFromText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -166,19 +162,19 @@ class DialogRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name ?? account, textAlign: TextAlign.start, style: Theme.of(context).textTheme.labelLarge),
+                Text(name ?? account, textAlign: TextAlign.start, style: Theme.of(context).textTheme.button),
                 const SizedBox(height: 8),
                 Text(account, style: Theme.of(context).textTheme.subtitle2LowEmphasis)
               ],
             ),
           ),
         ),
-        DecoratedBox(
+        Container(
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.elliptical(4, 4)), color: AppColors.lightGreen6),
           child: Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 4, right: 8, left: 8),
-            child: Text(toOrFromText!, style: Theme.of(context).textTheme.titleSmall),
+            child: Text(toOrFromText!, style: Theme.of(context).textTheme.subtitle2),
           ),
         ),
       ],

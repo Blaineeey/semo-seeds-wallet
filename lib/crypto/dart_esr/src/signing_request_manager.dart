@@ -470,7 +470,7 @@ class SigningRequestManager {
       case 'action':
         return [Action.fromJson(Map<String, dynamic>.from(req[1]))];
       case 'action[]':
-        print("*** actions: $req");
+        print("*** actions: ${req.toString()}");
 
         final actions = req[1] as List;
         final List<Action> resultActions = List.from(actions.map(
@@ -674,7 +674,7 @@ class ResolvedSigningRequest {
       refBlockNnum = int.parse(payload.rbn!);
       refBlockPrefix = int.parse(payload.rid!);
     } catch (e) {
-      print("Error fromPayload: $e");
+      print("Error fromPayload: ${e.toString()}");
     }
 
     return request.resolve(
@@ -738,7 +738,7 @@ class SigningRequestUtils {
       throw 'Missing abi provider';
     }
     final contract = SigningRequestUtils.getContract(contractAbi);
-    await EOSSerializeUtils.serializeActions(version, contract, action);
+    EOSSerializeUtils.serializeActions(version, contract, action);
   }
 
   static Action deserializeAction(int version, eosDart.Contract contract, String account, String? name,

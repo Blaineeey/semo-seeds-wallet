@@ -7,15 +7,16 @@ class EOSTransaction extends Equatable {
   final List<EOSAction> actions;
   bool get isValid => actions.isNotEmpty;
 
-  bool get isTransfer => actions.length == 1 && actions.first.name == transferAction;
+  bool get isTransfer => actions.length == 1 && actions.first.actionName == transferAction;
 
   const EOSTransaction(this.actions);
 
   @override
   List<Object?> get props => [actions];
 
-  factory EOSTransaction.fromESRActionsList(List<esr.Action> esrActions) {
-    final eosActions = esrActions.map((e) => EOSAction.fromESRAction(e)).where((item) => item.isValid).toList();
+  factory EOSTransaction.fromActionsList(List<esr.Action> esrActions) {
+    final List<EOSAction> eosActions =
+        esrActions.map((e) => EOSAction.fromESRAction(e)).where((item) => item.isValid).toList();
     return EOSTransaction(eosActions);
   }
 
@@ -25,9 +26,10 @@ class EOSTransaction extends Equatable {
     required Map<String, dynamic> data,
   }) =>
       EOSTransaction([
-        EOSAction()
-          ..account = account
-          ..name = actionName
-          ..data = data
+        EOSAction(
+          accountName: account,
+          actionName: actionName,
+          data: data,
+        )
       ]);
 }

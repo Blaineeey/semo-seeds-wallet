@@ -10,7 +10,7 @@ import 'package:seeds/screens/authentication/sign_up/viewmodels/page_commands.da
 import 'package:seeds/screens/authentication/sign_up/viewmodels/signup_bloc.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
