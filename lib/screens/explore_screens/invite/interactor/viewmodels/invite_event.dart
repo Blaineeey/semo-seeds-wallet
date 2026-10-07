@@ -1,8 +1,10 @@
-part of 'invite_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+/// --- EVENTS
+@immutable
 abstract class InviteEvent extends Equatable {
   const InviteEvent();
-
   @override
   List<Object?> get props => [];
 }
@@ -26,4 +28,10 @@ class OnCreateInviteButtonTapped extends InviteEvent {
   const OnCreateInviteButtonTapped();
   @override
   String toString() => 'OnCreateInviteButtonTapped';
+}
+
+class OnShareInviteLinkButtonPressed extends InviteEvent {
+  const OnShareInviteLinkButtonPressed();
+  @override
+  String toString() => 'OnShareInviteLinkButtonPressed';
 }

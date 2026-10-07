@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seeds/components/custom_dialog.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/i18n/explore_screens/plant_seeds/plant_seeds.i18n.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/interactor/viewmodels/plant_seeds_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
 class PlantSeedsSuccessDialog extends StatelessWidget {
-  const PlantSeedsSuccessDialog({super.key});
-
-  Future<void> show(BuildContext context, PlantSeedsBloc plantSeedsBloc) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => BlocProvider.value(value: plantSeedsBloc, child: this),
-    );
-  }
+  const PlantSeedsSuccessDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +20,7 @@ class PlantSeedsSuccessDialog extends StatelessWidget {
       },
       child: CustomDialog(
         icon: SvgPicture.asset('assets/images/security/success_outlined_icon.svg'),
-        singleLargeButtonTitle: context.loc.genericCloseButtonTitle,
+        singleLargeButtonTitle: 'Close'.i18n,
         onSingleLargeButtonPressed: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
@@ -36,26 +30,25 @@ class PlantSeedsSuccessDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                BlocProvider.of<PlantSeedsBloc>(context).state.tokenAmount.amountString(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                '${BlocProvider.of<PlantSeedsBloc>(context).state.quantity}',
+                style: Theme.of(context).textTheme.headline4,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12, left: 4),
-                child: Text(BlocProvider.of<PlantSeedsBloc>(context).state.tokenAmount.symbol,
-                    style: Theme.of(context).textTheme.titleSmall),
+                child: Text(currencySeedsCode, style: Theme.of(context).textTheme.subtitle2),
               ),
             ],
           ),
           const SizedBox(height: 4.0),
           Text(
-            BlocProvider.of<PlantSeedsBloc>(context).state.fiatAmount.asFormattedString(),
-            style: Theme.of(context).textTheme.titleSmall,
+            '${BlocProvider.of<PlantSeedsBloc>(context).state.fiatAmount} ${settingsStorage.selectedFiatCurrency}',
+            style: Theme.of(context).textTheme.subtitle2,
           ),
           const SizedBox(height: 30.0),
           Text(
-            context.loc.plantSeedsPlantSuccessMessage,
+            'Congratulations\nYour seeds were planted successfully!'.i18n,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme.of(context).textTheme.button,
           ),
         ],
       ),

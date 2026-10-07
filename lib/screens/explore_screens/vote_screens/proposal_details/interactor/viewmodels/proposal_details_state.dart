@@ -1,14 +1,21 @@
-part of '../viewmodels/proposal_details_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/datasource/remote/model/proposals_model.dart';
+import 'package:seeds/datasource/remote/model/voice_model.dart';
+import 'package:seeds/datasource/remote/model/vote_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposals_args_data.dart';
 
-enum VoteStatus { canVote, alreadyVoted, notCitizen, hasDelegate }
+enum VoteStatus { canVote, alreadyVoted, notCitizen }
 
+/// --- STATE
 class ProposalDetailsState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
   final String? errorMessage;
   final int currentIndex;
-  final List<ProposalViewModel> proposals;
-  final List<CategoryDelegate> currentDelegates;
+  final List<ProposalModel> proposals;
   final bool showNextButton;
   final bool isCitizen;
   final int voteAmount;
@@ -22,7 +29,6 @@ class ProposalDetailsState extends Equatable {
     this.errorMessage,
     required this.currentIndex,
     required this.proposals,
-    required this.currentDelegates,
     required this.showNextButton,
     required this.isCitizen,
     required this.voteAmount,
@@ -51,30 +57,18 @@ class ProposalDetailsState extends Equatable {
       return VoteStatus.notCitizen;
     } else if (vote!.isVoted) {
       return VoteStatus.alreadyVoted;
-    } else if (proposalDelegate.isNotEmpty) {
-      return VoteStatus.hasDelegate;
     } else {
       return VoteStatus.canVote;
     }
   }
 
   bool get shouldShowNexProposalButton {
-    final isVoted = vote?.isVoted ?? false;
     final hasMoreItems = currentIndex < proposals.length - 1;
-    final isProposalActive = proposals[currentIndex].stage == 'active' || proposals[currentIndex].status == 'active';
-    return (showNextButton || isVoted || !isCitizen || !isProposalActive) && hasMoreItems;
+    return (showNextButton || vote!.isVoted || !isCitizen || proposals[currentIndex].stage != 'active') && hasMoreItems;
   }
 
   bool get shouldShowVoteModule {
-    final isVoted = vote?.isVoted ?? false;
-    final hasDelegate = proposalDelegate.isNotEmpty;
-    final isProposalActive = proposals[currentIndex].stage == 'active' || proposals[currentIndex].status == 'active';
-    return !showNextButton && !isVoted && isCitizen && isProposalActive && !hasDelegate;
-  }
-
-  String get proposalDelegate {
-    final target = currentDelegates.singleWhereOrNull((i) => i.category == proposals[currentIndex].proposalCategory);
-    return target == null ? '' : target.delegate;
+    return !showNextButton && !vote!.isVoted && isCitizen && proposals[currentIndex].stage == 'active';
   }
 
   ProposalDetailsState copyWith({
@@ -82,7 +76,7 @@ class ProposalDetailsState extends Equatable {
     PageCommand? pageCommand,
     String? errorMessage,
     int? currentIndex,
-    List<ProposalViewModel>? proposals,
+    List<ProposalModel>? proposals,
     bool? showNextButton,
     bool? isCitizen,
     int? voteAmount,
@@ -96,7 +90,6 @@ class ProposalDetailsState extends Equatable {
       errorMessage: errorMessage,
       currentIndex: currentIndex ?? this.currentIndex,
       proposals: proposals ?? this.proposals,
-      currentDelegates: currentDelegates,
       showNextButton: showNextButton ?? this.showNextButton,
       isCitizen: isCitizen ?? this.isCitizen,
       voteAmount: voteAmount ?? this.voteAmount,
@@ -111,7 +104,6 @@ class ProposalDetailsState extends Equatable {
       pageState: PageState.initial,
       currentIndex: proposalsArgsData.index,
       proposals: proposalsArgsData.proposals,
-      currentDelegates: proposalsArgsData.currentDelegates,
       showNextButton: false,
       isCitizen: proposalsArgsData.profile.status == ProfileStatus.citizen,
       voteAmount: 0,

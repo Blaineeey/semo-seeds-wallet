@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 
 class ReceiveSelectionCard extends StatelessWidget {
@@ -8,11 +8,11 @@ class ReceiveSelectionCard extends StatelessWidget {
   final GestureTapCallback onTap;
 
   const ReceiveSelectionCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.icon,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class ReceiveSelectionCard extends StatelessWidget {
             ),
             Text(
               title,
-              style: Theme.of(context).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.button,
               textAlign: TextAlign.center,
             ),
           ],

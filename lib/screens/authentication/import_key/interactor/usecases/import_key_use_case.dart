@@ -7,12 +7,12 @@ class ImportKeyUseCase {
   final ProfileRepository _profileRepository = ProfileRepository();
 
   Future<List<Result>> run(String publicKey) async {
-    final accountsResponse = await _keyAccountsRepository.getKeyAccounts(publicKey);
+    final accountsResponse = await _keyAccountsRepository.getKeyAccountsMongo(publicKey);
     if (accountsResponse.isError) {
       final List<Result> items = [accountsResponse];
       return items;
     } else {
-      final List<String> accounts = accountsResponse.asValue!.value.cast<String>();
+      final List<String> accounts = accountsResponse.asValue!.value;
 
       final List<Future<Result>> futures =
           accounts.map((String account) => _profileRepository.getProfile(account)).toList();
