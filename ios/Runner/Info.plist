@@ -11,84 +11,36 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>SEEDS Wallet</string>
+	<string>telos</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>com.joinseeds.seedslight</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.joinseeds.seedslight</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>esr</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>esr</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FirebaseDynamicLinksCustomDomains</key>
-	<array>
-		<string>https://joinseeds.com</string>
-		<string>https://seedswallet.page.link</string>
-	</array>
-    <!-- Firebase related key -->
-    <key>FirebaseAppDelegateProxyEnabled</key>
-    <true/>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>We do not access Apple Music but one of the packages we are using is triggering this.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>We do not access the calendar but one of the packages we are using is triggering this.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Uses camera for profile pictures and QR codes.</string>
-	<key>NSContactsUsageDescription</key>
-	<string>We do not access user contacts but one of the packages we are using is triggering this.</string>
+	<string>Uses camera to take pictures for profile.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Unlock wallet with FaceID</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app needs access to location when open.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>This app needs access to location when in the background.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>We do not access motion sensors but one of the packages we are using is triggering this.</string>
+	<string>FaceID can be used for local authorization</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We do not track a user's location but one of the packages we are using is triggering this. That code does not run.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We don't ask for a user's location, this warning triggered by a library we are using. But we never ask for location.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Uses photo library to access pictures for profile.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>We do not access speech recognition but one of the packages we are using is triggering this.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -99,11 +51,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLName</key>
+		<string>eosio</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>eosio</string>
+		</array>
+		</dict>
+	</array>
 </dict>
 </plist>
