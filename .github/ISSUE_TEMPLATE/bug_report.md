@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: bug
-assignees: ''
+assignees: n13
 
 ---
 
@@ -26,9 +26,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Platform & App Version**
+**Desktop (please complete the following information):**
  - Android, iOS or Both
- - App Version (e.g. 2.5.0)
+ - App Version [e.g. 22]
 
 **Additional context**
 Add any other context about the problem here.
