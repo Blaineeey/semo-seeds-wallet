@@ -17,19 +17,19 @@ class LoadUserBalance extends ReceiveEnterDataEvent {
 class OnAmountChange extends ReceiveEnterDataEvent {
   final String amountChanged;
 
-  const OnAmountChange(this.amountChanged);
+  const OnAmountChange({required this.amountChanged});
 
   @override
   String toString() => 'OnAmountChange: { amountChange: $amountChanged }';
 }
 
-class OnMemoChanged extends ReceiveEnterDataEvent {
-  final String memo;
+class OnDescriptionChange extends ReceiveEnterDataEvent {
+  final String description;
 
-  const OnMemoChanged(this.memo);
+  const OnDescriptionChange({required this.description});
 
   @override
-  String toString() => 'OnMemoChanged: { memo: $memo }';
+  String toString() => 'OnDescriptionChange: { description: $description }';
 }
 
 class OnNextButtonTapped extends ReceiveEnterDataEvent {

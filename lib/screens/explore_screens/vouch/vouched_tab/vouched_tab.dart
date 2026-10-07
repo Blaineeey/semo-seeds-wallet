@@ -13,7 +13,7 @@ import 'package:seeds/screens/explore_screens/vouch/vouched_tab/interactor/viewm
 import 'package:seeds/screens/explore_screens/vouch/vouched_tab/interactor/viewmodels/vouched_page_commands.dart';
 
 class VouchedTab extends StatelessWidget {
-  const VouchedTab({super.key});
+  const VouchedTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,24 +49,24 @@ class VouchedTab extends StatelessWidget {
               case PageState.failure:
                 return const FullPageErrorIndicator();
               case PageState.success:
-                return Scaffold(
-                  bottomNavigationBar: SafeArea(
-                    minimum: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
-                    child: FlatButtonLong(
-                      enabled: state.canVouch,
-                      title: 'Vouch for a member',
-                      onPressed: () async {
-                        final shouldScreenReload =
-                            await NavigationService.of(context).navigateTo(Routes.vouchForAMember, state.vouched);
-                        if (shouldScreenReload != null) {
-                          // ignore: use_build_context_synchronously
-                          BlocProvider.of<VouchedBloc>(context).add(LoadUserVouchedList(shouldScreenReload));
-                        }
-                      },
+                return SafeArea(
+                  child: Scaffold(
+                    bottomSheet: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: FlatButtonLong(
+                        enabled: state.canVouch,
+                        title: 'Vouch for a member',
+                        onPressed: () async {
+                          final shouldScreenReload =
+                              await NavigationService.of(context).navigateTo(Routes.vouchForAMember, state.vouched);
+                          if (shouldScreenReload != null) {
+                            // ignore: use_build_context_synchronously
+                            BlocProvider.of<VouchedBloc>(context).add(LoadUserVouchedList(shouldScreenReload));
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                  body: SafeArea(
-                    child: Padding(
+                    body: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: state.vouched.isEmpty
                           ? Center(

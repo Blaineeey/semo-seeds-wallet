@@ -8,7 +8,6 @@ import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/images/explore/exclamation_circle.dart';
 import 'package:seeds/images/explore/invite_person.dart';
 import 'package:seeds/images/explore/plant_seeds.dart';
-import 'package:seeds/images/explore/regions.dart';
 import 'package:seeds/images/explore/seeds_symbol.dart';
 import 'package:seeds/images/explore/swap_seeds.dart';
 import 'package:seeds/images/explore/vote.dart';
@@ -19,21 +18,15 @@ import 'package:seeds/screens/explore_screens/explore/components/flag_user_info_
 import 'package:seeds/screens/explore_screens/explore/interactor/viewmodels/explore_bloc.dart';
 import 'package:seeds/screens/explore_screens/explore/interactor/viewmodels/explore_item.dart';
 import 'package:seeds/screens/explore_screens/explore/interactor/viewmodels/explore_page_command.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/join_region/components/introducing_regions_dialog.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ExploreScreen extends StatelessWidget {
-  const ExploreScreen({super.key});
+  const ExploreScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final List<ExploreItem> exploreItems = [
-      ExploreItem(
-          title: context.loc.explorerRegionsItemTitle,
-          icon: const Padding(
-              padding: EdgeInsets.only(left: 2.0), child: CustomPaint(size: Size(40, 40), painter: Regions())),
-          onTapEvent: const OnRegionsTapped()),
+    final List<ExploreItem> _exploreItems = [
       ExploreItem(
           title: context.loc.explorerInviteItemTitle,
           icon: const Padding(
@@ -46,7 +39,7 @@ class ExploreScreen extends StatelessWidget {
       ExploreItem(
           title: context.loc.explorerFlagItemTitle,
           icon: const CustomPaint(size: Size(41, 41), painter: ExclamationCircle()),
-          onTapEvent: const OnFlagUserTapped()),
+          onTapEvent: const OnFlagUserTap()),
       ExploreItem(
         title: context.loc.explorerVoteItemTitle,
         icon: const Padding(
@@ -80,18 +73,16 @@ class ExploreScreen extends StatelessWidget {
           end: Alignment.bottomLeft,
         ),
         iconUseCircleBackground: false,
-        onTapEvent: const OnBuySeedsCardTapped(),
+        onTapEvent: const OnBuySeedsCardTap(),
       ),
     ];
+    List<ExploreItem> items = _exploreItems;
     if (!remoteConfigurations.featureFlagP2PEnabled) {
-      exploreItems.removeWhere((i) => i.title == context.loc.explorerSwapItemTitle);
-    }
-    if (!remoteConfigurations.featureFlagRegionsEnabled) {
-      exploreItems.removeWhere((i) => i.title == context.loc.explorerRegionsItemTitle);
+      items = _exploreItems.where((i) => i.title != context.loc.explorerSwapItemTitle).toList();
     }
     return BlocProvider(
       create: (_) => ExploreBloc(),
-      child: BlocListener<ExploreBloc, ExploreState>(
+      child: BlocConsumer<ExploreBloc, ExploreState>(
         listenWhen: (_, current) => current.pageCommand != null,
         listener: (context, state) {
           final pageCommand = state.pageCommand;
@@ -99,7 +90,7 @@ class ExploreScreen extends StatelessWidget {
           if (pageCommand is NavigateToRoute) {
             NavigationService.of(context).navigateTo(pageCommand.route);
           } else if (pageCommand is NavigateToBuySeeds) {
-            launchUrl(Uri.parse('$urlBuySeeds${settingsStorage.accountName}'));
+            launch('$urlBuySeeds${settingsStorage.accountName}', forceSafariVC: false);
           } else if (pageCommand is ShowUserFlagInformation) {
             showDialog<void>(
               context: context,
@@ -107,39 +98,31 @@ class ExploreScreen extends StatelessWidget {
             ).whenComplete(
               () => BlocProvider.of<ExploreBloc>(context).add(const OnExploreCardTapped(Routes.flag)),
             );
-          } else if (pageCommand is ShowIntroduceRegions) {
-            const IntroducingRegionsDialog().show(context).then((isNextPressed) {
-              if (isNextPressed ?? false) {
-                BlocProvider.of<ExploreBloc>(context).add(const OnExploreCardTapped(Routes.joinRegion));
-              }
-            });
           }
         },
-        child: Builder(
-          builder: (context) {
-            return Scaffold(
-              appBar: AppBar(title: Text(context.loc.explorerAppBarTitle)),
-              body: GridView.count(
-                padding: const EdgeInsets.all(18),
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                crossAxisCount: 2,
-                children: [
-                  for (final i in exploreItems)
-                    ExploreCard(
-                      title: i.title,
-                      icon: i.icon,
-                      backgroundIconColor: i.backgroundIconColor,
-                      iconUseCircleBackground: i.iconUseCircleBackground,
-                      backgroundImage: i.backgroundImage,
-                      gradient: i.gradient,
-                      onTap: () => BlocProvider.of<ExploreBloc>(context).add(i.onTapEvent),
-                    )
-                ],
-              ),
-            );
-          },
-        ),
+        builder: (context, _) {
+          return Scaffold(
+            appBar: AppBar(title: Text(context.loc.explorerAppBarTitle)),
+            body: GridView.count(
+              padding: const EdgeInsets.all(18),
+              crossAxisSpacing: 18,
+              mainAxisSpacing: 18,
+              crossAxisCount: 2,
+              children: [
+                for (final i in items)
+                  ExploreCard(
+                    title: i.title,
+                    icon: i.icon,
+                    backgroundIconColor: i.backgroundIconColor,
+                    iconUseCircleBackground: i.iconUseCircleBackground,
+                    backgroundImage: i.backgroundImage,
+                    gradient: i.gradient,
+                    onTap: () => BlocProvider.of<ExploreBloc>(context).add(i.onTapEvent),
+                  )
+              ],
+            ),
+          );
+        },
       ),
     );
   }

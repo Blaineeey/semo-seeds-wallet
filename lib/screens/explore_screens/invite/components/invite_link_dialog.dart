@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seeds/components/custom_dialog.dart';
 import 'package:seeds/components/qr_code_generator_widget.dart';
+import 'package:seeds/i18n/explore_screens/invite/invite.i18n.dart';
 import 'package:seeds/screens/explore_screens/invite/interactor/viewmodels/invite_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:share/share.dart';
 
 class InviteLinkDialog extends StatefulWidget {
-  const InviteLinkDialog({super.key});
+  const InviteLinkDialog({Key? key}) : super(key: key);
 
   @override
   State<InviteLinkDialog> createState() => _InviteLinkDialogState();
@@ -33,8 +33,8 @@ class _InviteLinkDialogState extends State<InviteLinkDialog> {
             child: SingleChildScrollView(
               child: CustomDialog(
                 icon: SvgPicture.asset('assets/images/security/success_outlined_icon.svg'),
-                rightButtonTitle: context.loc.inviteLinkDialogRightButtonTitle,
-                leftButtonTitle: _showCloseDialogButton ? context.loc.genericCloseButtonTitle : '',
+                rightButtonTitle: 'Share'.i18n,
+                leftButtonTitle: _showCloseDialogButton ? 'Close'.i18n : '',
                 onRightButtonPressed: () async {
                   setState(() => _showCloseDialogButton = true);
                   await Share.share(state.dynamicSecretLink!);
@@ -43,22 +43,22 @@ class _InviteLinkDialogState extends State<InviteLinkDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.tokenAmount.amountString(), style: Theme.of(context).textTheme.headlineMedium),
+                      Text(state.tokenAmount.amountString(), style: Theme.of(context).textTheme.headline4),
                       Padding(
                         padding: const EdgeInsets.only(top: 12, left: 4),
-                        child: Text(state.tokenAmount.symbol, style: Theme.of(context).textTheme.titleSmall),
+                        child: Text(state.tokenAmount.symbol, style: Theme.of(context).textTheme.subtitle2),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4.0),
-                  Text(state.fiatAmount.asFormattedString(), style: Theme.of(context).textTheme.titleSmall),
+                  Text(state.fiatAmount.asFormattedString(), style: Theme.of(context).textTheme.subtitle2),
                   const SizedBox(height: 20.0),
                   QrCodeGeneratorWidget(data: state.dynamicSecretLink!, size: 254),
                   const SizedBox(height: 20.0),
                   Text(
-                    context.loc.inviteLinkDialogMessage,
+                    'Share this link with the person you want to invite!'.i18n,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: Theme.of(context).textTheme.button,
                   ),
                 ],
               ),

@@ -11,7 +11,7 @@ import 'package:seeds/screens/explore_screens/manage_invites/components/unclaime
 import 'package:seeds/screens/explore_screens/manage_invites/interactor/viewmodels/manage_invites_bloc.dart';
 
 class ManageInvitesScreen extends StatelessWidget {
-  const ManageInvitesScreen({super.key});
+  const ManageInvitesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +29,23 @@ class ManageInvitesScreen extends StatelessWidget {
         builder: (context, state) {
           return DefaultTabController(
             length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text("Manage Invites".i18n),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).pop(),
+            child: SafeArea(
+              top: false,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text("Manage Invites".i18n),
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  bottom: TabBar(
+                    tabs: [
+                      Padding(padding: const EdgeInsets.all(16.0), child: Text(state.claimedTabTitle)),
+                      Padding(padding: const EdgeInsets.all(16.0), child: Text(state.unClaimedTabTitle))
+                    ],
+                  ),
                 ),
-                bottom: TabBar(
-                  tabs: [
-                    Padding(padding: const EdgeInsets.all(16.0), child: Text(state.claimedTabTitle)),
-                    Padding(padding: const EdgeInsets.all(16.0), child: Text(state.unClaimedTabTitle))
-                  ],
-                ),
-              ),
-              body: SafeArea(
-                child: state.pageState == PageState.loading
+                body: state.pageState == PageState.loading
                     ? const FullPageLoadingIndicator()
                     : TabBarView(
                         children: [

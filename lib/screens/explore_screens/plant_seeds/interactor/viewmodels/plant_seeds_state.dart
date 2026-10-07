@@ -3,7 +3,7 @@ part of 'plant_seeds_bloc.dart';
 class PlantSeedsState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
-  final PlantSeedsError? error;
+  final String? errorMessage;
   final RatesState ratesState;
   final bool isAutoFocus;
   final TokenDataModel tokenAmount;
@@ -18,7 +18,7 @@ class PlantSeedsState extends Equatable {
   const PlantSeedsState({
     required this.pageState,
     this.pageCommand,
-    this.error,
+    this.errorMessage,
     required this.ratesState,
     required this.isAutoFocus,
     required this.fiatAmount,
@@ -35,7 +35,7 @@ class PlantSeedsState extends Equatable {
   List<Object?> get props => [
         pageState,
         pageCommand,
-        error,
+        errorMessage,
         ratesState,
         isAutoFocus,
         fiatAmount,
@@ -51,7 +51,7 @@ class PlantSeedsState extends Equatable {
   PlantSeedsState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
-    PlantSeedsError? error,
+    String? errorMessage,
     RatesState? ratesState,
     bool? isAutoFocus,
     TokenDataModel? tokenAmount,
@@ -66,7 +66,7 @@ class PlantSeedsState extends Equatable {
     return PlantSeedsState(
       pageState: pageState ?? this.pageState,
       pageCommand: pageCommand,
-      error: error,
+      errorMessage: errorMessage,
       ratesState: ratesState ?? this.ratesState,
       isAutoFocus: isAutoFocus ?? this.isAutoFocus,
       fiatAmount: fiatAmount ?? this.fiatAmount,

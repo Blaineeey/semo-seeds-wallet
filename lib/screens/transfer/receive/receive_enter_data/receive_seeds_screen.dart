@@ -12,52 +12,31 @@ import 'package:seeds/domain-shared/event_bus/event_bus.dart';
 import 'package:seeds/domain-shared/event_bus/events.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/i18n/transfer/transfer.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/transfer/receive/receive_enter_data/interactor/viewmodels/page_commands.dart';
 import 'package:seeds/screens/transfer/receive/receive_enter_data/interactor/viewmodels/receive_enter_data_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
-class ReceiveEnterDataScreen extends StatefulWidget {
-  const ReceiveEnterDataScreen({super.key});
-
-  @override
-  State<ReceiveEnterDataScreen> createState() => _ReceiveEnterDataScreenState();
-}
-
-class _ReceiveEnterDataScreenState extends State<ReceiveEnterDataScreen> {
-  late final ReceiveEnterDataBloc _receiveEnterDataBloc;
-  final TextEditingController _memoController = TextEditingController();
-
-  @override
-  void initState() {
-    _receiveEnterDataBloc = ReceiveEnterDataBloc(BlocProvider.of<RatesBloc>(context).state)
-      ..add(const LoadUserBalance());
-    _memoController.addListener(() => _receiveEnterDataBloc.add(OnMemoChanged(_memoController.text)));
-    _memoController.text = _receiveEnterDataBloc.state.generateRandomString(6);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _memoController.dispose();
-    super.dispose();
-  }
+class ReceiveEnterDataScreen extends StatelessWidget {
+  const ReceiveEnterDataScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _receiveEnterDataBloc,
+      create: (context) =>
+          ReceiveEnterDataBloc(BlocProvider.of<RatesBloc>(context).state)..add(const LoadUserBalance()),
       child: Scaffold(
-        appBar: AppBar(title: Text(context.loc.transferReceiveTitle)),
+        appBar: AppBar(title: Text("Receive".i18n)),
         body: BlocConsumer<ReceiveEnterDataBloc, ReceiveEnterDataState>(
           listenWhen: (_, current) => current.pageCommand != null,
           listener: (context, state) {
             final pageCommand = state.pageCommand;
             if (pageCommand is NavigateToReceiveDetails) {
-              NavigationService.of(context).navigateTo(Routes.receiveQR, pageCommand.details, true);
-            } else if (state.pageCommand is ShowTransactionFail) {
+              NavigationService.of(context).navigateTo(Routes.receiveQR, pageCommand.receiveDetailArguments);
               BlocProvider.of<ReceiveEnterDataBloc>(context).add(const ClearReceiveEnterDataState());
-              eventBus.fire(ShowSnackBar(context.loc.transferReceiveTransactionFail));
+            }
+            if (state.pageCommand is ShowTransactionFail) {
+              eventBus.fire(ShowSnackBar('Receive creation failed, please try again.'.i18n));
             }
           },
           builder: (context, state) {
@@ -65,50 +44,60 @@ class _ReceiveEnterDataScreenState extends State<ReceiveEnterDataScreen> {
               case PageState.loading:
                 return const FullPageLoadingIndicator();
               case PageState.success:
-                return SafeArea(
-                  minimum: const EdgeInsets.all(horizontalEdgePadding),
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 60),
-                            AmountEntryWidget(
-                              tokenDataModel: TokenDataModel(0, token: settingsStorage.selectedToken),
-                              onValueChange: (value) => _receiveEnterDataBloc.add(OnAmountChange(value)),
-                              autoFocus: state.isAutoFocus,
-                            ),
-                            const SizedBox(height: 36),
-                            Column(
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 100),
+                          AmountEntryWidget(
+                            tokenDataModel: TokenDataModel(0, token: settingsStorage.selectedToken),
+                            onValueChange: (value) {
+                              BlocProvider.of<ReceiveEnterDataBloc>(context).add(OnAmountChange(amountChanged: value));
+                            },
+                            autoFocus: state.isAutoFocus,
+                          ),
+                          const SizedBox(height: 36),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: horizontalEdgePadding),
+                            child: Column(
                               children: [
                                 TextFormFieldLight(
-                                  controller: _memoController,
-                                  labelText: context.loc.transferMemoFieldLabel,
-                                  hintText: context.loc.transferMemoFieldHint,
+                                  labelText: "Memo".i18n,
+                                  hintText: "Add a note".i18n,
                                   maxLength: blockChainMaxChars,
+                                  onChanged: (String value) {
+                                    BlocProvider.of<ReceiveEnterDataBloc>(context)
+                                        .add(OnDescriptionChange(description: value));
+                                  },
                                 ),
                                 const SizedBox(height: 16),
                                 BalanceRow(
-                                  label: context.loc.transferReceiveAvailableBalance,
+                                  label: "Available Balance".i18n,
                                   fiatAmount: state.availableBalanceFiat,
                                   tokenAmount: state.availableBalanceToken,
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Align(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(horizontalEdgePadding),
+                      child: Align(
                         alignment: Alignment.bottomCenter,
                         child: FlatButtonLong(
-                          title: context.loc.transferReceiveNextButtonTitle,
+                          title: 'Next'.i18n,
                           enabled: state.isNextButtonEnabled,
-                          onPressed: () => _receiveEnterDataBloc.add(const OnNextButtonTapped()),
+                          onPressed: () {
+                            BlocProvider.of<ReceiveEnterDataBloc>(context).add(const OnNextButtonTapped());
+                          },
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 );
               default:
                 return const SizedBox.shrink();

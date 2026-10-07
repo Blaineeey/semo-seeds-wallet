@@ -19,7 +19,7 @@ import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interacto
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/page_commands.dart';
 
 class GuardiansScreen extends StatelessWidget {
-  const GuardiansScreen({super.key});
+  const GuardiansScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +54,10 @@ class GuardiansScreen extends StatelessWidget {
             return DefaultTabController(
               length: 2,
               child: Scaffold(
-                bottomNavigationBar: state.pageState == PageState.loading
+                floatingActionButton: state.pageState == PageState.loading
                     ? const SizedBox.shrink()
-                    : SafeArea(
-                        minimum: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 32),
                         child: FlatButtonLong(
                           title: "+ Add Guardians".i18n,
                           isLoading: state.isAddGuardianButtonLoading,
@@ -115,9 +115,9 @@ void _showRecoveryStartedBottomSheet(BuildContext context, GuardianModel guardia
                 child: RichText(
                   text: TextSpan(
                       text: 'A motion to Recover your Key has been initiated by '.i18n,
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.button,
                       children: <TextSpan>[
-                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.labelLarge)
+                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.button)
                       ]),
                 ),
               ),

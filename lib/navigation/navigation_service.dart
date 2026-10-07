@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,17 +18,6 @@ import 'package:seeds/screens/explore_screens/flag/flags/flag_screen.dart';
 import 'package:seeds/screens/explore_screens/invite/invite_screen.dart';
 import 'package:seeds/screens/explore_screens/manage_invites/manage_invites_screen.dart';
 import 'package:seeds/screens/explore_screens/plant_seeds/plant_seeds_screen.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/create_region_event_screens/create_region_event_screen_controller.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/create_region_screens/create_region_screen_controller.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region/edit_region_description.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region/edit_region_image.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/edit_region_event_image.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/edit_region_event_location.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/edit_region_event_name_and_description.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/edit_region_event/edit_region_event_time_and_date.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/join_region/join_region_screen.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/region_event_details/region_event_details_screen.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/regions_main/region_screen.dart';
 import 'package:seeds/screens/explore_screens/swap_seeds/swap_seeds_screen.dart';
 import 'package:seeds/screens/explore_screens/unplant_seeds/unplant_seeds_screen.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegate_screen.dart';
@@ -67,7 +57,6 @@ class Routes {
   static const importKey = 'importKey';
   static const importWords = 'importWords';
   static const verification = 'verification';
-  static const verificationUnpoppable = 'verificationUnpoppable';
   static const signup = 'signup';
   static const recoverAccountSearch = 'recoverAccountSearch';
   static const recoveryPhrase = 'recoveryPhrase';
@@ -85,13 +74,10 @@ class Routes {
   static const vouch = 'vouch';
   static const vouchForAMember = 'vouchForAMember';
   static const unPlantSeeds = 'unPlantSeeds';
-  static const createRegion = 'createRegion';
-  static const createRegionEvent = 'createRegionEvent';
   static const sendConfirmation = 'sendConfirmation';
   static const transactionActions = 'transactionActions';
   static const scanQRCode = 'scanQRCode';
   static const swapSeeds = 'swapSeeds';
-  static const joinRegion = 'joinRegion';
   static const receiveScreen = 'receiveScreen'; // TODO(gguij002): Route not yet implemented
   static const receiveEnterData = 'receiveEnterData';
   static const receiveQR = 'receiveQR';
@@ -108,14 +94,6 @@ class Routes {
   static const citizenship = 'citizenship';
   static const contribution = 'contribution';
   static const contributionDetail = 'contributionDetail';
-  static const region = 'region';
-  static const regionEventDetails = 'regionEventDetials';
-  static const editRegionDescription = 'editRegionDescription';
-  static const editRegionImage = 'editRegionImage';
-  static const editRegionEventNameAndDescription = 'editRegionEventNameAndDescription';
-  static const editRegionEventLocation = 'editRegionEventLocation';
-  static const editRegionEventTimeAndDate = 'editRegionEventTimeAndDate';
-  static const editRegionEventImage = 'editRegionEventImage';
 }
 
 class NavigationService {
@@ -126,8 +104,6 @@ class NavigationService {
     Routes.login: (_) => const LoginScreen(),
     Routes.importKey: (_) => const ImportKeyScreen(),
     Routes.importWords: (_) => const ImportWordsScreen(),
-    Routes.verification: (_) => const VerificationScreen(),
-    Routes.verificationUnpoppable: (_) => const VerificationScreen.unpoppable(),
     Routes.recoverAccountSearch: (_) => const RecoverAccountSearchScreen(),
     Routes.recoverAccountFound: (_) => const RecoverAccountFoundScreen(),
     Routes.signup: (_) => const SignupScreen(),
@@ -145,13 +121,10 @@ class NavigationService {
     Routes.vouchForAMember: (_) => const VouchForAMemberScreen(),
     Routes.plantSeeds: (_) => const PlantSeedsScreen(),
     Routes.unPlantSeeds: (_) => const UnplantSeedsScreen(),
-    Routes.createRegion: (_) => const CreateRegionScreenController(),
-    Routes.createRegionEvent: (_) => const CreateRegionEventScreenController(),
     Routes.sendConfirmation: (args) => const SendConfirmationScreen(),
     Routes.transactionActions: (_) => const TransactionActionsScreen(),
     Routes.scanQRCode: (_) => const SendScannerScreen(),
     Routes.swapSeeds: (_) => const SwapSeedsScreen(),
-    Routes.joinRegion: (_) => const JoinRegionScreen(),
     Routes.receiveScreen: (_) => const ReceiveScreen(), // <- This route is not used
     Routes.receiveEnterData: (_) => const ReceiveEnterDataScreen(),
     Routes.receiveQR: (args) => ReceiveDetailQrCodeScreen(args),
@@ -168,32 +141,35 @@ class NavigationService {
     Routes.citizenship: (_) => const CitizenshipScreen(),
     Routes.contribution: (_) => const ContributionScreen(),
     Routes.contributionDetail: (_) => const ContributionDetailScreen(),
+    Routes.verification: (_) => const VerificationScreen(),
     Routes.recoveryPhrase: (_) => const RecoveryPhraseScreen(),
-    Routes.region: (_) => const RegionScreen(),
-    Routes.editRegionDescription: (_) => const EditRegionDescription(),
-    Routes.editRegionImage: (_) => const EditRegionImage(),
-    Routes.regionEventDetails: (_) => const RegionEventDetailsScreen(),
-    Routes.editRegionEventNameAndDescription: (_) => const EditRegionEventNameAndDescription(),
-    Routes.editRegionEventLocation: (_) => const EditRegionEventLocation(),
-    Routes.editRegionEventTimeAndDate: (_) => const EditRegionEventTimeAndDate(),
-    Routes.editRegionEventImage: (_) => const EditRegionEventImage(),
   };
 
   // iOS: full screen routes pop up from the bottom and disappear vertically too
   // On iOS that's a standard full screen dialog
   // Has no effect on Android.
   final _fullScreenRoutes = {
-    Routes.verificationUnpoppable,
+    Routes.verification,
   };
 
   // iOS transition: Pages that slides in from the right and exits in reverse.
   final _cupertinoRoutes = {
     Routes.citizenship,
   };
+  StreamController<String>? _streamRouteListener;
 
   static NavigationService of(BuildContext context) => RepositoryProvider.of<NavigationService>(context);
 
+  // ignore: use_setters_to_change_properties
+  void addListener(StreamController<String> listener) {
+    _streamRouteListener = listener;
+  }
+
   Future<dynamic> navigateTo(String routeName, [Object? arguments, bool replace = false]) async {
+    if (_streamRouteListener != null) {
+      _streamRouteListener?.add(routeName);
+    }
+
     if (_appRoutes[routeName] != null) {
       if (replace) {
         return appNavigatorKey.currentState?.pushReplacementNamed(routeName, arguments: arguments);
@@ -227,28 +203,5 @@ class NavigationService {
 
   Future<dynamic> pushAndRemoveAll(String routeName, [Object? arguments]) async {
     return appNavigatorKey.currentState?.pushNamedAndRemoveUntil(routeName, (route) => false);
-  }
-
-  /// Push LW App.
-  ///
-  /// If there is a route in stack and is verification, pop any other on top.
-  Future<dynamic> pushApp() async {
-    if (currentRouteName() != null && currentRouteName() == Routes.verificationUnpoppable) {
-      return appNavigatorKey.currentState?.popUntil((route) => route.settings.name != Routes.verificationUnpoppable);
-    }
-    return pushAndRemoveAll(Routes.app);
-  }
-
-  String? currentRouteName() {
-    String? currentPath;
-    appNavigatorKey.currentState?.popUntil((route) {
-      currentPath = route.settings.name;
-      return true;
-    });
-    return currentPath;
-  }
-
-  Future<dynamic> pushAndRemoveUntil({required String route, required String from, Object? arguments}) async {
-    return appNavigatorKey.currentState?.pushNamedAndRemoveUntil(route, ModalRoute.withName(from));
   }
 }

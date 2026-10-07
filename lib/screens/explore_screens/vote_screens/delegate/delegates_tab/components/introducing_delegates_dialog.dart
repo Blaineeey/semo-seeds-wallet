@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seeds/components/custom_dialog.dart';
 
 class IntroducingDelegatesDialog extends StatelessWidget {
-  const IntroducingDelegatesDialog({super.key});
+  const IntroducingDelegatesDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class IntroducingDelegatesDialog extends StatelessWidget {
         singleLargeButtonTitle: "Dismiss",
         onSingleLargeButtonPressed: () => Navigator.of(context).pop(),
         children: [
-          Text('Introducing Delegates!', style: Theme.of(context).textTheme.titleLarge),
+          Text('Introducing Delegates!', style: Theme.of(context).textTheme.headline6),
           const SizedBox(height: 30.0),
           Image.asset('assets/images/explore/introducing_delegate.png'),
           const SizedBox(height: 30.0),

@@ -12,10 +12,11 @@ import 'package:seeds/domain-shared/event_bus/events.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/images/profile/add_account_circle.dart';
 import 'package:seeds/navigation/navigation_service.dart';
+import 'package:seeds/screens/authentication/import_key/import_key_errors.dart';
 import 'package:seeds/screens/profile_screens/profile/components/switch_account_bottom_sheet/interactor/viewmodels/switch_account_bloc.dart';
 
 class SwithAccountBottomSheet extends StatelessWidget {
-  const SwithAccountBottomSheet({super.key});
+  const SwithAccountBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

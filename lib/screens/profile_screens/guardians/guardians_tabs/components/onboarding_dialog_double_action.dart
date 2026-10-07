@@ -14,14 +14,15 @@ class OnboardingDialogDoubleAction extends StatelessWidget {
   final String rightButtonTitle;
 
   const OnboardingDialogDoubleAction(
-      {super.key,
+      {Key? key,
       required this.indexDialong,
       required this.image,
       required this.description,
       this.onRightButtonTab,
       this.onLeftButtonTab,
       required this.rightButtonTitle,
-      required this.leftButtonTitle});
+      required this.leftButtonTitle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,7 @@ import 'package:seeds/screens/explore_screens/flag/flags/components/remove_flag_
 import 'package:seeds/screens/explore_screens/flag/flags/interactor/viewmodels/flag_bloc.dart';
 
 class FlagScreen extends StatelessWidget {
-  const FlagScreen({super.key});
+  const FlagScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +22,21 @@ class FlagScreen extends StatelessWidget {
         builder: (context, FlagState state) {
           return Scaffold(
             appBar: AppBar(title: const Text('Flag')),
-            bottomNavigationBar: SafeArea(
-              minimum: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
-              child: FlatButtonLong(
-                title: 'Flag a User',
-                onPressed: () async {
-                  final shouldScreenReload =
-                      await NavigationService.of(context).navigateTo(Routes.flagUser, state.usersIHaveFlagged);
-                  if (shouldScreenReload != null) {
-                    // ignore: use_build_context_synchronously
-                    BlocProvider.of<FlagBloc>(context).add(const LoadUsersFlags());
-                  }
-                },
+            bottomSheet: SafeArea(
+              minimum: const EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FlatButtonLong(
+                  title: 'Flag a User',
+                  onPressed: () async {
+                    final shouldScreenReload =
+                        await NavigationService.of(context).navigateTo(Routes.flagUser, state.usersIHaveFlagged);
+                    if (shouldScreenReload != null) {
+                      // ignore: use_build_context_synchronously
+                      BlocProvider.of<FlagBloc>(context).add(const LoadUsersFlags());
+                    }
+                  },
+                ),
               ),
             ),
             body: SafeArea(

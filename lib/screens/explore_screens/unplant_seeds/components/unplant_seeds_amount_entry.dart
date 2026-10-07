@@ -13,14 +13,14 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
   final TextEditingController? controller;
 
   const UnplantSeedsAmountEntry({
-    super.key,
+    Key? key,
     required this.tokenDataModel,
     required this.onValueChange,
     required this.autoFocus,
     required this.onTapMax,
     required this.unplantedBalanceFiat,
     this.controller,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
               child: TextFormField(
                 controller: controller,
                 textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headline4,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
                   hintText: "0.0",
@@ -63,7 +63,7 @@ class UnplantSeedsAmountEntry extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                        backgroundColor: AppColors.green1,
+                        primary: AppColors.green1,
                       ),
                       onPressed: onTapMax,
                       child: const Text("MAX"),

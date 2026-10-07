@@ -13,14 +13,14 @@ const _numberOfWords = 12;
 const _numberOfColumns = 3;
 
 class RecoveryPhraseScreen extends StatelessWidget {
-  const RecoveryPhraseScreen({super.key});
+  const RecoveryPhraseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('12-word Recovery Phrase')),
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
         child: FlatButtonLong(title: 'I’ve written it down', onPressed: () => Navigator.of(context).pop()),
       ),
       body: SafeArea(
@@ -35,7 +35,7 @@ class RecoveryPhraseScreen extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: Theme.of(context).textTheme.subtitle2,
                           children: <TextSpan>[
                             const TextSpan(text: 'Get a pen and paper before you start. \nWrite down or '),
                             TextSpan(

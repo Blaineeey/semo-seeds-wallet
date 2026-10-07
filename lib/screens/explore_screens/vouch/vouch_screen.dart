@@ -5,7 +5,7 @@ import 'package:seeds/screens/explore_screens/vouch/sponsor_tab/sponsor_tab.dart
 import 'package:seeds/screens/explore_screens/vouch/vouched_tab/vouched_tab.dart';
 
 class VouchScreen extends StatelessWidget {
-  const VouchScreen({super.key});
+  const VouchScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class VouchScreen extends StatelessWidget {
           ),
           title: const Text("Vouch"),
         ),
-        body: const TabBarView(children: [VouchedTab(), SponsorTab()]),
+        body: const SafeArea(child: TabBarView(children: [VouchedTab(), SponsorTab()])),
       ),
     );
   }

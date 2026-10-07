@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Keyboard extends StatelessWidget {
   final ValueSetter<String> onDigitTapped;
 
-  const Keyboard({super.key, required this.onDigitTapped});
+  const Keyboard({Key? key, required this.onDigitTapped}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,13 @@ class Keyboard extends StatelessWidget {
                   child: InkWell(
                     splashColor: Colors.white.withOpacity(0.4),
                     onTap: () => onDigitTapped(i),
-                    child: DecoratedBox(
+                    child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.transparent,
                         border: Border.all(color: Colors.white),
                       ),
-                      child: DecoratedBox(
+                      child: Container(
                         decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
                         child: Center(
                           child: Text(i, style: const TextStyle(fontSize: 30, color: Colors.white), semanticsLabel: i),
@@ -56,7 +56,7 @@ class AlignedGrid extends StatelessWidget {
   final List<Widget> children;
   final Size keyboardSize;
 
-  const AlignedGrid({super.key, required this.children, required this.keyboardSize});
+  const AlignedGrid({Key? key, required this.children, required this.keyboardSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
