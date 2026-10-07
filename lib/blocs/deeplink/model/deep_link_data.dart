@@ -2,7 +2,14 @@ class DeepLinkData {
   final Map<String, dynamic> data;
   final DeepLinkPlaceHolder deepLinkPlaceHolder;
 
-  const DeepLinkData(this.data, this.deepLinkPlaceHolder);
+  DeepLinkData(
+    this.data,
+    this.deepLinkPlaceHolder,
+  );
 }
 
-enum DeepLinkPlaceHolder { guardian, invite, invoice, region, unknown }
+enum DeepLinkPlaceHolder {
+  LINK_GUARDIANS,
+  LINK_INVITE,
+  LINK_UNKNOWN,
+}

@@ -1,4 +1,4 @@
-const wordList = [
+const WORDLIST = [
   "abandon",
   "ability",
   "able",

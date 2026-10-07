@@ -1,20 +1,21 @@
-part of 'search_user_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class SearchUserState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
-  final List<ProfileModel> users;
-  final bool showClearIcon;
+  final List<MemberModel> users;
+  final IconData searchBarIcon;
   final List<String>? noShowUsers;
-  final ProfileStatus? showOnlyCitizenshipStatus;
 
   const SearchUserState({
     required this.pageState,
     this.errorMessage,
     required this.users,
-    required this.showClearIcon,
+    required this.searchBarIcon,
     this.noShowUsers,
-    this.showOnlyCitizenshipStatus,
   });
 
   @override
@@ -22,36 +23,32 @@ class SearchUserState extends Equatable {
         pageState,
         errorMessage,
         users,
-        showClearIcon,
+        searchBarIcon,
         noShowUsers,
-        showOnlyCitizenshipStatus,
       ];
 
   SearchUserState copyWith({
     PageState? pageState,
     String? errorMessage,
-    List<ProfileModel>? users,
-    bool? showClearIcon,
+    List<MemberModel>? users,
+    IconData? searchBarIcon,
     List<String>? noShowUsers,
-    ProfileStatus? showOnlyCitizenshipStatus,
   }) {
     return SearchUserState(
       pageState: pageState ?? this.pageState,
       errorMessage: errorMessage,
       users: users ?? this.users,
-      showClearIcon: showClearIcon ?? this.showClearIcon,
+      searchBarIcon: searchBarIcon ?? this.searchBarIcon,
       noShowUsers: noShowUsers ?? this.noShowUsers,
-      showOnlyCitizenshipStatus: showOnlyCitizenshipStatus ?? this.showOnlyCitizenshipStatus,
     );
   }
 
-  factory SearchUserState.initial(List<String>? noShowUsers, ProfileStatus? filterByCitizenshipStatus) {
+  factory SearchUserState.initial(List<String>? noShowUsers) {
     return SearchUserState(
       pageState: PageState.initial,
       users: [],
-      showClearIcon: false,
+      searchBarIcon: Icons.search,
       noShowUsers: noShowUsers,
-      showOnlyCitizenshipStatus: filterByCitizenshipStatus,
     );
   }
 }

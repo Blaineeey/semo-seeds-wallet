@@ -1,20 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:seeds/datasource/remote/model/serialization_helpers.dart';
 
-enum ProfileStatus { visitor, resident, citizen, unknown }
+enum ProfileStatus { visitor, resident, citizen }
 
 class ProfileModel extends Equatable {
   final String account;
-  final ProfileStatus status;
-  final String type;
-  final String nickname;
-  final String image;
-  final String story;
-  final String roles;
-  final String skills;
-  final String interests;
-  final int reputation;
+  final ProfileStatus? status;
+  final String? type;
+  final String? nickname;
+  final String? image;
+  final String? story;
+  final String? roles;
+  final String? skills;
+  final String? interests;
+  final int? reputation;
   final int timestamp;
 
   @override
@@ -34,25 +33,26 @@ class ProfileModel extends Equatable {
 
   const ProfileModel({
     required this.account,
-    required this.status,
-    required this.type,
-    required this.nickname,
-    required this.image,
-    required this.story,
-    required this.roles,
-    required this.skills,
-    required this.interests,
-    required this.reputation,
+    this.status,
+    this.type,
+    this.nickname,
+    this.image,
+    this.story,
+    this.roles,
+    this.skills,
+    this.interests,
+    this.reputation,
     required this.timestamp,
   });
 
-  /// Returns the status as a capitalized String.
+  /// Returns the status String value.
   String get statusString {
-    if(ProfileStatus.unknown == status) {
+    if (status == null) {
       return '';
+    } else {
+      final str = status.toString().split('.').last;
+      return '${str[0].toUpperCase()}${str.substring(1)}';
     }
-    final str = status.name;
-    return '${str[0].toUpperCase()}${str.substring(1)}';
   }
 
   /// Returns the account age in days.
@@ -91,45 +91,29 @@ class ProfileModel extends Equatable {
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      account: json['account'],
-      status: enumFromString<ProfileStatus>(ProfileStatus.values, json['status']),
-      type: json['type'],
-      nickname: json['nickname'],
-      image: json['image'],
-      story: json['story'],
-      roles: json['roles'],
-      skills: json['skills'],
-      interests: json['interests'],
-      reputation: json['reputation'],
-      timestamp: json['timestamp'],
+      account: hasValue<String>(_account, json),
+      status: enumFromString<ProfileStatus>(ProfileStatus.values, hasEmptyValue<String>(_status, json)),
+      type: hasEmptyValue<String>(_type, json),
+      nickname: hasEmptyValue<String>(_nickname, json),
+      image: hasEmptyValue<String>(_image, json),
+      story: hasEmptyValue<String>(_story, json),
+      roles: hasEmptyValue<String>(_roles, json),
+      skills: hasEmptyValue<String>(_skills, json),
+      interests: hasEmptyValue<String>(_interests, json),
+      reputation: hasEmptyValue<int>(_reputation, json),
+      timestamp: hasValue<int>(_timestamp, json),
     );
   }
 
-  factory ProfileModel.usingDefaultValues({
-    required String account,
-    String nickName = '',
-    String image = '',
-    ProfileStatus status = ProfileStatus.unknown,
-    String interests = '',
-    int reputation = 0,
-    String roles = '',
-    String skills = '',
-    String story = '',
-    int timestamp = 0,
-    String type = '',
-  }) {
-    return ProfileModel(
-      account: account,
-      nickname: nickName,
-      image: image,
-      status: status,
-      interests: interests,
-      reputation: reputation,
-      roles: roles,
-      skills: skills,
-      story: story,
-      timestamp: timestamp == 0 ? Timestamp.now().microsecondsSinceEpoch : timestamp,
-      type: type,
-    );
-  }
+  static final String _account = 'account';
+  static final String _status = 'status';
+  static final String _type = 'type';
+  static final String _nickname = 'nickname';
+  static final String _image = 'image';
+  static final String _story = 'story';
+  static final String _roles = 'roles';
+  static final String _skills = 'skills';
+  static final String _interests = 'interests';
+  static final String _reputation = 'reputation';
+  static final String _timestamp = 'timestamp';
 }
