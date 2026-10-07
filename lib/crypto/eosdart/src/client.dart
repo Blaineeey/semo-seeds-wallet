@@ -194,7 +194,7 @@ class EOSClient {
   /// Get required key by transaction from EOS blockchain
   Future<RequiredKeys> getRequiredKeys(Transaction transaction, List<String> availableKeys) async {
     final NodeInfo info = await getInfo();
-    final Block refBlock = await getBlock(info.headBlockNum.toString());
+    final Block refBlock = await getBlock((info.headBlockNum).toString());
     Transaction trx = await _fullFill(transaction, refBlock);
     trx = await _serializeActions(trx);
 
@@ -224,25 +224,9 @@ class EOSClient {
   /// Get Key Accounts
   Future<AccountNames> getKeyAccounts(String pubKey) async {
     return _post('/history/get_key_accounts', {'public_key': pubKey}).then((accountNames) {
-      return AccountNames.fromJson(accountNames as Map<String, dynamic>);
+      return AccountNames.fromJson(accountNames);
     });
   }
-
-  // Get Key Accounts using new API: new get_accounts_by_authorizers API
-  // Future<AccountNames> getAccountsByKey(String pubKey) async {
-  //   try {
-  //     return _post('/chain/get_accounts_by_authorizers', {
-  //       'accounts': [],
-  //       'keys': [pubKey]
-  //     }).then((response) {
-  //       final List<String> accountNames = List.from(response['accounts'].map((e) => e['account_name']));
-  //       return AccountNames()..accountNames = accountNames.toSet().toList();
-  //     });
-  //   } catch (e) {
-  //     print("getAccountsByKey error $e");
-  //     return AccountNames();
-  //   }
-  // }
 
   /// Push transaction to EOS chain
   Future<dynamic> pushTransaction(Transaction transaction,
@@ -313,6 +297,19 @@ class EOSClient {
     action.serialize!(action, buffer, data);
     return ser.arrayToHex(buffer.asUint8List());
   }
+
+//  Future<List<AbiResp>> _getTransactionAbis(Transaction transaction) async {
+//    Set<String> accounts = Set();
+//    List<AbiResp> result = [];
+//
+//    for (Action action in transaction.actions) {
+//      accounts.add(action.account);
+//    }
+//
+//    for (String accountName in accounts) {
+//      result.add(await this.getRawAbi(accountName));
+//    }
+//  }
 
   Future<PushTransactionArgs> _pushTransactionArgs(
       String? chainId, Type transactionType, Transaction transaction, bool sign) async {

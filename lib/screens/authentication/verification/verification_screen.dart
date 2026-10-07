@@ -67,7 +67,7 @@ class VerificationScreen extends StatelessWidget {
                   case PageState.success:
                     return PasscodeScreen(
                       title: Text(state.passcodeTitle.localizedDescription(context),
-                          style: Theme.of(context).textTheme.titleSmall),
+                          style: Theme.of(context).textTheme.subtitle2),
                       onPasscodeCompleted: (passcode) {
                         if (state.isCreateMode && state.newPasscode == null) {
                           BlocProvider.of<VerificationBloc>(context).add(OnPasscodeCreated(passcode));
@@ -87,7 +87,7 @@ class VerificationScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(16.0),
                                       border: Border.all(color: AppColors.white)),
                                   child: Text(context.loc.verificationScreenButtonTitle,
-                                      style: Theme.of(context).textTheme.titleSmall),
+                                      style: Theme.of(context).textTheme.subtitle2),
                                 ),
                               ),
                             )

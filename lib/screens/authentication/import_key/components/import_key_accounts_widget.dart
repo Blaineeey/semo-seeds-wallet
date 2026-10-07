@@ -57,7 +57,7 @@ class ImportKeyAccountsWidget extends StatelessWidget {
                                 ),
                                 title: Text(
                                   profile.nickname.isNotEmpty ? profile.nickname : profile.account,
-                                  style: Theme.of(context).textTheme.labelLarge,
+                                  style: Theme.of(context).textTheme.button,
                                 ),
                                 subtitle: Text(
                                   profile.account,

@@ -113,7 +113,7 @@ class ImportWordsScreen extends StatelessWidget {
                       if (state.userEnteredWords.isEmpty)
                         RichText(
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.titleSmall,
+                            style: Theme.of(context).textTheme.subtitle2,
                             children: <TextSpan>[
                               TextSpan(
                                 text: context.loc.importKeyImportUsingPrivateKeyActionLink,

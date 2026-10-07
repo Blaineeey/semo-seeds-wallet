@@ -6,6 +6,8 @@ class AppColorSchemes {
   static const ColorScheme darkColorScheme = ColorScheme(
     surfaceTint: Colors.brown,
     primaryContainer: Colors.amber,
+    background: AppColors.primary,
+    onBackground: AppColors.white,
     primary: AppColors.purple,
     secondary: AppColors.green1,
     surface: AppColors.primary,
@@ -35,6 +37,7 @@ class AppColorSchemes {
 
   // TODO(gguij004): not completed, to work on it after the darkScheme.
   static const lightColorScheme = ColorScheme(
+    background: Colors.amber,
     primary: Colors.black,
     secondary: Colors.brown,
     surface: Colors.purpleAccent,
@@ -43,6 +46,7 @@ class AppColorSchemes {
     onError: Colors.redAccent,
     brightness: Brightness.light,
     onSurface: Colors.redAccent,
+    onBackground: Colors.redAccent,
     error: Colors.red,
   );
 }

@@ -40,7 +40,7 @@ class GuardianApproveOrDenyScreen extends StatelessWidget {
             Text(
               'Account Recovery Request'.i18n,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 30),
             Padding(
