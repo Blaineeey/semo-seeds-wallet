@@ -5,13 +5,14 @@ import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/i18n/explore_screens/vote/proposals/proposals_details.i18n.dart';
 
 class ConfirmVoteDialog extends StatelessWidget {
-  const ConfirmVoteDialog({super.key});
+  const ConfirmVoteDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
       icon: SvgPicture.asset('assets/images/security/success_outlined_icon.svg'),
       leftButtonTitle: 'Cancel'.i18n,
+      onLeftButtonPressed: () => Navigator.of(context).pop(),
       rightButtonTitle: 'Confirm'.i18n,
       onRightButtonPressed: () => Navigator.of(context).pop(true),
       children: [
@@ -20,7 +21,7 @@ class ConfirmVoteDialog extends StatelessWidget {
         Text(
           'Your trust tokens cannot be reallocated afterwards so please be sure of your vote!'.i18n,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: Theme.of(context).textTheme.subtitle2,
         ),
         const SizedBox(height: 16.0),
       ],

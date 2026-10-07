@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:seeds/datasource/local/models/auth_data_model.dart';
-import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/datasource/remote/model/token_model.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,11 +23,7 @@ const String _kInRecoveryMode = 'in_recovery_mode';
 const String _kRecoveryLink = 'recovery_link';
 const String _kTokensWhiteList = 'tokens_whitelist';
 const String _kIsCitizen = 'is_citizen';
-const String _kIsVisitor = 'is_visitor';
 const String _kIsFirstRun = 'is_first_run';
-const String _kIsFirstTimeOnDelegateScreen = 'is_first_time_on_delegate_screen';
-const String _kDateSinceRateAppPrompted = 'date_since_rate_app_prompted';
-const String _kIsFirstTimeOnRegionsScreen = 'IsFirstTimeOnRegionsScreen';
 
 class _SettingsStorage {
   late SharedPreferences _preferences;
@@ -59,7 +54,7 @@ class _SettingsStorage {
 
   String? get passcode => _passcode;
 
-  bool get passcodeActive => _passcodeActive ?? false;
+  bool? get passcodeActive => _passcodeActive;
 
   bool? get biometricActive => _biometricActive;
 
@@ -67,7 +62,7 @@ class _SettingsStorage {
 
   String get selectedFiatCurrency => _preferences.getString(_kSelectedFiatCurrency) ?? getPlatformCurrency();
 
-  TokenModel get selectedToken => TokenModel.fromId(_preferences.getString(_kSelectedToken) ?? seedsToken.id) ?? seedsToken;
+  TokenModel get selectedToken => TokenModel.fromSymbol(_preferences.getString(_kSelectedToken) ?? seedsToken.symbol);
 
   bool get inRecoveryMode => _preferences.getBool(_kInRecoveryMode) ?? false;
 
@@ -77,13 +72,7 @@ class _SettingsStorage {
 
   bool get isCitizen => _preferences.getBool(_kIsCitizen) ?? false;
 
-  bool get isFirstTimeOnDelegateScreen => _preferences.getBool(_kIsFirstTimeOnDelegateScreen) ?? false;
-
-  bool get isFirstTimeOnRegionsScreen => _preferences.getBool(_kIsFirstTimeOnRegionsScreen) ?? true;
-
   List<String> get recoveryWords => _recoveryWords;
-
-  int? get dateSinceRateAppPrompted => _preferences.getInt(_kDateSinceRateAppPrompted);
 
   set inRecoveryMode(bool value) => _preferences.setBool(_kInRecoveryMode, value);
 
@@ -92,7 +81,8 @@ class _SettingsStorage {
 
   // ignore: avoid_setters_without_getters
   set _accountName(String? value) {
-    // When start cancelRecoveryProcess funtion is fired a null value is recived.
+    // When start import account, cancel recovery funtion is fired, so
+    // this should set the current accountName to null, but ...
     // if null arrives here the account name is saved with empty string (I think this is a bad practice)
     _preferences.setString(_kAccountName, value ?? '');
     // Retrieve accounts list
@@ -125,6 +115,22 @@ class _SettingsStorage {
     }
   }
 
+  set privateKey(String? value) {
+    _secureStorage.write(key: _kPrivateKey, value: value);
+    if (value != null) {
+      _privateKey = value;
+    }
+  }
+
+  set recoveryWords(List<String>? words) {
+    if (words != null) {
+      _secureStorage.write(key: _kRecoveryWords, value: words.join('-'));
+      _recoveryWords = words;
+    } else {
+      _secureStorage.write(key: _kRecoveryWords, value: null);
+    }
+  }
+
   set privateKeyBackedUp(bool? value) {
     if (value != null) {
       _preferences.setBool(_kPrivateKeyBackedUp, value);
@@ -138,7 +144,7 @@ class _SettingsStorage {
   }
 
   set selectedToken(TokenModel token) {
-    _preferences.setString(_kSelectedToken, token.id);
+    _preferences.setString(_kSelectedToken, token.symbol);
   }
 
   set tokensWhitelist(List<String> tokensList) {
@@ -148,20 +154,6 @@ class _SettingsStorage {
   set isCitizen(bool? value) {
     if (value != null) {
       _preferences.setBool(_kIsCitizen, value);
-    }
-  }
-
-  set isFirstTimeOnDelegateScreen(bool value) {
-    _preferences.setBool(_kIsFirstTimeOnDelegateScreen, value);
-  }
-
-  set isFirstTimeOnRegionsScreen(bool value) {
-    _preferences.setBool(_kIsFirstTimeOnRegionsScreen, value);
-  }
-
-  set dateSinceRateAppPrompted(int? value) {
-    if (value != null) {
-      _preferences.setInt(_kDateSinceRateAppPrompted, value);
     }
   }
 
@@ -191,7 +183,7 @@ class _SettingsStorage {
       }
 
       if (values.containsKey(_kRecoveryWords)) {
-        _recoveryWords = values[_kRecoveryWords]!.split(',');
+        _recoveryWords = values[_kRecoveryWords]!.split('-');
       }
 
       if (values.containsKey(_kBiometricActive)) {
@@ -213,16 +205,16 @@ class _SettingsStorage {
     return value;
   }
 
-  Future<void> startRecoveryProcess({
+  void startRecoveryProcess({
     required String accountName,
     required AuthDataModel authData,
     required String recoveryLink,
-  }) async {
+  }) {
     inRecoveryMode = true;
     _accountName = accountName;
     this.recoveryLink = recoveryLink;
-    await _savePrivateKey(authData.eOSPrivateKey.toString());
-    await _saveRecoverWords(authData.words);
+    privateKey = authData.eOSPrivateKey.toString();
+    recoveryWords = authData.words;
   }
 
   void finishRecoveryProcess() {
@@ -231,12 +223,12 @@ class _SettingsStorage {
     recoveryLink = null;
   }
 
-  /// Notice this function it's also called on `Import (login screen)`
-  /// and `Singup`. To cancel any recover process previously started
-  Future<void> cancelRecoveryProcess() async {
-    await _preferences.clear();
-    await _secureStorage.deleteAll();
+  void cancelRecoveryProcess() {
+    inRecoveryMode = false;
     _accountName = null;
+    privateKey = null;
+    recoveryLink = null;
+    recoveryWords = null;
   }
 
   void enablePasscode(String? passcode) {
@@ -250,60 +242,27 @@ class _SettingsStorage {
     biometricActive = false;
   }
 
-  Future<void> _savePrivateKey(String privateKey) async {
-    if (privateKey.isNotEmpty) {
-      // Update storage privateKey
-      await _secureStorage.write(key: _kPrivateKey, value: privateKey);
-      // Update local privateKey
-      _privateKey = privateKey;
-      // Verify if its a new privateKey
-      final List<String> pkeys = _privateKeysList ?? [];
-      // If new private key --> add to list
-      if (!pkeys.contains(privateKey)) {
-        pkeys.add(privateKey);
-        // Save updated private keys list
-        await _secureStorage.write(key: _kPrivateKeysList, value: pkeys.join(','));
-        // Update local private keys list
-        _privateKeysList = pkeys;
-      }
-    }
-  }
-
-  Future<void> _saveRecoverWords(List<String> words) async {
-    final String newWords = words.join('-');
-    if (words.isNotEmpty && newWords.isNotEmpty) {
-      final List<String> wordsList = _recoveryWords;
-      // If new words --> add to list
-      if (!wordsList.contains(newWords)) {
-        wordsList.add(newWords);
-        // Save updated private keys list
-        await _secureStorage.write(key: _kRecoveryWords, value: wordsList.join(','));
-        // Update local field
-        _recoveryWords = wordsList;
-      }
-    }
-  }
-
   Future<void> saveAccount(String accountName, AuthDataModel authData) async {
     _accountName = accountName;
     privateKeyBackedUp = false;
-    await _savePrivateKey(authData.eOSPrivateKey.toString());
-    await _saveRecoverWords(authData.words);
+    _privateKey = authData.eOSPrivateKey.toString();
+    privateKey = authData.eOSPrivateKey.toString();
+    recoveryWords = authData.words;
+
+    final List<String> pkeys = _privateKeysList ?? [];
+    // If new private key --> add to list
+    if (!pkeys.contains(authData.eOSPrivateKey.toString())) {
+      pkeys.add(authData.eOSPrivateKey.toString());
+      // Save updated private keys list
+      await _secureStorage.write(key: _kPrivateKeysList, value: pkeys.join(","));
+      // Update local field
+      _privateKeysList = pkeys;
+    }
   }
 
-  /// Update current accout name, private key and remove some pref
-  Future<void> switchAccount(String accountName, AuthDataModel authData) async {
+  void switchAccount(String accountName) {
     privateKeyBackedUp = false;
     _accountName = accountName;
-    await Future.wait([
-      _savePrivateKey(authData.eOSPrivateKey.toString()),
-      _preferences.remove(_kSelectedFiatCurrency),
-      _preferences.remove(_kSelectedToken),
-      _preferences.remove(_kTokensWhiteList),
-      _preferences.remove(_kIsCitizen),
-      _preferences.remove(_kIsVisitor),
-      _preferences.remove(_kIsFirstTimeOnDelegateScreen),
-    ]);
   }
 
   // ignore: use_setters_to_change_properties
@@ -313,21 +272,7 @@ class _SettingsStorage {
   void saveSelectedFiatCurrency(String value) => selectedFiatCurrency = value;
 
   // ignore: use_setters_to_change_properties
-  void saveCitizenshipStatus(ProfileStatus status) {
-    if (status == ProfileStatus.citizen) {
-      isCitizen = true;
-    } else if (status == ProfileStatus.visitor) {
-      isCitizen = false;
-    } else if (status == ProfileStatus.resident) {
-      isCitizen = false;
-    }
-  }
-
-  // ignore: use_setters_to_change_properties
-  void saveFirstTimeOnDelegateScreen(bool value) => isFirstTimeOnDelegateScreen = value;
-
-  // ignore: use_setters_to_change_properties
-  void saveDateSinceRateAppPrompted(int value) => dateSinceRateAppPrompted = value;
+  void saveIsCitizen(bool value) => isCitizen = value;
 
   Future<void> removeAccount() async {
     await _preferences.clear();

@@ -1,4 +1,4 @@
-import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
 import 'package:seeds/datasource/local/models/amount_data_model.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/datasource/remote/model/token_model.dart';
@@ -6,14 +6,12 @@ import 'package:seeds/utils/double_extension.dart';
 import 'package:seeds/utils/rate_states_extensions.dart';
 
 class TokenDataModel extends AmountDataModel {
-  String? id;
-  final TokenModel token;
-  TokenDataModel(double amount, {TokenModel this.token = seedsToken})
+  TokenDataModel(double amount, {TokenModel token = seedsToken})
       : super(
           amount: amount,
           symbol: token.symbol,
           precision: token.precision,
-        ) { id = token.id; }
+        );
 
   static TokenDataModel? from(double? amount, {TokenModel token = seedsToken}) =>
       amount != null ? TokenDataModel(amount, token: token) : null;
@@ -38,7 +36,7 @@ class TokenDataModel extends AmountDataModel {
   }
 
   TokenDataModel copyWith(double amount) {
-    return TokenDataModel(amount, token: token);
+    return TokenDataModel(amount, token: TokenModel.fromSymbol(symbol));
   }
 }
 

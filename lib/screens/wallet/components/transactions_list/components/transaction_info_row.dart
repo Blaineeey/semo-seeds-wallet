@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/components/profile_avatar.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
-import 'package:seeds/screens/wallet/interactor/viewmodels/member_bloc.dart';
+import 'package:seeds/screens/wallet/components/transactions_list/interactor/viewmodels/member_bloc.dart';
+import 'package:seeds/screens/wallet/components/transactions_list/interactor/viewmodels/member_events.dart';
+import 'package:seeds/screens/wallet/components/transactions_list/interactor/viewmodels/member_state.dart';
 import 'package:seeds/utils/read_times_tamp.dart';
 import 'package:seeds/utils/string_extension.dart';
 
@@ -12,25 +14,25 @@ class TransactionInfoRow extends StatelessWidget {
   final DateTime timestamp;
   final String amount;
   final bool incoming;
-  final GestureTapCallback onTap;
+  final GestureTapCallback callback;
 
   const TransactionInfoRow({
-    super.key,
+    Key? key,
     required this.amount,
-    required this.onTap,
+    required this.callback,
     required this.profileAccount,
     required this.timestamp,
     required this.incoming,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MemberBloc>(
-      create: (_) => MemberBloc(profileAccount)..add(const OnLoadMemberData()),
+      create: (_) => MemberBloc(profileAccount)..add(OnLoadMemberData(profileAccount)),
       child: BlocBuilder<MemberBloc, MemberState>(
         builder: (context, state) {
           return InkWell(
-            onTap: onTap,
+            onTap: callback,
             child: Ink(
               decoration: const BoxDecoration(color: AppColors.primary),
               child: Container(
@@ -40,7 +42,7 @@ class TransactionInfoRow extends StatelessWidget {
                     ProfileAvatar(
                       size: 60,
                       account: profileAccount,
-                      nickname: state.localizedDisplayName(context),
+                      nickname: state.displayName,
                       image: state.profileImageURL,
                       decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.lightGreen2),
                     ),
@@ -54,8 +56,8 @@ class TransactionInfoRow extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    state.localizedDisplayName(context),
-                                    style: Theme.of(context).textTheme.labelLarge,
+                                    state.displayName,
+                                    style: Theme.of(context).textTheme.button,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
@@ -66,7 +68,7 @@ class TransactionInfoRow extends StatelessWidget {
                                 else
                                   Text('-', style: Theme.of(context).textTheme.subtitle1Red2),
                                 const SizedBox(width: 4),
-                                Text(amount.seedsFormatted, style: Theme.of(context).textTheme.labelLarge),
+                                Text(amount.seedsFormatted, style: Theme.of(context).textTheme.button),
                               ],
                             ),
                             const SizedBox(height: 10),

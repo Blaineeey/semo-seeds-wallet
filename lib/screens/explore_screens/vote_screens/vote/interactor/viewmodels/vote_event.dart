@@ -1,14 +1,17 @@
-part of 'vote_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
+/// --- EVENTS
+@immutable
 abstract class VoteEvent extends Equatable {
   const VoteEvent();
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
-class OnFetchInitialVoteSectionData extends VoteEvent {
+class StartCycleCountdown extends VoteEvent {
   @override
-  String toString() => 'OnFetchInitialVoteSectionData';
+  String toString() => 'StartCycleCountdown';
 }
 
 class Tick extends VoteEvent {
@@ -17,15 +20,8 @@ class Tick extends VoteEvent {
   const Tick(this.timer);
 
   @override
-  List<Object?> get props => [timer];
+  List<Object> get props => [timer];
 
   @override
   String toString() => 'Tick { remaining seconds: $timer }';
-}
-
-class OnRefreshCurrentDelegates extends VoteEvent {
-  const OnRefreshCurrentDelegates();
-
-  @override
-  String toString() => 'OnRefreshCurrentDelegates';
 }

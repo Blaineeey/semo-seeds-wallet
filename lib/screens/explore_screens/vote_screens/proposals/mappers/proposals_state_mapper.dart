@@ -5,13 +5,13 @@ import 'package:seeds/datasource/remote/model/referendum_model.dart';
 import 'package:seeds/datasource/remote/model/support_level_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/result_to_state_mapper.dart';
-import 'package:seeds/screens/explore_screens/vote_screens/proposals/proposals_errors.dart';
+import 'package:seeds/i18n/explore_screens/vote/proposals/proposals.i18n.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposal_view_model.dart';
-import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposals_list_bloc.dart';
+import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposals_list_state.dart';
 
 const String _alliance = 'alliance';
-const String _cmpFunding = 'cmp.funding';
-const String _cmpInvite = 'cmp.invite';
+const String _cmp_funding = 'cmp.funding';
+const String _cmp_invite = 'cmp.invite';
 const String _milestone = 'milestone';
 const String _referendum = 'referendum';
 const int oneReferendumList = 1;
@@ -23,7 +23,7 @@ class ProposalsStateMapper extends StateMapper {
     bool isScroll = false,
   }) {
     if (areAllResultsError(results)) {
-      return currentState.copyWith(pageState: PageState.failure, error: ProposalsError.unableToLoad);
+      return currentState.copyWith(pageState: PageState.failure, errorMessage: 'Error loading proposals'.i18n);
     } else {
       results.retainWhere((Result i) => i.isValue);
       final values = results.map((Result i) => i.asValue!.value).toList();
@@ -57,7 +57,7 @@ class ProposalsStateMapper extends StateMapper {
       final updatedProposals = newProposals.map((i) {
         if (i.campaignType == _alliance) {
           i = i.copyWith(allianceLevel.voiceNeeded);
-        } else if (i.campaignType == _cmpFunding || i.campaignType == _cmpInvite) {
+        } else if (i.campaignType == _cmp_funding || i.campaignType == _cmp_invite) {
           i = i.copyWith(campaingLevel.voiceNeeded);
         } else if (i.campaignType == _milestone) {
           i = i.copyWith(milestoneLevel.voiceNeeded);

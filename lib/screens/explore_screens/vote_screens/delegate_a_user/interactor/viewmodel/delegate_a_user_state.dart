@@ -1,9 +1,13 @@
-part of 'delegate_a_user_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/local/settings_storage.dart';
+import 'package:seeds/datasource/remote/model/member_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class DelegateAUserState extends Equatable {
   final PageCommand? pageCommand;
   final PageState pageState;
-  final Set<ProfileModel> selectedDelegate;
+  final Set<MemberModel> selectedDelegate;
   final List<String> noShowUsers;
 
   const DelegateAUserState({
@@ -24,7 +28,7 @@ class DelegateAUserState extends Equatable {
   DelegateAUserState copyWith({
     PageCommand? pageCommand,
     PageState? pageState,
-    Set<ProfileModel>? selectedDelegate,
+    Set<MemberModel>? selectedDelegate,
     List<String>? noShowUsers,
   }) {
     return DelegateAUserState(
@@ -39,7 +43,7 @@ class DelegateAUserState extends Equatable {
     final List<String> noShowUsers = [settingsStorage.accountName];
 
     return DelegateAUserState(
-      pageState: PageState.success,
+      pageState: PageState.initial,
       selectedDelegate: {},
       noShowUsers: noShowUsers,
     );
