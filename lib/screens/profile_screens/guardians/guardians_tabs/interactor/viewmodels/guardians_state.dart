@@ -1,19 +1,14 @@
-part of 'guardians_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
 class GuardiansState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
   final PageCommand? pageCommand;
   final int indexDialog;
-  final bool isAddGuardianButtonLoading;
 
-  const GuardiansState({
-    required this.pageState,
-    this.errorMessage,
-    this.pageCommand,
-    required this.indexDialog,
-    required this.isAddGuardianButtonLoading,
-  });
+  const GuardiansState({required this.pageState, this.errorMessage, this.pageCommand, required this.indexDialog});
 
   @override
   List<Object?> get props => [
@@ -21,7 +16,6 @@ class GuardiansState extends Equatable {
         pageCommand,
         indexDialog,
         errorMessage,
-        isAddGuardianButtonLoading,
       ];
 
   GuardiansState copyWith({
@@ -29,18 +23,15 @@ class GuardiansState extends Equatable {
     String? errorMessage,
     PageCommand? pageCommand,
     int? indexDialog,
-    bool? isAddGuardianButtonLoading,
   }) {
     return GuardiansState(
-      pageState: pageState ?? this.pageState,
-      errorMessage: errorMessage,
-      pageCommand: pageCommand,
-      indexDialog: indexDialog ?? this.indexDialog,
-      isAddGuardianButtonLoading: isAddGuardianButtonLoading ?? this.isAddGuardianButtonLoading,
-    );
+        pageState: pageState ?? this.pageState,
+        errorMessage: errorMessage,
+        pageCommand: pageCommand,
+        indexDialog: indexDialog ?? this.indexDialog);
   }
 
   factory GuardiansState.initial() {
-    return const GuardiansState(pageState: PageState.initial, indexDialog: 1, isAddGuardianButtonLoading: false);
+    return const GuardiansState(pageState: PageState.initial, indexDialog: 1);
   }
 }

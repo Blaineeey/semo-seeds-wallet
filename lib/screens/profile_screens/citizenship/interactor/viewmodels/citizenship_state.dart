@@ -1,26 +1,31 @@
-part of 'citizenship_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/datasource/remote/model/profile_model.dart';
+import 'package:seeds/domain-shared/page_state.dart';
+import 'package:seeds/screens/profile_screens/contribution/interactor/viewmodels/scores_view_model.dart';
 
 /// Resident requirements
-const int residentRequiredReputation = 50;
-const int residentRequiredVisitorsInvited = 1;
-const int residentRequiredPlantedSeeds = 50;
-const int residentRequiredSeedsTransactions = 1;
+const int resident_required_reputation = 50;
+const int resident_required_visitors_invited = 1;
+const int resident_required_planted_seeds = 50;
+const int resident_required_seeds_transactions = 1;
 
 /// Citizen requirements
-const int citizenRequiredReputation = 50;
-const int citizenRequiredAccountAge = 60;
-const int citizenRequiredPlantedSeeds = 200;
-const int citizenRequiredSeedsTransactions = 5;
-const int citizenRequiredCitizenVouched = 3;
+const int citizen_required_reputation = 50;
+const int citizen_required_visitors_invited = 3;
+const int citizen_required_account_age = 60;
+const int citizen_required_planted_seeds = 200;
+const int citizen_required_seeds_transactions = 5;
+const int citizen_required_residents_invited = 1;
 
+/// --- STATE
 class CitizenshipState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
   final ProfileModel? profile;
-  final ScoreModel? reputationScore;
+  final ScoresViewModel? score;
   final double? progressTimeline;
   final int? invitedVisitors;
-  final int? citizenCeremony;
+  final int? invitedResidents;
   final double? plantedSeeds;
   final int? seedsTransactionsCount;
 
@@ -28,9 +33,9 @@ class CitizenshipState extends Equatable {
     required this.pageState,
     this.errorMessage,
     this.profile,
-    this.reputationScore,
+    this.score,
     this.progressTimeline,
-    this.citizenCeremony,
+    this.invitedResidents,
     this.invitedVisitors,
     this.plantedSeeds,
     this.seedsTransactionsCount,
@@ -41,9 +46,9 @@ class CitizenshipState extends Equatable {
         pageState,
         errorMessage,
         profile,
-        reputationScore,
+        score,
         progressTimeline,
-        citizenCeremony,
+        invitedResidents,
         invitedVisitors,
         plantedSeeds,
         seedsTransactionsCount,
@@ -53,9 +58,9 @@ class CitizenshipState extends Equatable {
     PageState? pageState,
     String? errorMessage,
     ProfileModel? profile,
-    ScoreModel? reputationScore,
+    ScoresViewModel? score,
     double? progressTimeline,
-    int? citizenCeremony,
+    int? invitedResidents,
     int? invitedVisitors,
     double? plantedSeeds,
     int? seedsTransactionsCount,
@@ -64,9 +69,9 @@ class CitizenshipState extends Equatable {
       pageState: pageState ?? this.pageState,
       errorMessage: errorMessage,
       profile: profile ?? this.profile,
-      reputationScore: reputationScore ?? this.reputationScore,
+      score: score ?? this.score,
       progressTimeline: progressTimeline ?? this.progressTimeline,
-      citizenCeremony: citizenCeremony ?? this.citizenCeremony,
+      invitedResidents: invitedResidents ?? this.invitedResidents,
       invitedVisitors: invitedVisitors ?? this.invitedVisitors,
       plantedSeeds: plantedSeeds ?? this.plantedSeeds,
       seedsTransactionsCount: seedsTransactionsCount ?? this.seedsTransactionsCount,

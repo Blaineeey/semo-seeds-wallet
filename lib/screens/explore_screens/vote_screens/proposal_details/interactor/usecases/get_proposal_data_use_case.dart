@@ -4,7 +4,6 @@ import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/datasource/remote/api/profile_repository.dart';
 import 'package:seeds/datasource/remote/api/proposals_repository.dart';
 import 'package:seeds/datasource/remote/api/voice_repository.dart';
-import 'package:seeds/datasource/remote/model/voice_model.dart';
 import 'package:seeds/datasource/remote/model/vote_model.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposal_view_model.dart';
 
@@ -15,7 +14,7 @@ class GetProposalDataUseCase {
 
   Future<List<Result>> run(ProposalViewModel proposal) {
     final userAccount = settingsStorage.accountName;
-    final _getVoice = _getVoiceCall(proposalCategory: proposal.proposalCategory, userAccount: userAccount);
+    final _getVoice = _getVoiceCall(categoryTypeLabel: proposal.categoryTypeLabel, userAccount: userAccount);
 
     final futures = [
       _profileRepository.getProfile(proposal.creator),
@@ -26,22 +25,15 @@ class GetProposalDataUseCase {
   }
 
   Future<Result> _fetchVote(ProposalViewModel proposal, String account) async {
-    final cacheRepository = const CacheRepository();
     late Result result;
     VoteModel? voteModel;
-
-    if (proposal.proposalCategory == ProposalCategory.referendum) {
-      voteModel = await cacheRepository.getReferendumVote(account, proposal.id);
-      if (voteModel == null) {
-        result = await _proposalsRepository.getReferendumVote(proposal.id, account);
-        if (result.isValue) {
-          voteModel = result.asValue!.value as VoteModel;
-          if (voteModel.isVoted) {
-            await cacheRepository.saveReferendumVote(proposal.id, voteModel);
-          }
-        }
+    if (proposal.categoryTypeLabel == 'referendum') {
+      result = await _proposalsRepository.getReferendumVote(proposal.id, account);
+      if (result.isValue) {
+        voteModel = result.asValue!.value as VoteModel;
       }
     } else {
+      final cacheRepository = const CacheRepository();
       voteModel = await cacheRepository.getProposalVote(account, proposal.id);
       if (voteModel == null) {
         result = await _proposalsRepository.getProposalVote(proposal.id, account);
@@ -56,12 +48,12 @@ class GetProposalDataUseCase {
     return result;
   }
 
-  Future<Result<VoiceModel>> _getVoiceCall({required ProposalCategory proposalCategory, required String userAccount}) {
-    if (proposalCategory == ProposalCategory.campaign) {
+  Future<Result> _getVoiceCall({required String categoryTypeLabel, required String userAccount}) {
+    if (categoryTypeLabel == 'campaing') {
       return _voiceRepository.getCampaignVoice(userAccount);
-    } else if (proposalCategory == ProposalCategory.milestone) {
+    } else if (categoryTypeLabel == 'milestone') {
       return _voiceRepository.getMilestoneVoice(userAccount);
-    } else if (proposalCategory == ProposalCategory.alliance) {
+    } else if (categoryTypeLabel == 'alliance') {
       return _voiceRepository.getAllianceVoice(userAccount);
     } else {
       return _voiceRepository.getReferendumVoice(userAccount);

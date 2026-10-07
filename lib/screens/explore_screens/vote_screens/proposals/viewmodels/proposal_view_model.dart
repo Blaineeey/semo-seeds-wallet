@@ -1,33 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seeds/datasource/remote/model/proposal_model.dart';
 import 'package:seeds/datasource/remote/model/referendum_model.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-const double unityThreshold = 0.9;
-
-enum ProposalCategory {
-  campaign,
-  alliance,
-  milestone,
-  referendum;
-
-  String localizedDescription(BuildContext context) {
-    switch (this) {
-      case ProposalCategory.alliance:
-        return context.loc.proposalCategoryAlliance;
-      case ProposalCategory.campaign:
-        return context.loc.proposalCategoryCampaign;
-      case ProposalCategory.milestone:
-        return context.loc.proposalCategoryMilestone;
-      case ProposalCategory.referendum:
-        return context.loc.proposalCategoryReferendum;
-    }
-  }
-}
 
 class ProposalViewModel {
   final int id;
@@ -72,6 +48,9 @@ class ProposalViewModel {
     this.voiceNeeded = 0,
   });
 
+  /// Percentage to advance 0-1 scale
+  double get voiceNeededBarPercent => ((voiceNeeded * 100) / total) / 100;
+
   /// Percentage in favour 0-1 scale
   double get favourAgainstBarPercent => total == 0 ? 0 : (favour.toDouble() / total.toDouble());
 
@@ -88,28 +67,8 @@ class ProposalViewModel {
     }
   }
 
-  String localizedStatus(BuildContext context) {
-    if (status == "passed") {
-      return context.loc.proposalStatusPassed;
-    } else if (status == "rejected") {
-      return context.loc.proposalStatusRejected;
-    } else {
-      return status;
-    }
-  }
-
-  ProposalCategory get proposalCategory {
-    if (campaignType == 'cmp.funding' || campaignType == 'cmp.invite') {
-      return ProposalCategory.campaign;
-    } else if (campaignType == ProposalCategory.alliance.name) {
-      return ProposalCategory.alliance;
-    } else if (campaignType == ProposalCategory.milestone.name) {
-      return ProposalCategory.milestone;
-    } else if (campaignType == ProposalCategory.referendum.name) {
-      return ProposalCategory.referendum;
-    } else {
-      return ProposalCategory.campaign;
-    }
+  String get categoryTypeLabel {
+    return campaignType == 'cmp.funding' || campaignType == 'cmp.invite' ? 'campaign' : campaignType;
   }
 
   ProposalViewModel copyWith(int voiceNeeded) {
@@ -175,10 +134,10 @@ class ProposalViewModel {
       description: referendum.description,
       image: referendum.image,
       url: referendum.url,
-      status: referendum.scope,
+      status: '',
       stage: '',
       creationDate: referendum.createdAt,
-      campaignType: ProposalCategory.referendum.name,
+      campaignType: 'referendum',
     );
   }
 }
