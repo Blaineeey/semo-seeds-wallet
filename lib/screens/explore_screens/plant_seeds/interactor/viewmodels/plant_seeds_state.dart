@@ -1,24 +1,32 @@
-part of 'plant_seeds_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:seeds/blocs/rates/viewmodels/rates_state.dart';
+import 'package:seeds/datasource/local/models/fiat_data_model.dart';
+import 'package:seeds/datasource/local/models/token_data_model.dart';
+import 'package:seeds/domain-shared/page_command.dart';
+import 'package:seeds/domain-shared/page_state.dart';
 
+class ShowPlantSeedsSuccess extends PageCommand {}
+
+/// --- STATE
 class PlantSeedsState extends Equatable {
   final PageState pageState;
   final PageCommand? pageCommand;
-  final PlantSeedsError? error;
+  final String? errorMessage;
   final RatesState ratesState;
   final bool isAutoFocus;
-  final TokenDataModel tokenAmount;
-  final FiatDataModel fiatAmount;
+  final String fiatAmount;
   final TokenDataModel? availableBalance;
   final FiatDataModel? availableBalanceFiat;
   final TokenDataModel? plantedBalance;
   final FiatDataModel? plantedBalanceFiat;
   final bool isPlantSeedsButtonEnabled;
+  final double quantity;
   final bool showAlert;
 
   const PlantSeedsState({
     required this.pageState,
     this.pageCommand,
-    this.error,
+    this.errorMessage,
     required this.ratesState,
     required this.isAutoFocus,
     required this.fiatAmount,
@@ -27,7 +35,7 @@ class PlantSeedsState extends Equatable {
     this.plantedBalance,
     this.plantedBalanceFiat,
     required this.isPlantSeedsButtonEnabled,
-    required this.tokenAmount,
+    required this.quantity,
     required this.showAlert,
   });
 
@@ -35,7 +43,7 @@ class PlantSeedsState extends Equatable {
   List<Object?> get props => [
         pageState,
         pageCommand,
-        error,
+        errorMessage,
         ratesState,
         isAutoFocus,
         fiatAmount,
@@ -44,29 +52,29 @@ class PlantSeedsState extends Equatable {
         plantedBalance,
         plantedBalanceFiat,
         isPlantSeedsButtonEnabled,
-        tokenAmount,
+        quantity,
         showAlert,
       ];
 
   PlantSeedsState copyWith({
     PageState? pageState,
     PageCommand? pageCommand,
-    PlantSeedsError? error,
+    String? errorMessage,
     RatesState? ratesState,
     bool? isAutoFocus,
-    TokenDataModel? tokenAmount,
-    FiatDataModel? fiatAmount,
+    String? fiatAmount,
     TokenDataModel? availableBalance,
     FiatDataModel? availableBalanceFiat,
     TokenDataModel? plantedBalance,
     FiatDataModel? plantedBalanceFiat,
     bool? isPlantSeedsButtonEnabled,
+    double? quantity,
     bool? showAlert,
   }) {
     return PlantSeedsState(
       pageState: pageState ?? this.pageState,
       pageCommand: pageCommand,
-      error: error,
+      errorMessage: errorMessage,
       ratesState: ratesState ?? this.ratesState,
       isAutoFocus: isAutoFocus ?? this.isAutoFocus,
       fiatAmount: fiatAmount ?? this.fiatAmount,
@@ -75,7 +83,7 @@ class PlantSeedsState extends Equatable {
       plantedBalance: plantedBalance ?? this.plantedBalance,
       plantedBalanceFiat: plantedBalanceFiat ?? this.plantedBalanceFiat,
       isPlantSeedsButtonEnabled: isPlantSeedsButtonEnabled ?? this.isPlantSeedsButtonEnabled,
-      tokenAmount: tokenAmount ?? this.tokenAmount,
+      quantity: quantity ?? this.quantity,
       showAlert: showAlert ?? this.showAlert,
     );
   }
@@ -85,12 +93,10 @@ class PlantSeedsState extends Equatable {
       pageState: PageState.initial,
       ratesState: ratesState,
       isAutoFocus: true,
-      tokenAmount: TokenDataModel(0),
-      fiatAmount: FiatDataModel(0),
+      fiatAmount: 0.toString(),
       isPlantSeedsButtonEnabled: false,
+      quantity: 0,
       showAlert: false,
     );
   }
 }
-
-class ShowPlantSeedsSuccess extends PageCommand {}
