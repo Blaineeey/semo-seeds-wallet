@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
 import 'package:seeds/blocs/rates/viewmodels/rates_bloc.dart';
-import 'package:seeds/components/error_dialog.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
@@ -24,7 +23,7 @@ import 'package:seeds/screens/transfer/send/send_confirmation/interactor/viewmod
 import 'package:seeds/utils/build_context_extension.dart';
 
 class SendConfirmationScreen extends StatelessWidget {
-  const SendConfirmationScreen({super.key});
+  const SendConfirmationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +53,18 @@ class SendConfirmationScreen extends StatelessWidget {
                       InAppReview.instance.requestReview();
                       settingsStorage.saveDateSinceRateAppPrompted(DateTime.now().millisecondsSinceEpoch);
                     }
-                    SendTransactionSuccessDialog.fromPageCommand(pageCommand).show(context);
+                    showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button
+                      builder: (_) => SendTransactionSuccessDialog.fromPageCommand(pageCommand),
+                    );
                   } else if (pageCommand is ShowTransactionSuccess) {
                     Navigator.of(context).pop(state.transactionResult);
-                    GenericTransactionSuccessDialog(pageCommand.transactionModel).show(context);
-                  } else if (pageCommand is ShowFailedTransactionReason) {
-                    ErrorDialog(
-                      title: pageCommand.title,
-                      details: pageCommand.details,
-                      onRightButtonPressed: () {
-                        final RatesState rates = BlocProvider.of<RatesBloc>(context).state;
-                        BlocProvider.of<SendConfirmationBloc>(context).add(OnSendTransactionButtonPressed(rates));
-                      },
-                    ).show(context);
+                    showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button
+                      builder: (_) => GenericTransactionSuccessDialog(pageCommand.transactionModel),
+                    );
                   } else if (pageCommand is ShowInvalidTransactionReason) {
                     eventBus.fire(ShowSnackBar(pageCommand.reason));
                   }
@@ -76,7 +74,7 @@ class SendConfirmationScreen extends StatelessWidget {
                     case PageState.loading:
                       return state.isTransfer ? const SendLoadingIndicator() : const FullPageLoadingIndicator();
                     case PageState.failure:
-                      return FullPageErrorIndicator(errorMessage: state.errorMessage);
+                      return const FullPageErrorIndicator();
                     case PageState.success:
                       return SafeArea(
                         minimum: const EdgeInsets.all(horizontalEdgePadding),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
+import 'package:seeds/i18n/explore_screens/vote/proposals/proposals.i18n.dart';
 import 'package:seeds/images/vote/category_label.dart';
 import 'package:seeds/images/vote/double_sided_arrow.dart';
 import 'package:seeds/images/vote/triangle_pass_value.dart';
@@ -9,7 +10,6 @@ import 'package:seeds/images/vote/votes_down_arrow.dart';
 import 'package:seeds/images/vote/votes_up_arrow.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/components/vote_amount_label/vote_amount_label.dart';
 import 'package:seeds/screens/explore_screens/vote_screens/proposals/viewmodels/proposal_view_model.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:seeds/utils/cap_utils.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
@@ -17,7 +17,7 @@ class ProposalCard extends StatefulWidget {
   final ProposalViewModel proposal;
   final VoidCallback onTap;
 
-  const ProposalCard({super.key, required this.proposal, required this.onTap});
+  const ProposalCard({Key? key, required this.proposal, required this.onTap}) : super(key: key);
 
   @override
   _ProposalCardState createState() => _ProposalCardState();
@@ -150,8 +150,7 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                    context.loc
-                                                        .proposalVotesInFavourPercent(widget.proposal.favourPercent),
+                                                    '${'In favour'.i18n}${': ${widget.proposal.favourPercent}'}',
                                                     style: Theme.of(context).textTheme.subtitle3Green),
                                               ),
                                             ],
@@ -162,7 +161,7 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Flexible(
-                                                child: Text(context.loc.proposalVotesTotal(widget.proposal.total),
+                                                child: Text('${'Votes'.i18n}${': ${widget.proposal.total}'}',
                                                     style: Theme.of(context).textTheme.subtitle3Opacity),
                                               ),
                                             ],
@@ -184,9 +183,7 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
                                                 ),
                                               ),
                                               Flexible(
-                                                child: Text(
-                                                    context.loc
-                                                        .proposalVotesAgainstPercent(widget.proposal.againstPercent),
+                                                child: Text('${'Against'.i18n}${': ${widget.proposal.againstPercent}'}',
                                                     style: Theme.of(context).textTheme.subtitle3LightGreen6),
                                               ),
                                             ],
@@ -216,8 +213,8 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
                   painter: const CategoryLabel(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-                    child: Text(widget.proposal.proposalCategory.localizedDescription(context).inCaps,
-                        style: Theme.of(context).textTheme.titleSmall),
+                    child: Text(widget.proposal.proposalCategory.name.i18n.inCaps,
+                        style: Theme.of(context).textTheme.subtitle2),
                   ),
                 ),
               ],
@@ -229,12 +226,12 @@ class _ProposalCardState extends State<ProposalCard> with AutomaticKeepAliveClie
             Positioned(
               top: 10.0,
               left: 26.0,
-              child: DecoratedBox(
+              child: Container(
                 decoration: BoxDecoration(color: AppColors.darkGreen2, borderRadius: BorderRadius.circular(6.0)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   child: Text(
-                    widget.proposal.localizedStatus(context).toUpperCase(),
+                    widget.proposal.status.i18n.toUpperCase(),
                     style: widget.proposal.status == 'rejected'
                         ? Theme.of(context).textTheme.subtitle3OpacityEmphasisRed
                         : Theme.of(context).textTheme.subtitle3OpacityEmphasisGreen,

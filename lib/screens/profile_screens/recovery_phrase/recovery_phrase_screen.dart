@@ -13,7 +13,7 @@ const _numberOfWords = 12;
 const _numberOfColumns = 3;
 
 class RecoveryPhraseScreen extends StatelessWidget {
-  const RecoveryPhraseScreen({super.key});
+  const RecoveryPhraseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class RecoveryPhraseScreen extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: Theme.of(context).textTheme.subtitle2,
                           children: <TextSpan>[
                             const TextSpan(text: 'Get a pen and paper before you start. \nWrite down or '),
                             TextSpan(

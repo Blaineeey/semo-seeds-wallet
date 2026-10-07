@@ -9,10 +9,11 @@ import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/global_error.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/screens/authentication/import_key/import_key_errors.dart';
 import 'package:seeds/screens/authentication/import_key/interactor/viewmodels/import_key_bloc.dart';
 
 class ImportKeyAccountsWidget extends StatelessWidget {
-  const ImportKeyAccountsWidget({super.key});
+  const ImportKeyAccountsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,7 @@ class ImportKeyAccountsWidget extends StatelessWidget {
                                 ),
                                 title: Text(
                                   profile.nickname.isNotEmpty ? profile.nickname : profile.account,
-                                  style: Theme.of(context).textTheme.labelLarge,
+                                  style: Theme.of(context).textTheme.button,
                                 ),
                                 subtitle: Text(
                                   profile.account,

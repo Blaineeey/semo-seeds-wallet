@@ -19,7 +19,7 @@ class SaveImageUseCase extends InputUseCase<String, SaveImageUseCaseInput> {
   }
 }
 
-enum PathPrefix { profileImage, regionImage, regionEventImage }
+enum PathPrefix { profileImage, regionImage }
 
 extension PathPrefixToString on PathPrefix {
   String pathPrefixString() {
@@ -28,8 +28,6 @@ extension PathPrefixToString on PathPrefix {
         return "ProfileImage";
       case PathPrefix.regionImage:
         return "regionImage";
-      case PathPrefix.regionEventImage:
-        return "regionEventImage";
     }
   }
 }

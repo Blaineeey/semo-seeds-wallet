@@ -1,50 +1,59 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:equatable/equatable.dart';
-import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/datasource/remote/model/token_model.dart';
+import 'package:seeds/components/regions_map/interactor/view_models/place.dart';
+import 'package:seeds/datasource/remote/model/region_model.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
-import 'package:seeds/domain-shared/shared_use_cases/get_available_balance_use_case.dart';
-import 'package:seeds/domain-shared/shared_use_cases/get_region_use_case.dart';
-import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/screens/explore_screens/regions_screens/join_region/interactor/mappers/create_region_balance_result_state_mapper.dart';
+import 'package:seeds/screens/explore_screens/regions_screens/join_region/interactor/usecases/get_firebase_regions_use_case.dart';
+import 'package:seeds/screens/explore_screens/regions_screens/join_region/interactor/usecases/get_regions_use_case.dart';
 
 part 'join_region_event.dart';
 part 'join_region_state.dart';
 
 class JoinRegionBloc extends Bloc<JoinRegionEvent, JoinRegionState> {
   JoinRegionBloc() : super(JoinRegionState.initial()) {
-    on<OnJoinRegionMounted>(_onJoinRegionMounted);
-    on<OnRegionsResultsChanged>((event, emit) => emit(state.copyWith(isRegionsResultsEmpty: event.isEmpty)));
-    on<OnCreateRegionTapped>(_onCreateRegionTapped);
-    on<OnCreateRegionNextTapped>(_onCreateRegionNextTapped);
-    on<ClearJoinRegionPageCommand>((_, emit) => emit(state.copyWith()));
+    on<OnLoadRegions>(_onLoadRegions);
+    on<OnUpdateMapLocation>(_onUpdateMapLocations);
+    on<OnRegionResultSelected>(_onRegionResultSelected);
   }
 
-  Future<void> _onJoinRegionMounted(OnJoinRegionMounted event, Emitter<JoinRegionState> emit) async {
+  Future<void> _onLoadRegions(OnLoadRegions event, Emitter<JoinRegionState> emit) async {
     emit(state.copyWith(pageState: PageState.loading));
-    // Check if user has joined a Region
-    final result = await GetRegionUseCase().run(settingsStorage.accountName);
+    final result = await GetRegionsUseCase().run();
     if (result.isError) {
       emit(state.copyWith(pageState: PageState.failure));
     } else {
-      if (result.asValue!.value == null) {
-        // User has not joined a Region
-        emit(state.copyWith(pageState: PageState.success));
-      } else {
-        // User has joined a Region
-        emit(state.copyWith(pageCommand: NavigateToRoute(Routes.region)));
-      }
+      emit(state.copyWith(pageState: PageState.success, regions: result.asValue!.value));
     }
   }
 
-  Future<void> _onCreateRegionTapped(OnCreateRegionTapped event, Emitter<JoinRegionState> emit) async {
-    emit(state.copyWith(isCreateRegionButtonLoading: true));
-    final result = await GetAvailableBalanceUseCase().run(seedsToken);
-    emit(CreateRegionBalanceResultStateMapper().mapResultToState(state, result));
+  Future<void> _onUpdateMapLocations(OnUpdateMapLocation event, Emitter<JoinRegionState> emit) async {
+    final result = await GetFirebaseRegionsUseCase()
+        .run(GetFirebaseRegionsUseCase.input(lat: event.place.lat, lng: event.place.lng, radius: 1000));
+    if (result.isError) {
+      emit(state.copyWith(pageState: PageState.failure));
+    } else {
+      final fireRegions = result.asValue!.value;
+      final List<RegionModel> newRegions = [];
+      for (final i in fireRegions) {
+        final found = state.regions.singleWhereOrNull((r) => r.id == i.locationId);
+        if (found != null) {
+          newRegions.add(found.addImageUrlToModel(i.imageUrl));
+        }
+      }
+      emit(state.copyWith(regions: newRegions, currentPlace: event.place));
+    }
   }
 
-  void _onCreateRegionNextTapped(OnCreateRegionNextTapped event, Emitter<JoinRegionState> emit) {
-    emit(state.copyWith(pageCommand: NavigateToRoute(Routes.createRegion)));
+  Future<void> _onRegionResultSelected(OnRegionResultSelected event, Emitter<JoinRegionState> emit) async {
+    // TODO(Raul): Waiting for call to check if a user already has joined a region
+    // final result = await JoinRegionUseCase()
+    //     .run(JoinRegionUseCase.input(region: event.regionId, userAccount: settingsStorage.accountName));
+    // if (result.isError) {
+    //   emit(state.copyWith(pageState: PageState.failure));
+    // } else {
+    //   emit(state.copyWith(pageCommand: NavigateToRoute(Routes.region)));
+    // }
   }
 }

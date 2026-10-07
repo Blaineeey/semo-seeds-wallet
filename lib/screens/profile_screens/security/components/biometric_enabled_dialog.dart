@@ -5,7 +5,7 @@ import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/utils/build_context_extension.dart';
 
 class BiometricEnabledDialog extends StatelessWidget {
-  const BiometricEnabledDialog({super.key});
+  const BiometricEnabledDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class BiometricEnabledDialog extends StatelessWidget {
         Text(
           context.loc.securityBiometricEnabledDescription,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: Theme.of(context).textTheme.subtitle2,
         ),
         const SizedBox(height: 16.0),
       ],

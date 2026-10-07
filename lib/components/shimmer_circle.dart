@@ -5,7 +5,7 @@ import 'package:shimmer/shimmer.dart';
 class ShimmerCircle extends StatelessWidget {
   final double size;
 
-  const ShimmerCircle(this.size, {super.key});
+  const ShimmerCircle(this.size, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

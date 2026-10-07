@@ -15,7 +15,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegates_ta
 import 'package:seeds/screens/explore_screens/vote_screens/delegate/delegates_tab/interactor/viewmodels/delegates_page_commands.dart';
 
 class DelegatesTab extends StatelessWidget {
-  const DelegatesTab({super.key});
+  const DelegatesTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class DelegatesTab extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                             'Delegating your vote means to entrust the power of your vote to another Citizen.  Please choose your delegate carefully!',
-                            style: Theme.of(context).textTheme.titleSmall),
+                            style: Theme.of(context).textTheme.subtitle2),
                       ),
                       const SizedBox(height: 30),
                       DelegateCard(

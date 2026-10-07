@@ -9,7 +9,7 @@ import 'package:seeds/domain-shared/ui_constants.dart';
 import 'package:seeds/screens/explore_screens/vouch/sponsor_tab/interactor/viewmodels/sponsor_bloc.dart';
 
 class SponsorTab extends StatelessWidget {
-  const SponsorTab({super.key});
+  const SponsorTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

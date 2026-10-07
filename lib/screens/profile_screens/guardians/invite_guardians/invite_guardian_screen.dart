@@ -13,7 +13,7 @@ import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/profile_screens/guardians/invite_guardians/interactor/viewmodels/invite_guardians_bloc.dart';
 
 class InviteGuardians extends StatelessWidget {
-  const InviteGuardians({super.key});
+  const InviteGuardians({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
