@@ -3,50 +3,22 @@ part of 'edit_name_bloc.dart';
 class EditNameState extends Equatable {
   final PageState pageState;
   final String? errorMessage;
-  final ProfileModel profileModel;
-  final String name;
-  final PageCommand? pageCommand;
+  final String? name;
 
-  bool get isSubmitEnabled => profileModel.nickname != name && name.length <= nameMaxChars;
-
-  const EditNameState({
-    required this.pageState,
-    this.errorMessage,
-    required this.name,
-    required this.profileModel,
-    this.pageCommand,
-  });
+  const EditNameState({required this.pageState, this.errorMessage, this.name});
 
   @override
-  List<Object?> get props => [
-        pageState,
-        errorMessage,
-        name,
-        profileModel,
-        pageCommand,
-      ];
+  List<Object?> get props => [pageState, errorMessage, name];
 
-  EditNameState copyWith({
-    PageState? pageState,
-    String? errorMessage,
-    String? name,
-    ProfileModel? profileModel,
-    PageCommand? pageCommand,
-  }) {
+  EditNameState copyWith({PageState? pageState, String? errorMessage, String? name}) {
     return EditNameState(
       pageState: pageState ?? this.pageState,
       errorMessage: errorMessage,
       name: name ?? this.name,
-      profileModel: profileModel ?? this.profileModel,
-      pageCommand: pageCommand,
     );
   }
 
-  factory EditNameState.initial(ProfileModel profileModel) {
-    return EditNameState(
-      pageState: PageState.initial,
-      profileModel: profileModel,
-      name: profileModel.nickname,
-    );
+  factory EditNameState.initial() {
+    return const EditNameState(pageState: PageState.initial);
   }
 }

@@ -144,16 +144,16 @@ SignUpError? _validateUsername(String? username) {
   final validCharacters = RegExp(r'^[a-z1-5]+$');
 
   if (username.isNullOrEmpty) {
-    return SignUpError.validationFailedSelectUsername;
+    return SignUpError.ValidationFailedSelectUsername;
     // ignore: unnecessary_raw_strings
   } else if (RegExp(r'0|6|7|8|9').allMatches(username!).isNotEmpty) {
-    return SignUpError.validationFailedOnlyNumbers15;
+    return SignUpError.ValidationFailedOnlyNumbers15;
   } else if (username.toLowerCase() != username) {
-    return SignUpError.validationFailedNameLowercaseOnly;
+    return SignUpError.ValidationFailedNameLowercaseOnly;
   } else if (!validCharacters.hasMatch(username) || username.contains(' ')) {
-    return SignUpError.validationFailedNoSpecialCharactersOrSpaces;
+    return SignUpError.ValidationFailedNoSpecialCharactersOrSpaces;
   } else if (username.length != 12) {
-    return SignUpError.validationFailedUsernameMustBe12Characters;
+    return SignUpError.ValidationFailedUsernameMustBe12Characters;
   }
 
   return null;

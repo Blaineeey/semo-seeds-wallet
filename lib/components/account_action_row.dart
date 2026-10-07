@@ -10,18 +10,18 @@ class AccountActionRow extends StatelessWidget {
   final GestureTapCallback? onTileTap;
 
   const AccountActionRow({
-    super.key,
+    Key? key,
     required this.image,
     required this.account,
     required this.nickname,
     this.action,
     this.onTileTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
       child: InkWell(
         onTap: onTileTap,
         child: Row(
@@ -45,7 +45,7 @@ class AccountActionRow extends StatelessWidget {
                           child: Text(
                             nickname.isNotEmpty ? nickname : account,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.labelLarge,
+                            style: Theme.of(context).textTheme.button,
                           ),
                         ),
                         const SizedBox(width: 10),

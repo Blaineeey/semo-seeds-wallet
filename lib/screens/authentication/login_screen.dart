@@ -1,5 +1,7 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/flat_button_long_outlined.dart';
@@ -7,15 +9,15 @@ import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/datasource/remote/firebase/firebase_remote_config.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/navigation/navigation_service.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
 const int _approxWidgetHeight = 450;
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       bottomSheet: Padding(
@@ -33,10 +35,10 @@ class LoginScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(context.loc.loginRecoverAccountActionSegment1, style: Theme.of(context).textTheme.titleSmall),
-              Text(context.loc.loginRecoverAccountActionLink,
+              Text(localization.loginRecoverAccountActionSegment1, style: Theme.of(context).textTheme.subtitle2),
+              Text(localization.loginRecoverAccountActionLink,
                   style: Theme.of(context).textTheme.subtitle2HighEmphasisGreen1),
-              Text(context.loc.loginRecoverAccountActionSegment2, style: Theme.of(context).textTheme.titleSmall),
+              Text(localization.loginRecoverAccountActionSegment2, style: Theme.of(context).textTheme.subtitle2),
             ],
           ),
         ),
@@ -59,14 +61,14 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.loc.loginFirstTimeHere, style: Theme.of(context).textTheme.titleSmall),
+                    Text(localization.loginFirstTimeHere, style: Theme.of(context).textTheme.subtitle2),
                     const SizedBox(height: 10),
                     FlatButtonLong(
                       onPressed: () => NavigationService.of(context).navigateTo(Routes.signup),
-                      title: context.loc.loginClaimInviteCodeButtonTitle,
+                      title: localization.loginClaimInviteCodeButtonTitle,
                     ),
                     const SizedBox(height: 40),
-                    Text(context.loc.loginAlreadyHaveAnAccount, style: Theme.of(context).textTheme.titleSmall),
+                    Text(localization.loginAlreadyHaveAnAccount, style: Theme.of(context).textTheme.subtitle2),
                     const SizedBox(height: 10),
                     FlatButtonLongOutlined(
                       onPressed: () {
@@ -78,7 +80,7 @@ class LoginScreen extends StatelessWidget {
                           NavigationService.of(context).navigateTo(Routes.importKey);
                         }
                       },
-                      title: context.loc.loginImportAccountButtonTitle,
+                      title: localization.loginImportAccountButtonTitle,
                     )
                   ],
                 ),

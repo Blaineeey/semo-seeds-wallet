@@ -21,7 +21,7 @@ import 'package:seeds/screens/explore_screens/unplant_seeds/interactor/viewmodel
 import 'package:seeds/screens/explore_screens/unplant_seeds/interactor/viewmodels/unplant_seeds_page_commands.dart';
 
 class UnplantSeedsScreen extends StatefulWidget {
-  const UnplantSeedsScreen({super.key});
+  const UnplantSeedsScreen({Key? key}) : super(key: key);
 
   @override
   State<UnplantSeedsScreen> createState() => _UnplantSeedsScreenState();
@@ -87,16 +87,16 @@ class _UnplantSeedsScreenState extends State<UnplantSeedsScreen> {
                 return const FullPageErrorIndicator();
               case PageState.success:
                 return SafeArea(
-                  minimum: const EdgeInsets.all(horizontalEdgePadding),
                   child: Stack(
                     children: [
                       SingleChildScrollView(
                         child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: horizontalEdgePadding),
                           height: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight!,
                           child: Column(
                             children: [
                               const SizedBox(height: 26),
-                              Text('Unplant amount', style: Theme.of(context).textTheme.titleLarge),
+                              Text('Unplant amount', style: Theme.of(context).textTheme.headline6),
                               const SizedBox(height: 16),
                               UnplantSeedsAmountEntry(
                                 controller: _amountController,
@@ -135,13 +135,16 @@ class _UnplantSeedsScreenState extends State<UnplantSeedsScreen> {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: FlatButtonLong(
-                          title: 'Unplant Seeds',
-                          enabled: state.isUnplantSeedsButtonEnabled,
-                          onPressed: () =>
-                              BlocProvider.of<UnplantSeedsBloc>(context).add(const OnUnplantSeedsButtonTapped()),
+                      Padding(
+                        padding: const EdgeInsets.all(horizontalEdgePadding),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: FlatButtonLong(
+                            title: 'Unplant Seeds',
+                            enabled: state.isUnplantSeedsButtonEnabled,
+                            onPressed: () =>
+                                BlocProvider.of<UnplantSeedsBloc>(context).add(const OnUnplantSeedsButtonTapped()),
+                          ),
                         ),
                       ),
                     ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seeds/components/profile_avatar.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/datasource/remote/model/profile_model.dart';
-import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/utils/string_extension.dart';
 
@@ -10,10 +10,10 @@ class GuardianRowWidget extends StatelessWidget {
   final bool showGuardianSigned;
 
   const GuardianRowWidget({
-    super.key,
+    Key? key,
     required this.guardianModel,
     required this.showGuardianSigned,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class GuardianRowWidget extends StatelessWidget {
         ),
         title: Text(
           (!guardianModel.nickname.isNullOrEmpty) ? guardianModel.nickname : guardianModel.account,
-          style: Theme.of(context).textTheme.labelLarge,
+          style: Theme.of(context).textTheme.button,
         ),
         subtitle: Text(guardianModel.account, style: Theme.of(context).textTheme.subtitle2OpacityEmphasis),
         onTap: () {});

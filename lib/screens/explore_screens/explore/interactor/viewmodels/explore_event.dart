@@ -16,25 +16,18 @@ class OnExploreCardTapped extends ExploreEvent {
   String toString() => 'OnExploreCardTapped { route: $route }';
 }
 
-class OnBuySeedsCardTapped extends ExploreEvent {
-  const OnBuySeedsCardTapped();
+class OnBuySeedsCardTap extends ExploreEvent {
+  const OnBuySeedsCardTap();
 
   @override
-  String toString() => 'OnBuySeedsCardTapped';
+  String toString() => 'OnBuySeedsCardTap';
 }
 
-class OnFlagUserTapped extends ExploreEvent {
-  const OnFlagUserTapped();
+class OnFlagUserTap extends ExploreEvent {
+  const OnFlagUserTap();
 
   @override
-  String toString() => 'OnFlagUserTapped';
-}
-
-class OnRegionsTapped extends ExploreEvent {
-  const OnRegionsTapped();
-
-  @override
-  String toString() => 'OnRegionsTapped';
+  String toString() => 'OnFlagUserTap';
 }
 
 class ClearExplorePageCommand extends ExploreEvent {

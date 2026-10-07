@@ -11,13 +11,13 @@ class ClaimedInviteRow extends StatelessWidget {
   final GestureTapCallback? resultCallBack;
 
   const ClaimedInviteRow({
-    super.key,
+    Key? key,
     this.imageUrl,
     required this.account,
     this.name,
     this.resultCallBack,
     required this.status,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class ClaimedInviteRow extends StatelessWidget {
                     Text(
                       (name != null && name?.isNotEmpty == true) ? name! : account,
                       textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.button,
                     ),
                     const SizedBox(height: 8),
                     Text(account, style: Theme.of(context).textTheme.subtitle2OpacityEmphasis)

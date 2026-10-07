@@ -4,19 +4,18 @@ import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/quadstate_clipboard_icon_button.dart';
 import 'package:seeds/components/search_result_row.dart';
 import 'package:seeds/components/text_form_field_custom.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
-import 'package:seeds/domain-shared/global_error.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/i18n/authentication/recover/recover.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_search/interactor/viewmodels/recover_account_page_command.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_search/interactor/viewmodels/recover_account_search_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:seeds/utils/debouncer.dart';
 
 class RecoverAccountSearchScreen extends StatefulWidget {
-  const RecoverAccountSearchScreen({super.key});
+  const RecoverAccountSearchScreen({Key? key}) : super(key: key);
 
   @override
   _RecoverAccountSearchScreenState createState() => _RecoverAccountSearchScreenState();
@@ -53,65 +52,59 @@ class _RecoverAccountSearchScreenState extends State<RecoverAccountSearchScreen>
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(),
+            bottomSheet: Padding(
+              padding: const EdgeInsets.all(horizontalEdgePadding),
+              child: FlatButtonLong(
+                title: 'Next'.i18n,
+                enabled: state.isGuardianActive,
+                onPressed: () => BlocProvider.of<RecoverAccountSearchBloc>(context).add(const OnNextButtonTapped()),
+              ),
+            ),
             body: SafeArea(
-              minimum: const EdgeInsets.all(horizontalEdgePadding),
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TextFormFieldCustom(
-                          maxLength: 12,
-                          counterText: null,
-                          labelText: context.loc.recoverAccountSearchTextFormTitle,
-                          controller: _keyController,
-                          suffixIcon: QuadStateClipboardIconButton(
-                            isChecked: state.isGuardianActive,
-                            onClear: () => _keyController.clear(),
-                            isLoading: state.pageState == PageState.loading,
-                            canClear: _keyController.text.isNotEmpty,
-                          ),
-                          onChanged: (value) {
-                            _debouncer.run(
-                                () => BlocProvider.of<RecoverAccountSearchBloc>(context).add(OnUsernameChanged(value)));
-                          },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormFieldCustom(
+                      maxLength: 12,
+                      counterText: null,
+                      labelText: "Username".i18n,
+                      controller: _keyController,
+                      suffixIcon: QuadStateClipboardIconButton(
+                        isChecked: state.isGuardianActive,
+                        onClear: () => _keyController.clear(),
+                        isLoading: state.pageState == PageState.loading,
+                        canClear: _keyController.text.isNotEmpty,
+                      ),
+                      onChanged: (value) {
+                        _debouncer.run(
+                            () => BlocProvider.of<RecoverAccountSearchBloc>(context).add(OnUsernameChanged(value)));
+                      },
+                    ),
+                    if (state.accountFound)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.darkGreen2,
+                          borderRadius: BorderRadius.circular(defaultCardBorderRadius),
                         ),
-                        if (state.accountFound)
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: AppColors.darkGreen2,
-                              borderRadius: BorderRadius.circular(defaultCardBorderRadius),
-                            ),
-                            child: SearchResultRow(
-                              member: state.accountInfo!,
-                              onTap: () =>
-                                  BlocProvider.of<RecoverAccountSearchBloc>(context).add(const OnNextButtonTapped()),
-                            ),
-                          ),
-                        const SizedBox(height: 80),
-                        if (state.errorMessage != null)
-                          Center(
-                            child: Text(
-                              state.errorMessage?.localizedDescription(context) ??
-                                  GlobalError.unknown.localizedDescription(context),
-                              style: Theme.of(context).textTheme.subtitle3Red,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: FlatButtonLong(
-                      title: context.loc.recoverAccountSearchButtonTitle,
-                      enabled: state.isGuardianActive,
-                      onPressed: () =>
-                          BlocProvider.of<RecoverAccountSearchBloc>(context).add(const OnNextButtonTapped()),
-                    ),
-                  ),
-                ],
+                        child: SearchResultRow(
+                          member: state.accountInfo!,
+                          onTap: () =>
+                              BlocProvider.of<RecoverAccountSearchBloc>(context).add(const OnNextButtonTapped()),
+                        ),
+                      ),
+                    const SizedBox(height: 30),
+                    if (state.errorMessage != null)
+                      Center(
+                        child: Text(
+                          state.errorMessage!,
+                          style: Theme.of(context).textTheme.subtitle3Red,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           );

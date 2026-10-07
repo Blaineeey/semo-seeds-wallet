@@ -1,7 +1,6 @@
 import 'package:seeds/blocs/deeplink/model/deep_link_data.dart';
 import 'package:seeds/blocs/deeplink/model/guardian_recovery_request_data.dart';
 import 'package:seeds/blocs/deeplink/model/invite_link_data.dart';
-import 'package:seeds/blocs/deeplink/model/region_link_data.dart';
 import 'package:seeds/blocs/deeplink/viewmodels/deeplink_bloc.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
 import 'package:seeds/domain-shared/result_to_state_mapper.dart';
@@ -12,34 +11,33 @@ import 'package:seeds/utils/string_extension.dart';
 class DeepLinkStateMapper extends StateMapper {
   DeeplinkState mapResultToState(DeeplinkState currentState, DeepLinkData deepLinkData) {
     switch (deepLinkData.deepLinkPlaceHolder) {
-      case DeepLinkPlaceHolder.guardian:
-        final newPublicKey = deepLinkData.data['new_public_key'];
-        final userAccount = deepLinkData.data['user_account'];
+      case DeepLinkPlaceHolder.linkGuardians:
+        final newPublicKey = deepLinkData.data["new_public_key"];
+        final userAccount = deepLinkData.data["user_account"];
+
         return currentState.copyWith(
           showGuardianApproveOrDenyScreen: GuardianRecoveryRequestData(
             guardianAccount: userAccount,
             publicKey: newPublicKey,
           ),
         );
-      case DeepLinkPlaceHolder.invite:
+      case DeepLinkPlaceHolder.linkInvite:
         if (settingsStorage.accountName.isNullOrEmpty) {
-          // Handle invite link. Send user to memonic screen.
-          return currentState.copyWith(inviteLinkData: InviteLinkData(deepLinkData.data['Mnemonic']));
+          // handle invite link. Send user to memonic screen.
+          final mnemonic = deepLinkData.data["Mnemonic"];
+          return currentState.copyWith(inviteLinkData: InviteLinkData(mnemonic));
         } else {
           //  If user is logged in, Ignore invite link
           return currentState;
         }
-      case DeepLinkPlaceHolder.region:
-        // Handle region link. Send user to region screen (join mode).
-        return currentState.copyWith(regionLinkData: RegionLinkData(deepLinkData.data['region']));
-      case DeepLinkPlaceHolder.invoice:
-        final invite = deepLinkData.data['invoice'] as Result<dynamic>;
+      case DeepLinkPlaceHolder.linkInvoice:
+        final invite = deepLinkData.data["invoice"] as Result<dynamic>;
         if (invite.isValue) {
           return currentState.copyWith(signingRequest: invite.valueOrNull);
         } else {
           return currentState;
         }
-      case DeepLinkPlaceHolder.unknown:
+      case DeepLinkPlaceHolder.linkUnknown:
         // Don't know how to handle this link. Return current state
         return currentState;
     }

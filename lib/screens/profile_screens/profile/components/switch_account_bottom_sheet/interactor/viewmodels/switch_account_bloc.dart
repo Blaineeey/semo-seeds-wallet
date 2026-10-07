@@ -32,7 +32,7 @@ class SwitchAccountBloc extends Bloc<SwitchAccountEvent, SwitchAccountState> {
         .toList();
     final List<String?> publicKeys = keys.map((i) => i.publicKey).toList();
     if (publicKeys.contains(null) || publicKeys.contains('')) {
-      emit(state.copyWith(pageState: PageState.failure, error: ImportKeyError.invalidPrivateKey));
+      emit(state.copyWith(pageState: PageState.failure, error: ImportKeyError.InvalidPrivateKey));
     } else {
       final results = await ImportAccountsUseCase().run(List<String>.from(publicKeys));
       emit(FindAccountsResultStateMapper().mapResultsToState(state, results, keys));
@@ -41,7 +41,7 @@ class SwitchAccountBloc extends Bloc<SwitchAccountEvent, SwitchAccountState> {
 
   Future<void> _onAccountSelected(OnAccountSelected event, Emitter<SwitchAccountState> emit) async {
     emit(state.copyWith(currentAcccout: event.profile));
-    final result = await GetPublicKeysFromAccountUseCase().run(event.profile.account);
+    final result = await GetPublicKeyFromAccountUseCase().run(event.profile.account);
     emit(SetFoundPrivateKeyStateMapper().mapResultToState(state, result));
     // Only refresh the current accountName and the privateKey, then fire auth.
     _authenticationBloc.add(OnSwitchAccount(event.profile.account, state.authDataModel!));

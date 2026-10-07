@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:seeds/blocs/authentication/viewmodels/authentication_bloc.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/datasource/local/settings_storage.dart';
-import 'package:seeds/design/app_colors.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/profile_screens/security/components/biometric_enabled_dialog.dart';
 import 'package:seeds/screens/profile_screens/security/components/guardian_security_card.dart';
 import 'package:seeds/screens/profile_screens/security/components/security_card.dart';
 import 'package:seeds/screens/profile_screens/security/interactor/viewmodels/security_bloc.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:share/share.dart';
 
 class SecurityScreen extends StatelessWidget {
-  const SecurityScreen({super.key});
+  const SecurityScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(context.loc.securityTitle)),
+      appBar: AppBar(title: Text(localization.securityTitle)),
       body: BlocProvider(
         create: (context) =>
             SecurityBloc(BlocProvider.of<AuthenticationBloc>(context))..add(const SetUpInitialValues()),
@@ -34,11 +35,7 @@ class SecurityScreen extends StatelessWidget {
               listenWhen: (_, current) => current.navigateToVerification != null,
               listener: (context, _) {
                 BlocProvider.of<SecurityBloc>(context).add(const ResetNavigateToVerification());
-                NavigationService.of(context).navigateTo(Routes.verification).then((isValid) {
-                  if (isValid ?? false) {
-                    BlocProvider.of<SecurityBloc>(context).add(const OnValidVerification());
-                  }
-                });
+                NavigationService.of(context).navigateTo(Routes.verification, BlocProvider.of<SecurityBloc>(context));
               },
             ),
             BlocListener<SecurityBloc, SecurityState>(
@@ -70,8 +67,8 @@ class SecurityScreen extends StatelessWidget {
                       children: [
                         SecurityCard(
                           icon: const Icon(Icons.update),
-                          title: context.loc.securityExportPrivateKeyTitle,
-                          description: context.loc.securityExportPrivateKeyDescription,
+                          title: localization.securityExportPrivateKeyTitle,
+                          description: localization.securityExportPrivateKeyDescription,
                           onTap: () => Share.share(settingsStorage.privateKey!),
                         ),
                         BlocBuilder<SecurityBloc, SecurityState>(
@@ -89,8 +86,8 @@ class SecurityScreen extends StatelessWidget {
                         if (state.shouldShowExportRecoveryPhrase)
                           SecurityCard(
                             icon: const Icon(Icons.insert_drive_file),
-                            title: context.loc.security12WordRecoveryPhraseTitle,
-                            description: context.loc.security12WordRecoveryPhraseDescription,
+                            title: localization.security12WordRecoveryPhraseTitle,
+                            description: localization.security12WordRecoveryPhraseDescription,
                             onTap: () {
                               NavigationService.of(context).navigateTo(Routes.recoveryPhrase);
                             },
@@ -99,7 +96,7 @@ class SecurityScreen extends StatelessWidget {
                           const SizedBox.shrink(),
                         SecurityCard(
                           icon: const Icon(Icons.lock_outline),
-                          title: context.loc.securitySecureWithPinTitle,
+                          title: localization.securitySecureWithPinTitle,
                           titleWidget: BlocBuilder<SecurityBloc, SecurityState>(
                             buildWhen: (previous, current) => previous.isSecurePasscode != current.isSecurePasscode,
                             builder: (context, state) {
@@ -112,11 +109,11 @@ class SecurityScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          description: context.loc.securitySecureWithPinDescription,
+                          description: localization.securitySecureWithPinDescription,
                         ),
                         SecurityCard(
                           icon: const Icon(Icons.fingerprint),
-                          title: context.loc.securitySecureWithTouchFaceIDTitle,
+                          title: localization.securitySecureWithTouchFaceIDTitle,
                           titleWidget: BlocBuilder<SecurityBloc, SecurityState>(
                             builder: (context, state) {
                               return Switch(
@@ -131,7 +128,7 @@ class SecurityScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          description: context.loc.securitySecureWithTouchFaceIDDescription,
+                          description: localization.securitySecureWithTouchFaceIDDescription,
                         ),
                       ],
                     ),

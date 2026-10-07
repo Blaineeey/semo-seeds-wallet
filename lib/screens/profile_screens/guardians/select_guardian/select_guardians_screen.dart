@@ -13,7 +13,7 @@ import 'package:seeds/screens/profile_screens/guardians/select_guardian/interact
 import 'package:seeds/screens/profile_screens/guardians/select_guardian/interactor/viewmodels/select_guardians_bloc.dart';
 
 class SelectGuardiansScreen extends StatelessWidget {
-  const SelectGuardiansScreen({super.key});
+  const SelectGuardiansScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,6 @@ class SelectGuardiansScreen extends StatelessWidget {
             return Scaffold(
               appBar: AppBar(title: Text(state.pageTitle)),
               body: SafeArea(
-                minimum: const EdgeInsets.symmetric(vertical: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +59,7 @@ class SelectGuardiansScreen extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: horizontalEdgePadding),
+                            padding: const EdgeInsets.all(horizontalEdgePadding),
                             child: FlatButtonLong(
                               title: 'Next'.i18n,
                               onPressed: state.selectedGuardians.isNotEmpty

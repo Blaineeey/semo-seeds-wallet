@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:seeds/components/flat_button_long.dart';
 import 'package:seeds/components/flat_button_long_outlined.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 
 const double _padding = 20;
 const double _avatarRadius = 40;
@@ -36,7 +36,7 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? onSingleLargeButtonPressed;
 
   const CustomDialog({
-    super.key,
+    Key? key,
     this.icon,
     required this.children,
     this.leftButtonTitle = '',
@@ -46,7 +46,7 @@ class CustomDialog extends StatelessWidget {
     this.singleLargeButtonTitle = '',
     this.onSingleLargeButtonPressed,
     this.iconPadding,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +64,11 @@ class CustomDialog extends StatelessWidget {
                   left: _padding, top: _avatarRadius + _padding - 10, right: _padding, bottom: _padding + 10),
               margin: const EdgeInsets.only(top: _avatarRadius),
               decoration: BoxDecoration(
-                color: AppColors.tagGreen3,
-                borderRadius: BorderRadius.circular(18.0),
-                boxShadow: const [BoxShadow(offset: Offset(0, 10), blurRadius: 10)],
-              ),
+                  color: AppColors.tagGreen3,
+                  borderRadius: BorderRadius.circular(18.0),
+                  boxShadow: const [
+                    BoxShadow(offset: Offset(0, 10), blurRadius: 10),
+                  ]),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -87,7 +88,7 @@ class CustomDialog extends StatelessWidget {
                                 Expanded(
                                   child: FlatButtonLongOutlined(
                                     title: leftButtonTitle,
-                                    onPressed: onLeftButtonPressed ?? () => Navigator.pop(context),
+                                    onPressed: onLeftButtonPressed,
                                   ),
                                 ),
                               if (leftButtonTitle.isNotEmpty) const SizedBox(width: 10),
@@ -126,7 +127,7 @@ class CustomDialog extends StatelessWidget {
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: _avatarRadius,
-                  child: DecoratedBox(
+                  child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       shape: BoxShape.circle,

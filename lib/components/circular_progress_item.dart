@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class CircularProgressItem extends StatelessWidget {
@@ -14,7 +14,7 @@ class CircularProgressItem extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const CircularProgressItem({
-    super.key,
+    Key? key,
     required this.icon,
     required this.totalStep,
     required this.currentStep,
@@ -24,7 +24,7 @@ class CircularProgressItem extends StatelessWidget {
     required this.rate,
     required this.rateStyle,
     this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
 class ExploreCard extends StatelessWidget {
   final String title;
@@ -14,7 +13,7 @@ class ExploreCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const ExploreCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.icon,
     this.iconUseCircleBackground = true,
@@ -22,7 +21,7 @@ class ExploreCard extends StatelessWidget {
     this.backgroundImage,
     this.gradient,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,7 @@ class ExploreCard extends StatelessWidget {
           alignment: AlignmentDirectional.bottomStart,
           children: [
             if (backgroundImage != null) Image.asset(backgroundImage!),
-            if (title == context.loc.explorerSwapItemTitle)
+            if (title == 'Swap Seeds')
               LayoutBuilder(builder: (context, constrains) {
                 return ClipRRect(
                   borderRadius: const BorderRadius.only(

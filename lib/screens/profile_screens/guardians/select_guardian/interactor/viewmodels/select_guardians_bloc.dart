@@ -18,7 +18,7 @@ class SelectGuardiansBloc extends Bloc<SelectGuardiansEvent, SelectGuardiansStat
   }
 
   void _onUserSelected(OnUserSelected event, Emitter<SelectGuardiansState> emit) {
-    if (state.myGuardians.length + state.selectedGuardians.length >= maxGuardiansAllowed) {
+    if (state.myGuardians.length + state.selectedGuardians.length >= MAX_GUARDIANS_ALLOWED) {
       emit(state.copyWith(pageCommand: ShowMaxUserCountSelected("Max Guardians number selected")));
     } else {
       final mutableSet = <ProfileModel>{};

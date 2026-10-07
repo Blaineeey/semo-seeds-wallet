@@ -1,21 +1,22 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:seeds/components/dots_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 import 'package:seeds/screens/authentication/onboarding/components/pages/onboarding_page_1.dart';
 import 'package:seeds/screens/authentication/onboarding/components/pages/onboarding_page_2.dart';
 import 'package:seeds/screens/authentication/onboarding/components/pages/onboarding_page_3.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => OnboardingState();
 }
 
 class OnboardingState extends State<OnboardingScreen> {
-  final CarouselSliderController _controller = CarouselSliderController();
+  final CarouselController _controller = CarouselController();
   int _selectedIndex = 0;
 
   void _onPageChangeForward() {
@@ -39,6 +40,7 @@ class OnboardingState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
+    final localization = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -65,7 +67,21 @@ class OnboardingState extends State<OnboardingScreen> {
                           )
                         : const SizedBox.shrink(),
                   ),
-                  Expanded(child: DotsIndicator(dotsCount: 3, position: _selectedIndex.toDouble())),
+                  Expanded(
+                    child: DotsIndicator(
+                      dotsCount: 3,
+                      position: _selectedIndex.toDouble(),
+                      decorator: const DotsDecorator(
+                        spacing: EdgeInsets.all(2.0),
+                        size: Size(10.0, 2.0),
+                        shape: Border(),
+                        color: AppColors.darkGreen2,
+                        activeColor: AppColors.green1,
+                        activeSize: Size(18.0, 2.0),
+                        activeShape: Border(),
+                      ),
+                    ),
+                  ),
                   if (_selectedIndex == 2)
                     Expanded(
                       child: Row(
@@ -74,10 +90,10 @@ class OnboardingState extends State<OnboardingScreen> {
                             child: InkWell(
                               onTap: () => NavigationService.of(context).navigateTo(Routes.login, null, true),
                               child: Text(
-                                context.loc.onboardingJoinButtonTitle,
+                                localization.onboardingJoinButtonTitle,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
                           ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 
 class QRCodeView extends StatelessWidget {
   final GlobalKey? qrKey;
   final QRViewCreatedCallback onQRViewCreated;
 
-  const QRCodeView({required this.onQRViewCreated, super.key, this.qrKey});
+  const QRCodeView({required this.onQRViewCreated, Key? key, this.qrKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

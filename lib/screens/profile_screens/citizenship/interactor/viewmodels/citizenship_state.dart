@@ -1,17 +1,18 @@
 part of 'citizenship_bloc.dart';
 
 /// Resident requirements
-const int residentRequiredReputation = 50;
-const int residentRequiredVisitorsInvited = 1;
-const int residentRequiredPlantedSeeds = 50;
-const int residentRequiredSeedsTransactions = 1;
+const int resident_required_reputation = 50;
+const int resident_required_visitors_invited = 1;
+const int resident_required_planted_seeds = 50;
+const int resident_required_seeds_transactions = 1;
 
 /// Citizen requirements
-const int citizenRequiredReputation = 50;
-const int citizenRequiredAccountAge = 60;
-const int citizenRequiredPlantedSeeds = 200;
-const int citizenRequiredSeedsTransactions = 5;
-const int citizenRequiredCitizenVouched = 3;
+const int citizen_required_reputation = 50;
+const int citizen_required_visitors_invited = 3;
+const int citizen_required_account_age = 60;
+const int citizen_required_planted_seeds = 200;
+const int citizen_required_seeds_transactions = 5;
+const int citizen_required_residents_invited = 1;
 
 class CitizenshipState extends Equatable {
   final PageState pageState;
@@ -20,7 +21,7 @@ class CitizenshipState extends Equatable {
   final ScoreModel? reputationScore;
   final double? progressTimeline;
   final int? invitedVisitors;
-  final int? citizenCeremony;
+  final int? invitedResidents;
   final double? plantedSeeds;
   final int? seedsTransactionsCount;
 
@@ -30,7 +31,7 @@ class CitizenshipState extends Equatable {
     this.profile,
     this.reputationScore,
     this.progressTimeline,
-    this.citizenCeremony,
+    this.invitedResidents,
     this.invitedVisitors,
     this.plantedSeeds,
     this.seedsTransactionsCount,
@@ -43,7 +44,7 @@ class CitizenshipState extends Equatable {
         profile,
         reputationScore,
         progressTimeline,
-        citizenCeremony,
+        invitedResidents,
         invitedVisitors,
         plantedSeeds,
         seedsTransactionsCount,
@@ -55,7 +56,7 @@ class CitizenshipState extends Equatable {
     ProfileModel? profile,
     ScoreModel? reputationScore,
     double? progressTimeline,
-    int? citizenCeremony,
+    int? invitedResidents,
     int? invitedVisitors,
     double? plantedSeeds,
     int? seedsTransactionsCount,
@@ -66,7 +67,7 @@ class CitizenshipState extends Equatable {
       profile: profile ?? this.profile,
       reputationScore: reputationScore ?? this.reputationScore,
       progressTimeline: progressTimeline ?? this.progressTimeline,
-      citizenCeremony: citizenCeremony ?? this.citizenCeremony,
+      invitedResidents: invitedResidents ?? this.invitedResidents,
       invitedVisitors: invitedVisitors ?? this.invitedVisitors,
       plantedSeeds: plantedSeeds ?? this.plantedSeeds,
       seedsTransactionsCount: seedsTransactionsCount ?? this.seedsTransactionsCount,

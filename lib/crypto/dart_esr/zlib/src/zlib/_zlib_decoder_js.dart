@@ -1,4 +1,4 @@
-// ignore_for_file: always_use_package_imports, unnecessary_brace_in_string_interps, constant_identifier_names
+// ignore_for_file: always_use_package_imports, unnecessary_brace_in_string_interps
 
 import '../util/adler32.dart';
 import '../util/archive_exception.dart';
@@ -14,12 +14,15 @@ class _ZLibDecoder extends ZLibDecoderBase {
   static const int DEFLATE = 8;
 
   @override
-  List<int>? decodeBytes(List<int>? data, {bool verify = false, bool raw = false}) {
-    return decodeBuffer(InputStream(data, byteOrder: BIG_ENDIAN), verify: verify, raw: raw);
+  List<int>? decodeBytes(List<int>? data,
+      {bool verify = false, bool raw = false}) {
+    return decodeBuffer(InputStream(data, byteOrder: BIG_ENDIAN),
+        verify: verify, raw: raw);
   }
 
   @override
-  List<int>? decodeBuffer(InputStream input, {bool verify = false, bool raw = false}) {
+  List<int>? decodeBuffer(InputStream input,
+      {bool verify = false, bool raw = false}) {
     if (raw) {
       return Inflate.buffer(input).getBytes();
     }

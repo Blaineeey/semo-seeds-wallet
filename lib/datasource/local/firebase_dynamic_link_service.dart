@@ -9,10 +9,11 @@ class FirebaseDynamicLinkService {
       final parameters = DynamicLinkParameters(
         uriPrefix: domainAppUriPrefix,
         link: Uri.parse('$targetLink$link'),
-        androidParameters: const AndroidParameters(packageName: androidPacakageName),
-        iosParameters: const IOSParameters(bundleId: iosBundleId, appStoreId: iosAppStoreId),
+        androidParameters: AndroidParameters(packageName: androidPacakageName),
+        iosParameters: IosParameters(bundleId: iosBundleId, appStoreId: iosAppStoreId),
       );
-      final dynamicUrl = (await FirebaseDynamicLinks.instance.buildShortLink(parameters)).shortUrl;
+
+      final Uri dynamicUrl = (await parameters.buildShortLink()).shortUrl;
 
       return Result.value(dynamicUrl);
     } catch (error) {

@@ -1,13 +1,14 @@
 import 'package:flutter/widgets.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-enum GlobalError {
-  unknown;
+enum GlobalError { Unknown }
 
+extension LocalizedGlobalError on GlobalError {
   String localizedDescription(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     switch (this) {
-      case GlobalError.unknown:
-        return context.loc.globalUnknownError;
+      case GlobalError.Unknown:
+        return localization.globalUnknownError;
     }
   }
 }

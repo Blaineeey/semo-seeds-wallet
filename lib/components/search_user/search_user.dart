@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:seeds/components/search_result_row.dart';
 import 'package:seeds/components/search_user/components/search_user_text_field.dart';
 import 'package:seeds/components/search_user/interactor/viewmodels/search_user_bloc.dart';
 import 'package:seeds/datasource/remote/model/profile_model.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
-import 'package:seeds/utils/build_context_extension.dart';
+
 
 class SearchUser extends StatelessWidget {
   final String? title;
@@ -15,15 +16,16 @@ class SearchUser extends StatelessWidget {
   final ValueSetter<ProfileModel> onUserSelected;
 
   const SearchUser({
-    super.key,
+    Key? key,
     this.title,
     this.noShowUsers,
     this.filterByCitizenshipStatus,
     required this.onUserSelected,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return BlocProvider<SearchUserBloc>(
       create: (_) => SearchUserBloc(noShowUsers, filterByCitizenshipStatus),
       child: Column(
@@ -40,7 +42,7 @@ class SearchUser extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    Text(title!, style: Theme.of(context).textTheme.titleSmall),
+                    Text(title!, style: Theme.of(context).textTheme.subtitle2),
                   ],
                 ),
               ),
@@ -55,7 +57,7 @@ class SearchUser extends StatelessWidget {
                   if (state.pageState == PageState.success && state.users.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Center(child: Text(context.loc.searchUserNoUserFound)),
+                      child: Center(child: Text(localization.searchUserNoUserFound)),
                     );
                   } else {
                     return Expanded(

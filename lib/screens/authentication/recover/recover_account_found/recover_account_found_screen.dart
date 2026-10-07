@@ -3,31 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seeds/blocs/authentication/viewmodels/authentication_bloc.dart';
 import 'package:seeds/components/divider_jungle.dart';
 import 'package:seeds/components/flat_button_long.dart';
-import 'package:seeds/components/flat_button_long_outlined.dart';
 import 'package:seeds/components/full_page_error_indicator.dart';
 import 'package:seeds/components/full_page_loading_indicator.dart';
 import 'package:seeds/components/text_form_field_custom.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/event_bus/event_bus.dart';
 import 'package:seeds/domain-shared/event_bus/events.dart';
-import 'package:seeds/domain-shared/global_error.dart';
 import 'package:seeds/domain-shared/page_command.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 import 'package:seeds/domain-shared/ui_constants.dart';
+import 'package:seeds/i18n/authentication/recover/recover.i18n.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_found/components/guardian_row_widget.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_bloc.dart';
 import 'package:seeds/screens/authentication/recover/recover_account_found/interactor/viewmodels/recover_account_found_page_command.dart';
-import 'package:seeds/utils/build_context_extension.dart';
 import 'package:share/share.dart';
 
 class RecoverAccountFoundScreen extends StatelessWidget {
-  const RecoverAccountFoundScreen({super.key});
+  const RecoverAccountFoundScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // ignore: cast_nullable_to_non_nullable
-    final String userAccount = ModalRoute.of(context)!.settings.arguments! as String;
+    final String userAccount = ModalRoute.of(context)!.settings.arguments as String;
     return BlocProvider(
       create: (_) => RecoverAccountFoundBloc(userAccount)..add(const FetchInitialData()),
       child: BlocConsumer<RecoverAccountFoundBloc, RecoverAccountFoundState>(
@@ -37,7 +35,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
           BlocProvider.of<RecoverAccountFoundBloc>(context).add(const ClearRecoverPageCommand());
 
           if (pageCommand is ShowLinkCopied) {
-            eventBus.fire(ShowSnackBar.success(context.loc.recoverAccountFoundShowLinkCopied));
+            eventBus.fire(ShowSnackBar.success('Copied'.i18n));
           } else if (pageCommand is ShowErrorMessage) {
             eventBus.fire(ShowSnackBar(pageCommand.message));
           } else if (pageCommand is CancelRecoveryProcess) {
@@ -53,9 +51,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
             },
             child: Scaffold(
                 appBar: AppBar(
-                  title: Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(context.loc.recoverAccountFoundAppBarTitle)),
+                  title: Padding(padding: const EdgeInsets.only(left: 16), child: Text("Recover Account".i18n)),
                   automaticallyImplyLeading: false,
                   actions: [
                     Padding(
@@ -82,15 +78,14 @@ class RecoverAccountFoundScreen extends StatelessWidget {
         return const FullPageLoadingIndicator();
       case PageState.failure:
         return FullPageErrorIndicator(
-          errorMessage: state.error?.localizedDescription(context) ?? GlobalError.unknown.localizedDescription(context),
-          buttonTitle: context.loc.recoverAccountFoundFullPageErrorIndicatorTitle,
+          errorMessage: state.errorMessage,
+          buttonTitle: "Cancel Process".i18n,
           buttonOnPressed: () => BlocProvider.of<RecoverAccountFoundBloc>(context).add(const OnCancelProcessTapped()),
         );
       case PageState.success:
         switch (state.recoveryStatus) {
           case RecoveryStatus.waitingForGuardiansToSign:
             return SafeArea(
-              minimum: const EdgeInsets.symmetric(vertical: 16),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -101,7 +96,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                           child: TextFormFieldCustom(
                             enabled: false,
-                            labelText: context.loc.recoverAccountFoundLinkTitle,
+                            labelText: 'Link to Activate Key Guardians'.i18n,
                             suffixIcon: const SizedBox.shrink(),
                             controller: TextEditingController(text: state.linkToActivateGuardians?.toString()),
                           ),
@@ -132,7 +127,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                           const SizedBox(width: 24),
                           Flexible(
                             child: Text(
-                              context.loc.recoverAccountFoundGuardiansAcceptedTitle,
+                              "Guardians have accepted your request to recover your account".i18n,
                               style: Theme.of(context).textTheme.buttonLowEmphasis,
                             ),
                           ),
@@ -154,16 +149,9 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: horizontalEdgePadding, vertical: 16),
+                      padding: const EdgeInsets.all(16),
                       child: FlatButtonLong(
-                        title: context.loc.recoverAccountFoundReloadTitle,
-                        onPressed: () => BlocProvider.of<RecoverAccountFoundBloc>(context).add(const OnRefreshTapped()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: horizontalEdgePadding),
-                      child: FlatButtonLongOutlined(
-                        title: context.loc.recoverAccountFoundFullPageErrorIndicatorTitle,
+                        title: "Cancel Process".i18n,
                         onPressed: () =>
                             BlocProvider.of<RecoverAccountFoundBloc>(context).add(const OnCancelProcessTapped()),
                       ),
@@ -178,7 +166,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(horizontalEdgePadding),
                 child: FlatButtonLong(
                   enabled: state.recoveryStatus == RecoveryStatus.readyToClaimAccount,
-                  title: context.loc.recoverAccountFoundClaimButtonTitle,
+                  title: "Claim account".i18n,
                   onPressed: () => BlocProvider.of<RecoverAccountFoundBloc>(context).add(const OnClaimAccountTapped()),
                 ),
               ),
@@ -192,7 +180,8 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            context.loc.recoverAccountFoundAllGuardiansAcceptedTitle,
+                            "All three of your Key Guardians have accepted your request to recover your account. \n You account will be unlocked in 24hrs. "
+                                .i18n,
                             style: Theme.of(context).textTheme.subtitle2LowEmphasis,
                             textAlign: TextAlign.center,
                           ),
@@ -206,33 +195,32 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(state.currentRemainingTime?.hoursFormatted ?? '00',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
-                                  child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+                                  child: Text(':', style: Theme.of(context).textTheme.headline4),
                                 )
                               ],
                             ),
                             Row(
                               children: [
                                 Text(state.currentRemainingTime?.minFormatted ?? '00',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
-                                  child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+                                  child: Text(':', style: Theme.of(context).textTheme.headline4),
                                 )
                               ],
                             ),
                             Row(
                               children: [
                                 Text('${state.currentRemainingTime?.secFormatted ?? '00'} ',
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context).textTheme.headline4),
                               ],
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 14),
-                              child: Text(context.loc.recoverAccountFoundHoursLeft,
-                                  style: Theme.of(context).textTheme.titleSmall),
+                              child: Text("Hours Left".i18n, style: Theme.of(context).textTheme.subtitle2),
                             )
                           ],
                         ),
@@ -240,7 +228,7 @@ class RecoverAccountFoundScreen extends StatelessWidget {
                         if (state.recoveryStatus == RecoveryStatus.readyToClaimAccount)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [Text(context.loc.recoverAccountFoundRecoveredTitle), Text(state.userAccount)],
+                            children: [Text('Account recovered '.i18n), Text(state.userAccount)],
                           ),
                         const SizedBox(height: 150),
                       ],

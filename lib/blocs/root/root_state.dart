@@ -12,7 +12,5 @@ class RootState extends Equatable {
     return RootState(busEvent: busEvent);
   }
 
-  factory RootState.initial() {
-    return const RootState();
-  }
+  factory RootState.initial() => const RootState();
 }
