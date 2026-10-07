@@ -1,0 +1,8 @@
+
+
+
+class SettingsService {
+
+  SettingsService();
+
+}
