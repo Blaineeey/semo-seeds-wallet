@@ -30,12 +30,10 @@ class _EventBus {
   /// Controller for the event bus stream.
   StreamController get streamController => _streamController;
 
-  // ignore: use_setters_to_change_properties
   /// Instead of using the default [StreamController] you can use this constructor
   /// to pass your own controller.
   ///
   /// An example would be to use an RxDart Subject as the controller.
-  // ignore: use_setters_to_change_properties
   void customController(StreamController controller) => _streamController = controller;
 
   /// Listens for events of Type [T] and its subtypes.
@@ -63,7 +61,7 @@ class _EventBus {
 
   /// Fires a new event on the event bus with the specified [event].
   ///
-  void fire(dynamic event) {
+  void fire(event) {
     print(event);
     streamController.add(event);
   }

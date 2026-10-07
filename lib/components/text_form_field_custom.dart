@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seeds/design/app_colors.dart';
+import 'package:seeds/constants/app_colors.dart';
 import 'package:seeds/design/app_theme.dart';
 
 /// A wigdeg wrapper of TextFormField customized for general inputs
 ///
 class TextFormFieldCustom extends StatelessWidget {
-  final String? initialValue;
   final bool autofocus;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
@@ -22,19 +21,15 @@ class TextFormFieldCustom extends StatelessWidget {
   final bool? enabled;
   final FormFieldValidator<String>? validator;
   final Widget? suffixIcon;
-  final String? suffixText;
   final String? hintText;
   final String? labelText;
   final bool? disabledLabelColor;
   final String? errorText;
   final String? counterText;
-  final bool autoCorrect;
 
   const TextFormFieldCustom(
-      {super.key,
-      this.initialValue,
+      {Key? key,
       this.autofocus = false,
-      this.autoCorrect = true,
       this.focusNode,
       this.nextFocus,
       this.onFieldSubmitted,
@@ -49,21 +44,19 @@ class TextFormFieldCustom extends StatelessWidget {
       this.enabled,
       this.validator,
       this.suffixIcon,
-      this.suffixText,
       this.hintText,
       this.labelText,
       this.disabledLabelColor,
       this.errorText,
-      this.counterText = ""});
+      this.counterText = ""})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
-        initialValue: initialValue,
         autofocus: autofocus,
-        autocorrect: autoCorrect,
         focusNode: focusNode,
         onFieldSubmitted: onFieldSubmitted,
         textInputAction: textInputAction,
@@ -76,10 +69,8 @@ class TextFormFieldCustom extends StatelessWidget {
         maxLines: maxLines,
         enabled: enabled,
         validator: validator,
-        style: Theme.of(context).textTheme.titleSmall,
+        style: Theme.of(context).textTheme.subtitle2,
         decoration: InputDecoration(
-          suffixText: suffixText,
-          suffixStyle: Theme.of(context).textTheme.titleSmall,
           suffixIcon: suffixIcon,
           focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.canopy)),
           counterText: counterText,
@@ -89,7 +80,7 @@ class TextFormFieldCustom extends StatelessWidget {
           errorMaxLines: 2,
           errorStyle: const TextStyle(color: Colors.red, wordSpacing: 4.0),
           labelStyle: Theme.of(context).textTheme.subtitle3.copyWith(color: AppColors.white),
-          hintStyle: Theme.of(context).textTheme.labelLarge,
+          hintStyle: Theme.of(context).textTheme.button,
           contentPadding: const EdgeInsets.all(16.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),

@@ -10,12 +10,4 @@ class VoiceModel {
       return const VoiceModel(0);
     }
   }
-
-  factory VoiceModel.fromBalanceJson(Map<String, dynamic> balanceJson) {
-    if (balanceJson["rows"].isNotEmpty) {
-      return VoiceModel(balanceJson["rows"][0]["voice"] as int);
-    } else {
-      return const VoiceModel(0);
-    }
-  }
 }
