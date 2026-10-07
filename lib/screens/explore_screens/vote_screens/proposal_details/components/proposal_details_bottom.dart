@@ -11,7 +11,7 @@ import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/comp
 import 'package:seeds/screens/explore_screens/vote_screens/proposal_details/interactor/viewmodels/proposal_details_bloc.dart';
 
 class ProposalDetailsBottom extends StatelessWidget {
-  const ProposalDetailsBottom({super.key});
+  const ProposalDetailsBottom({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

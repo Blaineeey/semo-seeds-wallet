@@ -6,7 +6,7 @@ import 'package:seeds/i18n/profile_screens/guardians/guardians.i18n.dart';
 import 'package:seeds/navigation/navigation_service.dart';
 
 class InviteGuardiansSentScreen extends StatelessWidget {
-  const InviteGuardiansSentScreen({super.key});
+  const InviteGuardiansSentScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class InviteGuardiansSentScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(24.0),
                 child: Text(
                   "Invites Sent!".i18n,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headline4,
                   textAlign: TextAlign.center,
                 ),
               ),

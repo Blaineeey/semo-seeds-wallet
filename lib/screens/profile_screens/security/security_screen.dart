@@ -15,7 +15,7 @@ import 'package:seeds/utils/build_context_extension.dart';
 import 'package:share/share.dart';
 
 class SecurityScreen extends StatelessWidget {
-  const SecurityScreen({super.key});
+  const SecurityScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,7 @@ class SecurityScreen extends StatelessWidget {
               listenWhen: (_, current) => current.navigateToVerification != null,
               listener: (context, _) {
                 BlocProvider.of<SecurityBloc>(context).add(const ResetNavigateToVerification());
-                NavigationService.of(context).navigateTo(Routes.verification).then((isValid) {
-                  if (isValid ?? false) {
-                    BlocProvider.of<SecurityBloc>(context).add(const OnValidVerification());
-                  }
-                });
+                NavigationService.of(context).navigateTo(Routes.verification, BlocProvider.of<SecurityBloc>(context));
               },
             ),
             BlocListener<SecurityBloc, SecurityState>(

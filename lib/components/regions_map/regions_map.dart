@@ -4,29 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:seeds/components/regions_map/components/regions_search_results/regions_search_results.dart';
-import 'package:seeds/components/regions_map/components/serach_places/search_places.dart';
+import 'package:seeds/components/regions_map/components/regions_serach_bar.dart';
 import 'package:seeds/components/regions_map/interactor/view_models/page_commands.dart';
 import 'package:seeds/components/regions_map/interactor/view_models/place.dart';
 import 'package:seeds/components/regions_map/interactor/view_models/regions_map_bloc.dart';
-import 'package:seeds/datasource/remote/model/region_model.dart';
 import 'package:seeds/design/app_colors.dart';
-import 'package:seeds/design/app_theme.dart';
 import 'package:seeds/domain-shared/page_state.dart';
 
 class RegionsMap extends StatefulWidget {
   final ValueSetter<Place>? onPlaceChanged;
-  final ValueSetter<List<RegionModel>>? onRegionsChanged;
-  final bool showRegionsResults;
-  final Place? initialPlace;
+  final Widget? bottomWidget;
+  final List<Marker>? markers;
 
-  const RegionsMap({
-    super.key,
-    this.onPlaceChanged,
-    this.onRegionsChanged,
-    this.showRegionsResults = false,
-    this.initialPlace,
-  });
+  const RegionsMap({Key? key, this.onPlaceChanged, this.bottomWidget, this.markers}) : super(key: key);
 
   @override
   _RegionsMapState createState() => _RegionsMapState();
@@ -35,12 +25,10 @@ class RegionsMap extends StatefulWidget {
 class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
   late final RegionsMapBloc _regionsMapBloc;
   GoogleMapController? _mapController;
-  double lat = 0;
-  double lng = 0;
 
   @override
   void initState() {
-    _regionsMapBloc = RegionsMapBloc(widget.showRegionsResults, widget.initialPlace)..add(const SetInitialValues());
+    _regionsMapBloc = RegionsMapBloc()..add(const SetInitialValues());
     super.initState();
   }
 
@@ -87,11 +75,12 @@ class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    child: Column(children: [
-                      Expanded(flex: 5, child: Container()),
-                      if (widget.showRegionsResults)
-                        Expanded(flex: 3, child: RegionsSearchResults(onRegionsChanged: widget.onRegionsChanged))
-                    ]),
+                    child: Expanded(
+                      child: Column(children: [
+                        Expanded(flex: 5, child: Container()),
+                        if (widget.bottomWidget != null) Expanded(flex: 3, child: widget.bottomWidget!)
+                      ]),
+                    ),
                   ),
                   // Map
                   ClipRRect(
@@ -105,31 +94,20 @@ class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
                             gestureRecognizers: {
                               Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
                             },
-                            mapToolbarEnabled: false,
+                            myLocationEnabled: true,
                             myLocationButtonEnabled: false,
                             zoomControlsEnabled: false,
                             onMapCreated: (controller) => _mapController = controller,
                             initialCameraPosition:
                                 CameraPosition(target: LatLng(state.newPlace.lat, state.newPlace.lng), zoom: 15),
                             onCameraMove: (p) {
-                              // These vars are to void rebuild map for each different lat, lng
-                              // Also to avoid fire a new place instance on moving
-                              lat = p.target.latitude;
-                              lng = p.target.longitude;
                               if (!state.isCameraMoving) {
-                                _regionsMapBloc.add(const OnMapMoving());
+                                _regionsMapBloc
+                                    .add(OnMapMoving(pickedLat: p.target.latitude, pickedLong: p.target.longitude));
                               }
                             },
-                            onCameraIdle: () => _regionsMapBloc.add(OnMapEndMove(pickedLat: lat, pickedLong: lng)),
-                            markers: Set.from(
-                              state.regions
-                                  .map((i) => Marker(
-                                        markerId: MarkerId(i.id),
-                                        position: LatLng(i.latitude, i.longitude),
-                                        infoWindow: InfoWindow(title: i.title),
-                                      ))
-                                  .toList(),
-                            ),
+                            onCameraIdle: () => _regionsMapBloc.add(const OnMapEndMove()),
+                            markers: Set.from(widget.markers ?? []),
                           ),
                           Center(
                             child: Padding(
@@ -139,45 +117,23 @@ class _RegionsMapState extends State<RegionsMap> with WidgetsBindingObserver {
                                   : SvgPicture.asset('assets/images/explore/marker_location.svg'),
                             ),
                           ),
-                          if (state.isUserLocationEnabled)
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: IconButton(
-                                  color: Colors.transparent,
-                                  onPressed: () => _regionsMapBloc.add(const MoveToCurrentLocation()),
-                                  icon: const Icon(Icons.my_location, size: 38.0, color: AppColors.darkGreen2),
-                                ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: IconButton(
+                                color: Colors.transparent,
+                                onPressed: () => _regionsMapBloc.add(const MoveToCurrentLocation()),
+                                icon: const Icon(Icons.my_location, size: 38.0, color: AppColors.darkGreen2),
                               ),
                             ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                  // Search Bar
-                  if (!state.isCameraMoving)
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: InkWell(
-                        onTap: () => BlocProvider.of<RegionsMapBloc>(context).add(const ToggleSearchBar()),
-                        child: state.isSearchingPlace
-                            ? const SearchPlaces()
-                            : Card(
-                                color: AppColors.primary.withOpacity(0.5),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: Text(state.newPlace.placeText,
-                                          style: Theme.of(context).textTheme.buttonWhiteL),
-                                    ),
-                                    const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.search)),
-                                  ],
-                                ),
-                              ),
-                      ),
-                    ),
+                  // Bar
+                  if (!state.isCameraMoving) const RegionsSearchBar(),
                 ],
               );
             default:

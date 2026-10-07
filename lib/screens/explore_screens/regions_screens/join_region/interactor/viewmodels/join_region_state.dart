@@ -1,45 +1,32 @@
 part of 'join_region_bloc.dart';
 
 class JoinRegionState extends Equatable {
-  final PageCommand? pageCommand;
   final PageState pageState;
-  final bool isCreateRegionButtonLoading;
-  final bool isRegionsResultsEmpty;
+  final List<RegionModel> regions;
+  final Place? currentPlace;
 
   const JoinRegionState({
-    this.pageCommand,
     required this.pageState,
-    required this.isCreateRegionButtonLoading,
-    required this.isRegionsResultsEmpty,
+    required this.regions,
+    this.currentPlace,
   });
 
   @override
-  List<Object?> get props => [
-        pageCommand,
-        pageState,
-        isCreateRegionButtonLoading,
-        isRegionsResultsEmpty,
-      ];
+  List<Object?> get props => [pageState, regions, currentPlace];
 
   JoinRegionState copyWith({
-    PageCommand? pageCommand,
     PageState? pageState,
-    bool? isCreateRegionButtonLoading,
-    bool? isRegionsResultsEmpty,
+    List<RegionModel>? regions,
+    Place? currentPlace,
   }) {
     return JoinRegionState(
-      pageCommand: pageCommand,
       pageState: pageState ?? this.pageState,
-      isCreateRegionButtonLoading: isCreateRegionButtonLoading ?? this.isCreateRegionButtonLoading,
-      isRegionsResultsEmpty: isRegionsResultsEmpty ?? this.isRegionsResultsEmpty,
+      regions: regions ?? this.regions,
+      currentPlace: currentPlace ?? this.currentPlace,
     );
   }
 
   factory JoinRegionState.initial() {
-    return const JoinRegionState(
-      pageState: PageState.initial,
-      isCreateRegionButtonLoading: false,
-      isRegionsResultsEmpty: true,
-    );
+    return const JoinRegionState(pageState: PageState.initial, regions: []);
   }
 }

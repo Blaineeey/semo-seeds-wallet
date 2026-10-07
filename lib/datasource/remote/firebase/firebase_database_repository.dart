@@ -50,9 +50,3 @@ abstract class FirebaseDatabaseService {
     return ErrorResult(error);
   }
 }
-
-extension QueryDocumentSnapshotGetOrDefault<T> on QueryDocumentSnapshot<Map<String, dynamic>> {
-  T getOrDefault(String key, T defaultValue) {
-    return data().containsKey(key) ? this[key] ?? defaultValue : defaultValue;
-  }
-}

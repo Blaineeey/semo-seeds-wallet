@@ -19,7 +19,7 @@ import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interacto
 import 'package:seeds/screens/profile_screens/guardians/guardians_tabs/interactor/viewmodels/page_commands.dart';
 
 class GuardiansScreen extends StatelessWidget {
-  const GuardiansScreen({super.key});
+  const GuardiansScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +115,9 @@ void _showRecoveryStartedBottomSheet(BuildContext context, GuardianModel guardia
                 child: RichText(
                   text: TextSpan(
                       text: 'A motion to Recover your Key has been initiated by '.i18n,
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.button,
                       children: <TextSpan>[
-                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.labelLarge)
+                        TextSpan(text: guardian.nickname, style: Theme.of(context).textTheme.button)
                       ]),
                 ),
               ),

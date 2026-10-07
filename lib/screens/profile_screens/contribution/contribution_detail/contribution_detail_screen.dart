@@ -8,7 +8,7 @@ import 'package:seeds/screens/profile_screens/contribution/interactor/viewmodels
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class ContributionDetailScreen extends StatelessWidget {
-  const ContributionDetailScreen({super.key});
+  const ContributionDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class ContributionDetailScreen extends StatelessWidget {
                     Text(scoreDetails.scoreType,
                         textAlign: TextAlign.center, maxLines: 2, style: Theme.of(context).textTheme.headline7),
                     const SizedBox(height: 8.0),
-                    Text(scoreDetails.score.toString(), style: Theme.of(context).textTheme.displaySmall),
+                    Text(scoreDetails.score.toString(), style: Theme.of(context).textTheme.headline3),
                   ],
                 ),
               ),

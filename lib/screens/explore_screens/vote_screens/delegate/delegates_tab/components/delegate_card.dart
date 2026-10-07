@@ -13,12 +13,12 @@ class DelegateCard extends StatelessWidget {
   final ProfileModel? delegate;
 
   const DelegateCard({
-    super.key,
+    Key? key,
     required this.onTap,
     required this.activeDelegate,
     required this.onTapRemove,
     this.delegate,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class DelegateCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
               child: Text(
                 'Delegate',
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
           ),

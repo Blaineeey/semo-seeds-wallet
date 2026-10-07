@@ -4,25 +4,17 @@ class RegionsMapState extends Equatable {
   final PageCommand? pageCommand;
   final PageState pageState;
   final Place? initialPlace;
-  final List<RegionModel> regions;
   final Place newPlace;
   final bool isCameraMoving;
   final bool isSearchingPlace;
-  final bool isUserLocationEnabled;
-  final bool showRegionsResults;
-  final bool isSerachResultSelected;
 
   const RegionsMapState({
     this.pageCommand,
     required this.pageState,
     this.initialPlace,
-    required this.regions,
     required this.newPlace,
     required this.isCameraMoving,
     required this.isSearchingPlace,
-    required this.isUserLocationEnabled,
-    required this.showRegionsResults,
-    required this.isSerachResultSelected,
   });
 
   @override
@@ -30,55 +22,42 @@ class RegionsMapState extends Equatable {
         pageCommand,
         pageState,
         initialPlace,
-        regions,
         newPlace,
         isCameraMoving,
         isSearchingPlace,
-        isUserLocationEnabled,
-        isSerachResultSelected,
       ];
 
   RegionsMapState copyWith({
     PageCommand? pageCommand,
     PageState? pageState,
     Place? initialPlace,
-    List<RegionModel>? regions,
     Place? newPlace,
     bool? isCameraMoving,
     bool? isSearchingPlace,
-    bool? isUserLocationEnabled,
-    bool? isSerachResultSelected,
   }) {
     return RegionsMapState(
       pageCommand: pageCommand,
       pageState: pageState ?? this.pageState,
       isCameraMoving: isCameraMoving ?? this.isCameraMoving,
       initialPlace: initialPlace ?? this.initialPlace,
-      regions: regions ?? this.regions,
       newPlace: newPlace ?? this.newPlace,
       isSearchingPlace: isSearchingPlace ?? this.isSearchingPlace,
-      isUserLocationEnabled: isUserLocationEnabled ?? this.isUserLocationEnabled,
-      showRegionsResults: showRegionsResults,
-      isSerachResultSelected: isSerachResultSelected ?? this.isSerachResultSelected,
     );
   }
 
-  factory RegionsMapState.initial(bool showRegionsResults, Place? initial) {
-    // Copy and modify by a small value to fire the listner
-    // (To avoid the cam move so much from the initial position)
-    final Place? initialPlace = initial != null
-        ? Place(lng: initial.lng - 0.00000000000001, lat: initial.lat - 0.00000000000001, placeText: '')
-        : null;
-    return RegionsMapState(
+  factory RegionsMapState.initial() {
+    // When we use this map to edit a Region we can get and set intial values
+    // from that region
+    // final initial = const Place(lat: 0, lng: 0, placeText: '');
+    return const RegionsMapState(
       pageState: PageState.initial,
-      regions: [],
-      initialPlace: initialPlace,
-      newPlace: initial ?? const Place(lat: 0, lng: 0, placeText: ''),
+      // initialPlace: initial,
+      // copy and modify by a small value to fire the listner
+      // (To avoid the cam move so much from the initial position)
+      // newPlace: Place(lng: initial.lng - 0.00000000000001, lat: initial.lat - 0.00000000000001, placeText: ''),
+      newPlace: Place(lat: 0, lng: 0, placeText: ''),
       isCameraMoving: false,
       isSearchingPlace: false,
-      isUserLocationEnabled: true,
-      showRegionsResults: showRegionsResults,
-      isSerachResultSelected: false,
     );
   }
 }

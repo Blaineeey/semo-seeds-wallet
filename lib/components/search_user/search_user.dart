@@ -15,12 +15,12 @@ class SearchUser extends StatelessWidget {
   final ValueSetter<ProfileModel> onUserSelected;
 
   const SearchUser({
-    super.key,
+    Key? key,
     this.title,
     this.noShowUsers,
     this.filterByCitizenshipStatus,
     required this.onUserSelected,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class SearchUser extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    Text(title!, style: Theme.of(context).textTheme.titleSmall),
+                    Text(title!, style: Theme.of(context).textTheme.subtitle2),
                   ],
                 ),
               ),

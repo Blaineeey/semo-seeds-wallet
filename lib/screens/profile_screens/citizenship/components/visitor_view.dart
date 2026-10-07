@@ -14,7 +14,7 @@ import 'package:seeds/screens/profile_screens/citizenship/interactor/viewmodels/
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class VisitorView extends StatefulWidget {
-  const VisitorView({super.key});
+  const VisitorView({Key? key}) : super(key: key);
 
   @override
   _VisitorViewState createState() => _VisitorViewState();
@@ -100,7 +100,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                         const SizedBox(height: 8.0),
                         Text(
                           state.profile!.nickname,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
@@ -112,7 +112,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                DecoratedBox(
+                Container(
                   decoration: const BoxDecoration(
                     color: AppColors.lightGreen2,
                     borderRadius: BorderRadius.all(Radius.circular(defaultCardBorderRadius)),
@@ -124,7 +124,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Progress Timeline'.i18n, style: Theme.of(context).textTheme.labelLarge),
+                            Text('Progress Timeline'.i18n, style: Theme.of(context).textTheme.button),
                             Text('$_timeLine%', style: Theme.of(context).textTheme.subtitle2LowEmphasis),
                           ],
                         ),
@@ -158,7 +158,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                       title: 'Reputation Points'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_reputation/$residentRequiredReputation',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/community.svg'),
@@ -168,7 +168,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                       title: 'Visitors Invited'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '${_visitors ~/ 100}/$residentRequiredVisitorsInvited',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/planted.svg'),
@@ -178,7 +178,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                       title: 'Planted Seeds'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_seeds/$residentRequiredPlantedSeeds',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                     CircularProgressItem(
                       icon: SvgPicture.asset('assets/images/citizenship/transaction.svg'),
@@ -188,7 +188,7 @@ class _VisitorViewState extends State<VisitorView> with TickerProviderStateMixin
                       title: 'Transactions with Seeds'.i18n,
                       titleStyle: Theme.of(context).textTheme.subtitle3,
                       rate: '$_transactions/$residentRequiredSeedsTransactions',
-                      rateStyle: Theme.of(context).textTheme.titleMedium!,
+                      rateStyle: Theme.of(context).textTheme.subtitle1!,
                     ),
                   ],
                 ),

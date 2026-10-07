@@ -13,7 +13,7 @@ import 'package:seeds/screens/explore_screens/vouch/vouched_tab/interactor/viewm
 import 'package:seeds/screens/explore_screens/vouch/vouched_tab/interactor/viewmodels/vouched_page_commands.dart';
 
 class VouchedTab extends StatelessWidget {
-  const VouchedTab({super.key});
+  const VouchedTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
